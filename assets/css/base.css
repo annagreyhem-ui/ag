@@ -5,21 +5,63 @@
   Letzte Aktualisierung: 2026
 
   INHALTSVERZEICHNIS
-  1. Farben & Variablen
-  2. Reset & Grundlagen
-  3. Typografie
-  4. Layout
-  5. Fließtext & Prosa
-  6. Gedicht
-  7. Fragment
-  8. Titel
-  9. Anweisungen (tap, hold)
-  10. Entscheidungen
-  11. Seitenreferenz (→ p.xx)
-  12. Footer & Impressum
-  13. Animationen
-  14. Mobile
+  1. Fonts
+  2. Farben & Variablen
+  3. Reset & Grundlagen
+  4. Typografie
+  5. Layout
+  6. Fließtext & Prosa
+  7. Gedicht
+  8. Fragment
+  9. Titel
+  10. Anweisungen (tap, hold)
+  11. Entscheidungen
+  12. Seitenreferenz (→ p.xx)
+  13. Footer & Impressum
+  14. Animationen
+  15. Mobile
 */
+
+
+/* ─────────────────────────────────────────
+   1. FONTS
+   ─────────────────────────────────────────
+   Selbst gehostet — kein Google, kein Datenschutzproblem.
+   font-display: swap = Browser zeigt zuerst Systemfont,
+   tauscht dann aus sobald Cormorant geladen ist.
+   Kaum sichtbar, aber Seite fühlt sich schnell an.
+*/
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/assets/fonts/CormorantGaramond-Light.ttf') format('truetype');
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/assets/fonts/CormorantGaramond-LightItalic.ttf') format('truetype');
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/assets/fonts/CormorantGaramond-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cormorant Garamond';
+  src: url('/assets/fonts/CormorantGaramond-Italic.ttf') format('truetype');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
 
 
 /* ─────────────────────────────────────────
