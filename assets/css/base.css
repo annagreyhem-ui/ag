@@ -235,7 +235,7 @@ em {
   font-style: normal;
   font-size: clamp(24px, 3.5vw, 30px);
   line-height: 1.5;
-  margin-bottom: clamp(32px, 5vh, 56px);
+  margin-bottom: clamp(48px, 8vh, 80px);
   color: var(--text);
   letter-spacing: 0.01em;
 }
