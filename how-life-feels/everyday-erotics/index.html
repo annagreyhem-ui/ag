@@ -15,33 +15,6 @@
   <title>Everyday Erotics — Anna Greyhem</title>
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
-    /* ── Cursor (nur Desktop) ── */
-    html, body {
-      min-height: 100%;
-      cursor: none;
-    }
-
-    #cursor {
-      position: fixed;
-      width: 1px;
-      height: 20px;
-      background: rgba(255, 255, 255, 0.35);
-      pointer-events: none;
-      z-index: 9999;
-      transform: translate(-50%, -50%);
-    }
-
-    #cursor::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 20px;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.35);
-    }
-
     /* ── Titel-Erweiterung ── */
     #title-ext {
       transition: opacity 0.6s ease, color 0.6s ease;
@@ -120,7 +93,6 @@
 </head>
 <body>
 
-  <div id="cursor"></div>
 
   <div class="page-wrap">
     <div class="story-title" id="title">Everyday erotics<span id="title-ext"></span></div>
@@ -181,17 +153,6 @@
   </footer>
 
   <script>
-    /* ── Custom Cursor — nur Desktop ── */
-    var cur = document.getElementById('cursor');
-    document.addEventListener('mousemove', function(e) {
-      cur.style.left = e.clientX + 'px';
-      cur.style.top  = e.clientY + 'px';
-    });
-    document.addEventListener('touchstart', function() {
-      cur.style.display = 'none';
-      document.body.style.cursor = 'auto';
-    }, { once: true, passive: true });
-
     /* ── Texte ── */
     var ext_alice = [
       '— keep me from sleeping',
