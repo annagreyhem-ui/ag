@@ -26,7 +26,7 @@
   <style>
     html, body {
       height: 100%;
-      overflow: hidden;
+      overflow-x: hidden;
     }
 
     #site-header {
@@ -52,24 +52,28 @@
     }
 
     #house-wrap {
-      position: relative;
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      min-height: 100vh;
+      padding-top: 80px;
     }
 
     #floorplan {
-      position: absolute;
-      bottom: 0;
-      left: 50%;
-      transform: translateX(-50%);
-      height: 80vh;
-      width: auto;
-      max-width: 80vw;
-      object-fit: contain;
+      display: block;
+      width: 100%;
+      max-width: 100vw;
+      height: auto;
       transition: filter 0.5s ease;
       user-select: none;
       -webkit-user-drag: none;
+    }
+
+    /* Footer bleibt sichtbar unter dem Bild */
+    .site-footer {
+      position: relative;
+      z-index: 10;
     }
   </style>
 </head>
@@ -84,6 +88,10 @@
          src="/assets/images/the-house.png"
          alt="The House — floor plan">
   </div>
+
+  <footer class="site-footer">
+    <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
+  </footer>
 
   <script>
     function isNight() {
