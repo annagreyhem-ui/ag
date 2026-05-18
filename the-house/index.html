@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    DATEI: index.html
+    SEITE: The House
+    KOMMT VON: Menü
+    FÜHRT ZU:
+      /the-house/library/
+      /the-house/annas-room/
+      /the-house/annas-bathroom/
+      /the-house/dining-room/
+      /the-house/living-room/
+      /the-house/sunroom/
+      /the-house/kitchen/
+      /the-house/the-tree/
+      /the-house/the-pond/
+      /the-house/the-gate/
+    STATUS: In Arbeit — Unterseiten sind Platzhalter
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The House — Anna Greyhem</title>
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <style>
+    html, body {
+      height: 100%;
+      overflow: hidden;
+    }
+
+    /* ── Header ── */
+    #site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 80px 44px;
+      pointer-events: none;
+      background: linear-gradient(to bottom, #0a0a0a 60%, transparent);
+    }
+
+    #site-header a {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(15px, 2vw, 20px);
+      letter-spacing: 0.18em;
+      color: var(--text);
+      text-decoration: none;
+      pointer-events: all;
+    }
+
+    /* ── Floorplan Container ── */
+    #house-wrap {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    #floorplan {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      /* Bild füllt Bildschirm, Header bleibt sichtbar */
+      height: calc(100vh - 0px);
+      width: auto;
+      max-width: 100vw;
+      object-fit: contain;
+      /* Warm invertiert */
+      filter: invert(1) sepia(0.3) brightness(0.85);
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    /* ── Klickbare Bereiche ── */
+    /* Alle Koordinaten in % relativ zum Bild */
+    .room {
+      position: absolute;
+      cursor: pointer;
+      /* Unsichtbar aber klickbar */
+      background: transparent;
+      border: none;
+      transition: background 0.25s ease;
+      /* Raumname */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .room:hover {
+      background: rgba(158, 36, 56, 0.12);
+    }
+
+    .room-label {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(10px, 1.4vw, 14px);
+      letter-spacing: 0.15em;
+      color: var(--alice);
+      opacity: 0;
+      transition: opacity 0.25s ease;
+      pointer-events: none;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .room:hover .room-label {
+      opacity: 1;
+    }
+
+    /* ── Raumkoordinaten (% des Bildcontainers) ── */
+    /* Basierend auf 941×1672 Bildgröße */
+
+    #room-library {
+      left: 10%; top: 20%;
+      width: 22%; height: 16%;
+    }
+
+    #room-annas-room {
+      left: 55%; top: 20%;
+      width: 14%; height: 10%;
+    }
+
+    #room-annas-bathroom {
+      left: 55%; top: 30%;
+      width: 10%; height: 8%;
+    }
+
+    #room-dining-room {
+      left: 62%; top: 22%;
+      width: 22%; height: 18%;
+    }
+
+    #room-living-room {
+      left: 10%; top: 34%;
+      width: 26%; height: 16%;
+    }
+
+    #room-sunroom {
+      left: 3%; top: 30%;
+      width: 10%; height: 14%;
+    }
+
+    #room-kitchen {
+      left: 50%; top: 42%;
+      width: 18%; height: 10%;
+    }
+
+    #room-the-tree {
+      left: 42%; top: 60%;
+      width: 16%; height: 12%;
+      border-radius: 50%;
+    }
+
+    #room-the-pond {
+      left: 12%; top: 65%;
+      width: 28%; height: 22%;
+      border-radius: 50%;
+    }
+
+    #room-the-gate {
+      left: 36%; top: 2%;
+      width: 18%; height: 5%;
+    }
+
+    /* ── Tooltip oben wenn Raum unten ── */
+    #room-the-tree .room-label,
+    #room-the-pond .room-label,
+    #room-the-gate .room-label {
+      position: absolute;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header id="site-header">
+    <a href="/">Anna Greyhem</a>
+  </header>
+
+  <!-- Floorplan -->
+  <div id="house-wrap">
+
+    <img id="floorplan"
+         src="/assets/images/the-house.png"
+         alt="The House — floor plan">
+
+    <!-- Klickbare Räume -->
+    <a href="/the-house/library/" class="room" id="room-library">
+      <span class="room-label">The Library</span>
+    </a>
+
+    <a href="/the-house/annas-room/" class="room" id="room-annas-room">
+      <span class="room-label">Anna's Room</span>
+    </a>
+
+    <a href="/the-house/annas-bathroom/" class="room" id="room-annas-bathroom">
+      <span class="room-label">Anna's Bathroom</span>
+    </a>
+
+    <a href="/the-house/dining-room/" class="room" id="room-dining-room">
+      <span class="room-label">The Dining Room</span>
+    </a>
+
+    <a href="/the-house/living-room/" class="room" id="room-living-room">
+      <span class="room-label">The Living Room</span>
+    </a>
+
+    <a href="/the-house/sunroom/" class="room" id="room-sunroom">
+      <span class="room-label">The Sunroom</span>
+    </a>
+
+    <a href="/the-house/kitchen/" class="room" id="room-kitchen">
+      <span class="room-label">The Kitchen</span>
+    </a>
+
+    <a href="/the-house/the-tree/" class="room" id="room-the-tree">
+      <span class="room-label">The Cherry Tree</span>
+    </a>
+
+    <a href="/the-house/the-pond/" class="room" id="room-the-pond">
+      <span class="room-label">The Pond</span>
+    </a>
+
+    <a href="/the-house/the-gate/" class="room" id="room-the-gate">
+      <span class="room-label">The Gate</span>
+    </a>
+
+  </div>
+
+  <script>
+    // Räume relativ zum tatsächlich gerenderten Bild positionieren
+    const img = document.getElementById('floorplan');
+    const wrap = document.getElementById('house-wrap');
+    const rooms = document.querySelectorAll('.room');
+
+    function positionRooms() {
+      const imgRect = img.getBoundingClientRect();
+      const wrapRect = wrap.getBoundingClientRect();
+
+      const offsetX = imgRect.left - wrapRect.left;
+      const offsetY = imgRect.top - wrapRect.top;
+      const imgW = imgRect.width;
+      const imgH = imgRect.height;
+
+      rooms.forEach(function(room) {
+        const pctL = parseFloat(room.style.left) / 100;
+        const pctT = parseFloat(room.style.top) / 100;
+        const pctW = parseFloat(room.style.width) / 100;
+        const pctH = parseFloat(room.style.height) / 100;
+
+        room.style.left   = (offsetX + pctL * imgW) + 'px';
+        room.style.top    = (offsetY + pctT * imgH) + 'px';
+        room.style.width  = (pctW * imgW) + 'px';
+        room.style.height = (pctH * imgH) + 'px';
+      });
+    }
+
+    img.addEventListener('load', positionRooms);
+    window.addEventListener('resize', positionRooms);
+    if (img.complete) positionRooms();
+  </script>
+
+  <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
