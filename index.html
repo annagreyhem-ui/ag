@@ -11,35 +11,26 @@
   <title>Anna Greyhem</title>
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
-    /* ── Grundlayout ── */
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
+    body { overflow-x: hidden; }
 
-    body {
-      overflow-x: hidden;
-    }
-
-    /* ── Header — fixiert oben ── */
+    /* ── Header ── */
     #site-header {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 100;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 32px 40px;
+      padding: 28px 40px;
       pointer-events: none;
     }
 
-    /* ── Logo / Name ── */
     #logo {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
-      font-size: clamp(15px, 2vw, 18px);
-      letter-spacing: 0.35em;
+      font-size: clamp(18px, 2.5vw, 24px);
+      letter-spacing: 0.18em;
       color: var(--text);
       white-space: nowrap;
       min-height: 1.4em;
@@ -50,11 +41,10 @@
       transition: color 0.8s ease;
     }
 
-    /* ── Menü-Button ── */
+    /* ── Menü Button ── */
     #menu-btn {
       position: fixed;
-      top: 32px;
-      left: 40px;
+      top: 28px; left: 40px;
       z-index: 200;
       background: none;
       border: none;
@@ -74,17 +64,9 @@
       transition: all 0.3s ease;
     }
 
-    #menu-btn.open span:nth-child(1) {
-      transform: translateY(6px) rotate(45deg);
-    }
-
-    #menu-btn.open span:nth-child(2) {
-      opacity: 0;
-    }
-
-    #menu-btn.open span:nth-child(3) {
-      transform: translateY(-6px) rotate(-45deg);
-    }
+    #menu-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    #menu-btn.open span:nth-child(2) { opacity: 0; }
+    #menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
     /* ── Menü Overlay ── */
     #menu-overlay {
@@ -102,10 +84,7 @@
       transition: opacity 0.4s ease;
     }
 
-    #menu-overlay.open {
-      opacity: 1;
-      pointer-events: all;
-    }
+    #menu-overlay.open { opacity: 1; pointer-events: all; }
 
     .menu-item {
       font-family: 'Cormorant Garamond', Georgia, serif;
@@ -119,9 +98,7 @@
       display: block;
     }
 
-    .menu-item:hover {
-      color: var(--text);
-    }
+    .menu-item:hover { color: var(--text); }
 
     .menu-item.placeholder {
       color: var(--text-faint);
@@ -136,28 +113,26 @@
       margin: 24px 0;
     }
 
-    /* ── Hero — erster Bildschirm ── */
+    /* ── Hero — klein halten damit Gedicht schnell kommt ── */
     #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      min-height: 40vh;
     }
 
-    /* ── Gedicht-Sektion ── */
+    /* ── Gedicht ── */
     #poem-section {
-      min-height: 100vh;
+      min-height: 60vh;
       display: flex;
       align-items: center;
-      justify-content: center;
-      padding: 80px clamp(28px, 8vw, 64px);
+      justify-content: flex-start;
+      padding: 0 clamp(28px, 8vw, 64px) 80px;
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     #poem-wrap {
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 1.2s ease, transform 1.2s ease;
-      max-width: 480px;
     }
 
     #poem-wrap.visible {
@@ -167,44 +142,50 @@
 
     .poem-stanza {
       font-size: clamp(20px, 2.6vw, 26px);
-      line-height: 2;
+      line-height: 2.1;
       font-weight: 400;
-      text-align: left;
     }
 
-    .poem-stanza .correction {
+    /* ── badtime Korrektur ── */
+    .badtime-wrap {
+      display: inline;
+      position: relative;
+    }
+
+    /* Das Wort "badtime" mit rotem Durchstrich */
+    .badtime-word {
       position: relative;
       display: inline-block;
+      color: var(--alice);
     }
 
-    /* Das durchgestrichene 'e' */
-    .poem-stanza .correction .original {
-      position: relative;
-    }
-
-    .poem-stanza .correction .original::after {
+    /* Durchstrich — etwas rechts versetzt, fett */
+    .badtime-word::after {
       content: '';
       position: absolute;
-      left: 0; right: 0;
-      top: 50%;
-      height: 1px;
+      left: 8%;
+      right: -4%;
+      top: 52%;
+      height: 2px;
       background: var(--alice);
+      transform: rotate(-1deg);
     }
 
-    /* Das 'a' von Alice darüber */
-    .poem-stanza .correction .alice-letter {
+    /* "a" von Alice darüber — kursiv, rot */
+    .alice-correction {
       position: absolute;
-      top: -0.7em;
+      top: -0.85em;
       left: 50%;
       transform: translateX(-50%);
       color: var(--alice);
-      font-size: 0.85em;
       font-style: italic;
+      font-size: 0.8em;
+      pointer-events: none;
     }
 
-    /* ── Books Sektion — Platzhalter ── */
+    /* ── Books Platzhalter ── */
     #books-section {
-      min-height: 60vh;
+      min-height: 40vh;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -231,14 +212,10 @@
 </head>
 <body>
 
-  <!-- Menü Button -->
-  <button id="menu-btn" aria-label="Menü">
-    <span></span>
-    <span></span>
-    <span></span>
+  <button id="menu-btn" aria-label="Menu">
+    <span></span><span></span><span></span>
   </button>
 
-  <!-- Menü Overlay -->
   <nav id="menu-overlay">
     <a href="/books/" class="menu-item">Books</a>
     <div class="menu-divider"></div>
@@ -247,35 +224,26 @@
     <span class="menu-item placeholder">Diary</span>
   </nav>
 
-  <!-- Header mit Logo -->
   <header id="site-header">
     <div id="logo"></div>
   </header>
 
-  <!-- Hero -->
   <section id="hero"></section>
 
-  <!-- Gedicht -->
   <section id="poem-section">
-    <div id="poem-wrap">
-      <!-- wird per JS befüllt je nach Tageszeit -->
-    </div>
+    <div id="poem-wrap"></div>
   </section>
 
-  <!-- Books Platzhalter -->
   <section id="books-section">
-    <div class="placeholder-block">
-      — How Life Feels — coming soon —
-    </div>
+    <div class="placeholder-block">— How Life Feels — coming soon —</div>
   </section>
 
-  <!-- Footer -->
   <footer class="site-footer">
     <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
 
   <script>
-    /* ── Nacht-Modus erkennen ── */
+    /* ── Nacht-Modus ── */
     function isNight() {
       const params = new URLSearchParams(window.location.search);
       if (params.get('night') === 'true') return true;
@@ -287,70 +255,55 @@
 
     /* ── Logo Typewriter ── */
     const logoEl = document.getElementById('logo');
+    const fullName = 'Anna Greyhem';
+    // Index 3 = das zweite 'a' in 'Anna'
 
     function buildLogoHTML(typed) {
-      // "Anna Greyhem" — nachts ist das zweite 'a' in Greyhem rot
-      const full = 'Anna Greyhem';
-      const current = full.slice(0, typed);
-      if (!night) return current;
-
-      // Nachts: 'a' in 'Greyhem' (position 6 in 'Greyhem', also 11 in full) rot
       let result = '';
-      for (let i = 0; i < current.length; i++) {
-        if (night && i === 11) {
-          result += `<span class="night-a">${current[i]}</span>`;
+      for (let i = 0; i < typed; i++) {
+        if (night && i === 3) {
+          result += `<span class="night-a">${fullName[i]}</span>`;
         } else {
-          result += current[i];
+          result += fullName[i];
         }
       }
       return result;
     }
 
     async function typewriterLogo() {
-      const full = 'Anna Greyhem';
       const sleep = ms => new Promise(r => setTimeout(r, ms));
-
       await sleep(600);
-
-      for (let i = 0; i <= full.length; i++) {
-        if (i < full.length) {
-          logoEl.innerHTML = buildLogoHTML(i) +
-            '<span class="tw-cursor">\u258c</span>';
+      for (let i = 0; i <= fullName.length; i++) {
+        if (i < fullName.length) {
+          logoEl.innerHTML = buildLogoHTML(i) + '<span class="tw-cursor">\u258c</span>';
         } else {
           logoEl.innerHTML = buildLogoHTML(i);
         }
         let delay = 80 + Math.random() * 60;
-        // Pause nach "Anna " vor "Greyhem"
-        if (i === 5) delay = 320;
+        if (i === 4) delay = 340; // Pause nach "Anna "
         await sleep(delay);
       }
     }
 
     typewriterLogo();
 
-    /* ── Gedicht befüllen ── */
+    /* ── Gedicht ── */
     const poemWrap = document.getElementById('poem-wrap');
 
     if (night) {
-      // Nacht-Version mit "badtime" Korrektur
       poemWrap.innerHTML = `
         <div class="poem-stanza">
           To whomever<br>
           cannot sleep<br>
-          without a 
-          <span class="correction">
-            <span class="original">b<span style="position:relative;display:inline-block;">e<span class="alice-letter">a</span></span>dtime</span>
-          </span>
-           story<br>
+          without a <span class="badtime-word">badtime<span class="alice-correction">a</span></span> story<br>
           that's scarier<br>
           than their dreams.
         </div>
       `;
     } else {
-      // Tag-Version
       poemWrap.innerHTML = `
         <div class="poem-stanza">
-          to whomever,<br>
+          To whomever,<br>
           sees the beauty<br>
           that decays and<br>
           lives a life<br>
@@ -359,7 +312,7 @@
       `;
     }
 
-    /* ── Gedicht beim Scrollen einblenden ── */
+    /* ── Scroll-Observer für Gedicht ── */
     const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) {
@@ -367,12 +320,12 @@
           observer.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.3 });
+    }, { threshold: 0.2 });
 
     observer.observe(poemWrap);
 
     /* ── Menü ── */
-    const menuBtn = document.getElementById('menu-btn');
+    const menuBtn     = document.getElementById('menu-btn');
     const menuOverlay = document.getElementById('menu-overlay');
 
     menuBtn.addEventListener('click', function() {
@@ -380,7 +333,6 @@
       menuOverlay.classList.toggle('open');
     });
 
-    // Menü schließen wenn man auf einen Link klickt
     menuOverlay.querySelectorAll('a').forEach(function(link) {
       link.addEventListener('click', function() {
         menuBtn.classList.remove('open');
