@@ -26,6 +26,7 @@
     html, body {
       height: 100%;
       overflow: hidden;
+      background: #0a0a0a;
     }
 
     /* ── Header ── */
@@ -65,12 +66,13 @@
       left: 50%;
       transform: translate(-50%, -50%);
       /* Bild füllt Bildschirm, Header bleibt sichtbar */
-      height: calc(100vh - 0px);
+      height: calc(100vh - 120px);
       width: auto;
-      max-width: 100vw;
+      max-width: 88vw;
       object-fit: contain;
+      margin-top: 60px;
       /* Warm invertiert */
-      filter: invert(1) sepia(0.3) brightness(0.85);
+      filter: invert(1) brightness(0.95);
       user-select: none;
       -webkit-user-drag: none;
     }
