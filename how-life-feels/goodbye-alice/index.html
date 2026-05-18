@@ -24,9 +24,19 @@
       margin-left: 2px;
       animation: blink 1s steps(1) infinite;
       color: rgba(255, 255, 255, 0.4);
+      /* Cursor muss normale Schriftgröße haben, nicht Signaturgröße */
+      font-size: 1rem;
+      font-style: normal;
+      vertical-align: baseline;
     }
 
-    /* Footer startet unsichtbar, wird am Ende eingeblendet */
+    .sig {
+      font-style: italic;
+      font-size: 1.5em;
+      line-height: 1.4;
+    }
+
+    /* Footer startet unsichtbar */
     .site-footer {
       opacity: 0;
       transition: opacity 1.5s ease;
@@ -48,27 +58,25 @@
   </footer>
 
   <script>
-    const ALICE_COLOR = 'var(--alice)';
-
+    // Blöcke — sep: "n" = neuer Absatz, "l" = neue Zeile, "c" = gleiche Zeile
     const blocks = [
-      { text: "Dear reader,",                                                           sep: "n",  prePause: true },
-      { text: "So you made it back.",                                                   sep: "n" },
-      { text: "I watched you the whole time. Every page.",                              sep: "l" },
-      { text: "You were so close. I could almost touch you.",                           sep: "l" },
-      { text: "But you chose her.",                                                     sep: "n" },
-      { text: "I guess",                                                                sep: "l",  pauseAfter: true, pauseDuration: 900 },
-      { text: "you are a moth. You always fly towards the light. Even when it burns.",  sep: "l" },
-      { text: "Enjoy being alive. While it lasts.",                                    sep: "l" },
-      { text: "I am sad I didn't get to play with you.",                               sep: "n" },
-      { text: "Alice",                                                                  sep: "n",  isSignature: true, longPauseAfter: true },
-      { text: "Oh, and",                                                                sep: "n",  pauseAfter: true, pauseDuration: 800 },
-      { text: "when you meet death, give him a kiss from me.",                         sep: "c" },
+      { text: "Dear reader,",                                                          sep: "n", prePause: true },
+      { text: "So you made it back.",                                                  sep: "n" },
+      { text: "I watched you the whole time. Every page.",                             sep: "l" },
+      { text: "You were so close. I could almost touch you.",                          sep: "l" },
+      { text: "But you chose her.",                                                    sep: "n" },
+      { text: "I guess",                                                               sep: "c", pauseAfter: true, pauseDuration: 2200 },
+      { text: "you are a moth. You always fly towards the light. Even when it burns.", sep: "l" },
+      { text: "Enjoy being alive. While it lasts.",                                   sep: "l" },
+      { text: "I am sad I didn't get to play with you.",                              sep: "n" },
+      { text: "Alice",                                                                 sep: "n", isSignature: true, longPauseAfter: true },
+      { text: "Oh, and",                                                               sep: "n", pauseAfter: true, pauseDuration: 800 },
+      { text: "when you meet death, give him a kiss from me.",                        sep: "c" },
     ];
 
     const textEl = document.getElementById("typewriter-text");
     const footer  = document.getElementById("footer");
     let content = "";
-    let htmlParts = []; // track which parts need special styling
 
     const settings = {
       min: 35,
@@ -78,26 +86,33 @@
       linePause: 200,
       thinkPause: 1300,
       readPause: 700,
-      longPause: 2800, // pause after "Alice" — reader thinks it's over
+      longPause: 3200,
     };
 
     const sleep = ms => new Promise(r => setTimeout(r, ms));
     const rand  = (a, b) => Math.random() * (b - a) + a;
 
-    function render(signatureStart, signatureEnd) {
-      // Build HTML with Alice signature colored
+    let sigStart, sigEnd;
+
+    function render() {
       textEl.innerHTML = '';
 
-      if (signatureStart !== undefined) {
-        const before = document.createTextNode(content.slice(0, signatureStart));
-        const sig    = document.createElement('em');
-        sig.style.color     = ALICE_COLOR;
-        sig.style.fontStyle = 'italic';
-        sig.textContent     = content.slice(signatureStart, signatureEnd);
-        const after  = document.createTextNode(content.slice(signatureEnd));
+      if (sigStart !== undefined) {
+        // Vor der Unterschrift
+        const before = document.createTextNode(content.slice(0, sigStart));
         textEl.appendChild(before);
+
+        // Unterschrift — kursiv, größer
+        const sig = document.createElement('span');
+        sig.className = 'sig';
+        sig.textContent = content.slice(sigStart, sigEnd !== undefined ? sigEnd : content.length);
         textEl.appendChild(sig);
-        textEl.appendChild(after);
+
+        // Nach der Unterschrift — normale Größe
+        if (sigEnd !== undefined && sigEnd < content.length) {
+          const after = document.createTextNode(content.slice(sigEnd));
+          textEl.appendChild(after);
+        }
       } else {
         textEl.textContent = content;
       }
@@ -109,13 +124,11 @@
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
 
-    let sigStart, sigEnd;
-
     async function typeText(str, isSignature) {
       if (isSignature) sigStart = content.length;
       for (let i = 0; i < str.length; i++) {
         content += str[i];
-        render(sigStart, sigStart !== undefined ? content.length : undefined);
+        render();
         let delay = rand(settings.min, settings.max);
         if (",.!?\u2026\u2013".includes(str[i])) delay += settings.punctPause;
         await sleep(delay);
@@ -133,15 +146,15 @@
         if (i > 0) {
           if (block.sep === "n") {
             content += "\n\n";
-            render(sigStart, sigEnd);
+            render();
             await sleep(settings.readPause + settings.paraPause);
           } else if (block.sep === "l") {
             content += "\n";
-            render(sigStart, sigEnd);
+            render();
             await sleep(settings.linePause);
           } else if (block.sep === "c") {
             content += " ";
-            render(sigStart, sigEnd);
+            render();
           }
         }
 
@@ -153,8 +166,7 @@
       }
 
       // Fertig — Cursor entfernen, Footer einblenden
-      render(sigStart, sigEnd);
-      // Remove cursor
+      render();
       const cursor = textEl.querySelector('.tw-cursor');
       if (cursor) cursor.remove();
 
