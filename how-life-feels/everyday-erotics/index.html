@@ -15,7 +15,7 @@
   <title>Everyday Erotics — Anna Greyhem</title>
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
-    /* ── Layout ── */
+    /* ── Cursor (nur Desktop) ── */
     html, body {
       min-height: 100%;
       cursor: none;
@@ -42,38 +42,16 @@
       background: rgba(255, 255, 255, 0.35);
     }
 
-    /* ── Titel ── */
-    #title {
-      font-size: clamp(19px, 2.4vw, 26px);
-      font-weight: 400;
-      font-style: normal;
-      letter-spacing: 0.18em;
-      margin-bottom: clamp(40px, 6vh, 64px);
-      line-height: 1.5;
-    }
-
+    /* ── Titel-Erweiterung ── */
     #title-ext {
       transition: opacity 0.6s ease, color 0.6s ease;
       opacity: 0;
     }
 
-    /* ── Gedicht ── */
-    #poem { list-style: none; }
-
-    #poem li {
-      margin-bottom: clamp(20px, 3vh, 32px);
-    }
-
-    .base-line { display: block; }
-
+    /* ── ext-line startet unsichtbar ── */
     .ext-line {
-      display: block;
-      padding-left: 1.4em;
-      font-style: italic;
-      font-weight: 300;
-      min-height: 1.9em;
-      transition: opacity 0.5s ease, color 0.5s ease;
       opacity: 0;
+      transition: opacity 0.5s ease, color 0.5s ease;
     }
 
     /* ── Slider ── */
@@ -82,19 +60,21 @@
       bottom: 0;
       left: 0;
       right: 0;
-      height: clamp(70px, 12vh, 100px);
       z-index: 50;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-end;
+      padding-bottom: 28px;
       gap: 14px;
+      background: linear-gradient(to top, #0a0a0a 60%, transparent);
+      padding-top: 60px;
     }
 
     #slider-hint {
-      font-style: normal;
-      font-size: 16px;
-      color: rgba(255, 255, 255, 0.5);
+      font-size: 13px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.3);
       letter-spacing: 0.4em;
       text-align: center;
       transition: opacity 1s ease;
@@ -130,6 +110,12 @@
       transition: background 0.2s;
       pointer-events: none;
     }
+
+    /* ── Footer über Slider ── */
+    .site-footer {
+      position: relative;
+      z-index: 51;
+    }
   </style>
 </head>
 <body>
@@ -137,18 +123,48 @@
   <div id="cursor"></div>
 
   <div class="page-wrap">
-    <div id="title">Everyday erotics<span id="title-ext"></span></div>
-    <ul id="poem">
-      <li><span class="base-line">Whispers in the dark</span><span class="ext-line" id="e0"></span></li>
-      <li><span class="base-line">A kiss in a dream</span><span class="ext-line" id="e1"></span></li>
-      <li><span class="base-line">A bubble bath, candlelit</span><span class="ext-line" id="e2"></span></li>
-      <li><span class="base-line">Cold water on my face</span><span class="ext-line" id="e3"></span></li>
-      <li><span class="base-line">A bottle of Merlot</span><span class="ext-line" id="e4"></span></li>
-      <li><span class="base-line">A perfume of vanilla and darkness</span><span class="ext-line" id="e5"></span></li>
-      <li><span class="base-line">His scent</span><span class="ext-line" id="e6"></span></li>
-      <li><span class="base-line">His eyes on me</span><span class="ext-line" id="e7"></span></li>
-      <li><span class="base-line">His touch</span><span class="ext-line" id="e8"></span></li>
-      <li><span class="base-line">My touch</span><span class="ext-line" id="e9"></span></li>
+    <div class="story-title" id="title">Everyday erotics<span id="title-ext"></span></div>
+    <ul class="poem">
+      <li>
+        <span class="poem-line">Whispers in the dark</span>
+        <span class="poem-ext ext-line" id="e0"></span>
+      </li>
+      <li>
+        <span class="poem-line">A kiss in a dream</span>
+        <span class="poem-ext ext-line" id="e1"></span>
+      </li>
+      <li>
+        <span class="poem-line">A bubble bath, candlelit</span>
+        <span class="poem-ext ext-line" id="e2"></span>
+      </li>
+      <li>
+        <span class="poem-line">Cold water on my face</span>
+        <span class="poem-ext ext-line" id="e3"></span>
+      </li>
+      <li>
+        <span class="poem-line">A bottle of Merlot</span>
+        <span class="poem-ext ext-line" id="e4"></span>
+      </li>
+      <li>
+        <span class="poem-line">A perfume of vanilla and darkness</span>
+        <span class="poem-ext ext-line" id="e5"></span>
+      </li>
+      <li>
+        <span class="poem-line">His scent</span>
+        <span class="poem-ext ext-line" id="e6"></span>
+      </li>
+      <li>
+        <span class="poem-line">His eyes on me</span>
+        <span class="poem-ext ext-line" id="e7"></span>
+      </li>
+      <li>
+        <span class="poem-line">His touch</span>
+        <span class="poem-ext ext-line" id="e8"></span>
+      </li>
+      <li>
+        <span class="poem-line">My touch</span>
+        <span class="poem-ext ext-line" id="e9"></span>
+      </li>
     </ul>
   </div>
 
@@ -160,8 +176,12 @@
     </div>
   </div>
 
+  <footer class="site-footer">
+    <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
+  </footer>
+
   <script>
-    /* ── Custom Cursor ── */
+    /* ── Custom Cursor — nur Desktop ── */
     var cur = document.getElementById('cursor');
     document.addEventListener('mousemove', function(e) {
       cur.style.left = e.clientX + 'px';
@@ -169,6 +189,7 @@
     });
     document.addEventListener('touchstart', function() {
       cur.style.display = 'none';
+      document.body.style.cursor = 'auto';
     }, { once: true, passive: true });
 
     /* ── Texte ── */
@@ -202,27 +223,14 @@
     var sliderTrack = document.getElementById('slider-track');
     var sliderThumb = document.getElementById('slider-thumb');
     var sliderHint  = document.getElementById('slider-hint');
-    var currentVal  = 0;
 
     function render(val) {
       val = Math.max(-1, Math.min(1, val));
-      currentVal = val;
       var pct = (val + 1) / 2 * 100;
       sliderThumb.style.left = pct + '%';
 
       if (val < 0) {
         var t = -val;
-        for (var i = 0; i < 10; i++) {
-          var el = document.getElementById('e' + i);
-          el.textContent = ext_alice[i];
-          el.style.opacity = t;
-          el.style.color = 'var(--alice)';
-        }
-        titleExt.style.opacity = t;
-        titleExt.style.color = 'var(--alice)';
-        titleExt.textContent = ' // with her';
-      } else if (val > 0) {
-        var t = val;
         for (var i = 0; i < 10; i++) {
           var el = document.getElementById('e' + i);
           el.textContent = ext_anna[i];
@@ -231,7 +239,18 @@
         }
         titleExt.style.opacity = t;
         titleExt.style.color = 'var(--anna)';
-        titleExt.innerHTML = ' // with her<span style="font-size:0.6em;opacity:0.8;">, yes her</span>';
+        titleExt.textContent = ' with her';
+      } else if (val > 0) {
+        var t = val;
+        for (var i = 0; i < 10; i++) {
+          var el = document.getElementById('e' + i);
+          el.textContent = ext_alice[i];
+          el.style.opacity = t;
+          el.style.color = 'var(--alice)';
+        }
+        titleExt.style.opacity = t;
+        titleExt.style.color = 'var(--alice)';
+        titleExt.innerHTML = ' with her<span style="font-size:0.6em;opacity:0.8;">, yes her</span>';
       } else {
         for (var i = 0; i < 10; i++) {
           document.getElementById('e' + i).style.opacity = 0;
@@ -269,9 +288,7 @@
     setTimeout(function() { sliderHint.style.opacity = '1'; }, 1500);
     render(0);
   </script>
-<footer class="site-footer">
-  <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
-</footer>
+
   <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
 </body>
