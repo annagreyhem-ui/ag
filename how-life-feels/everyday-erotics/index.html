@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
   <!--
     DATEI: index.html
@@ -139,16 +139,16 @@
   <div class="page-wrap">
     <div id="title">Everyday erotics<span id="title-ext"></span></div>
     <ul id="poem">
-      <li><span class="base-line">Flüstern im Dunklen</span><span class="ext-line" id="e0"></span></li>
-      <li><span class="base-line">Ein Kuss in einem Traum</span><span class="ext-line" id="e1"></span></li>
-      <li><span class="base-line">Ein Schaumbad bei Kerzenschein</span><span class="ext-line" id="e2"></span></li>
-      <li><span class="base-line">Eiskaltes Wasser im Gesicht am Morgen</span><span class="ext-line" id="e3"></span></li>
-      <li><span class="base-line">Eine Flasche Merlot</span><span class="ext-line" id="e4"></span></li>
-      <li><span class="base-line">Ein Parfum das nach Vanille und Dunkelheit duftet</span><span class="ext-line" id="e5"></span></li>
-      <li><span class="base-line">Sein Geruch</span><span class="ext-line" id="e6"></span></li>
-      <li><span class="base-line">Sein Blick auf mir</span><span class="ext-line" id="e7"></span></li>
-      <li><span class="base-line">Seine Berührung</span><span class="ext-line" id="e8"></span></li>
-      <li><span class="base-line">Meine Berührung</span><span class="ext-line" id="e9"></span></li>
+      <li><span class="base-line">Whispers in the dark</span><span class="ext-line" id="e0"></span></li>
+      <li><span class="base-line">A kiss in a dream</span><span class="ext-line" id="e1"></span></li>
+      <li><span class="base-line">A bubble bath, candlelit</span><span class="ext-line" id="e2"></span></li>
+      <li><span class="base-line">Cold water on my face</span><span class="ext-line" id="e3"></span></li>
+      <li><span class="base-line">A bottle of Merlot</span><span class="ext-line" id="e4"></span></li>
+      <li><span class="base-line">A perfume of vanilla and darkness</span><span class="ext-line" id="e5"></span></li>
+      <li><span class="base-line">His scent</span><span class="ext-line" id="e6"></span></li>
+      <li><span class="base-line">His eyes on me</span><span class="ext-line" id="e7"></span></li>
+      <li><span class="base-line">His touch</span><span class="ext-line" id="e8"></span></li>
+      <li><span class="base-line">My touch</span><span class="ext-line" id="e9"></span></li>
     </ul>
   </div>
 
@@ -173,29 +173,29 @@
 
     /* ── Texte ── */
     var ext_alice = [
-      'das mich nicht schlafen lässt',
-      'von dem er mir nichts erzählt',
-      'mit ihr',
-      'um zu mir zu kommen',
-      'steht noch da',
-      'gehört mir nicht',
-      'bleibt an ihr',
-      'sucht sie',
-      'ist kälter als sonst',
-      'hält mich fest. Ich lasse ihn nicht gehen.',
+      '— keep me from sleeping',
+      '— he never mentions',
+      '— with her',
+      '— to bring me back',
+      '— still sitting there',
+      "— isn't mine",
+      '— stays on her',
+      '— searching for her',
+      '— colder than before',
+      "— holds him. I won't let go.",
     ];
 
     var ext_anna = [
-      'das mich nicht schlafen lässt',
-      'von dem ich ihm nichts erzähle',
-      'mit ihr',
-      'um zu mir zu kommen',
-      'steht noch da',
-      'lässt mich sie nicht vergessen',
-      'macht mir ein schlechtes Gewissen',
-      'nackt',
-      'spüre ich nicht mehr',
-      'bringt sie zum stöhnen',
+      '— keep me from sleeping',
+      '— I never mention',
+      '— with her',
+      '— to bring me back',
+      '— still sitting there',
+      "— won't let me forget her",
+      '— makes me feel guilty',
+      '— naked',
+      '— I no longer feel',
+      '— makes her moan',
     ];
 
     var titleExt    = document.getElementById('title-ext');
@@ -220,7 +220,7 @@
         }
         titleExt.style.opacity = t;
         titleExt.style.color = 'var(--alice)';
-        titleExt.textContent = ' with her';
+        titleExt.textContent = ' // with her';
       } else if (val > 0) {
         var t = val;
         for (var i = 0; i < 10; i++) {
@@ -231,7 +231,7 @@
         }
         titleExt.style.opacity = t;
         titleExt.style.color = 'var(--anna)';
-        titleExt.innerHTML = ' with her<span style="font-size:0.6em;opacity:0.8;">, yes her</span>';
+        titleExt.innerHTML = ' // with her<span style="font-size:0.6em;opacity:0.8;">, yes her</span>';
       } else {
         for (var i = 0; i < 10; i++) {
           document.getElementById('e' + i).style.opacity = 0;
