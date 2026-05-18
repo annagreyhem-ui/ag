@@ -4,7 +4,27 @@
   <!--
     DATEI: index.html
     SEITE: Autorenwebsite — Startseite
-    STATUS: In Arbeit — Platzhalter aktiv
+    
+    STRUKTUR:
+    - Header: "Anna Greyhem" Typewriter, fixiert oben, schwarzer Fade-Hintergrund
+    - Menü: drei Striche oben links, klappt auf
+        → Books (/books/)
+        → The House (Platzhalter)
+        → Diary (Platzhalter)
+    - Hero: leer, kurz — damit Gedicht schnell erscheint
+    - Gedicht: erscheint beim Scrollen ODER beim ersten Tippen/Klicken
+    - Books: Platzhalter
+    - Footer: annagreyhem · impressum · datenschutz
+
+    NACHT-MODUS:
+    - Aktiv zwischen 2:00 und 3:00 Uhr nachts (Ortszeit des Besuchers)
+    - Easter Egg: annagreyhem.com/?night=true aktiviert Nachtmodus jederzeit
+    - Nachts: Ann(a) — das vierte Zeichen in "Anna" — erscheint in var(--alice) Rot
+    - Nachts: anderes Gedicht mit "badtime" Korrektur von Alice
+    - Tagsüber: normales Gedicht
+
+    FARBEN: --text, --alice, --text-muted, --text-faint (alle aus base.css)
+    STATUS: In Arbeit — Books, The House, Diary sind Platzhalter
   -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,7 +34,7 @@
     html { scroll-behavior: smooth; }
     body { overflow-x: hidden; }
 
-    /* ── Header ── */
+    /* ── Header mit schwarzem Fade ── */
     #site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -22,8 +42,10 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 28px 40px;
+      padding: 28px 40px 48px;
       pointer-events: none;
+      /* Schwarzer Fade damit Text dahinter verschwindet */
+      background: linear-gradient(to bottom, #0a0a0a 60%, transparent);
     }
 
     #logo {
@@ -41,7 +63,7 @@
       transition: color 0.8s ease;
     }
 
-    /* ── Menü Button ── */
+    /* ── Menü Button — in Schriftfarbe ── */
     #menu-btn {
       position: fixed;
       top: 28px; left: 40px;
@@ -60,13 +82,16 @@
       display: block;
       width: 22px;
       height: 1px;
-      background: var(--text-muted);
+      /* Schriftfarbe = var(--text) */
+      background: var(--text);
+      opacity: 0.6;
       transition: all 0.3s ease;
     }
 
-    #menu-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+    #menu-btn:hover span { opacity: 1; }
+    #menu-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); opacity: 1; }
     #menu-btn.open span:nth-child(2) { opacity: 0; }
-    #menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+    #menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); opacity: 1; }
 
     /* ── Menü Overlay ── */
     #menu-overlay {
@@ -113,9 +138,9 @@
       margin: 24px 0;
     }
 
-    /* ── Hero — klein halten damit Gedicht schnell kommt ── */
+    /* ── Hero — kurz ── */
     #hero {
-      min-height: 40vh;
+      min-height: 25vh;
     }
 
     /* ── Gedicht ── */
@@ -123,7 +148,6 @@
       min-height: 60vh;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
       padding: 0 clamp(28px, 8vw, 64px) 80px;
       max-width: 600px;
       margin: 0 auto;
@@ -147,19 +171,12 @@
     }
 
     /* ── badtime Korrektur ── */
-    .badtime-wrap {
-      display: inline;
-      position: relative;
-    }
-
-    /* Das Wort "badtime" mit rotem Durchstrich */
     .badtime-word {
       position: relative;
       display: inline-block;
       color: var(--alice);
     }
 
-    /* Durchstrich — etwas rechts versetzt, fett */
     .badtime-word::after {
       content: '';
       position: absolute;
@@ -171,7 +188,6 @@
       transform: rotate(-1deg);
     }
 
-    /* "a" von Alice darüber — kursiv, rot */
     .alice-correction {
       position: absolute;
       top: -0.85em;
@@ -201,7 +217,6 @@
       font-style: italic;
     }
 
-    /* ── Typewriter Cursor ── */
     .tw-cursor {
       display: inline-block;
       animation: blink 1s steps(1) infinite;
@@ -256,11 +271,11 @@
     /* ── Logo Typewriter ── */
     const logoEl = document.getElementById('logo');
     const fullName = 'Anna Greyhem';
-    // Index 3 = das zweite 'a' in 'Anna'
 
     function buildLogoHTML(typed) {
       let result = '';
       for (let i = 0; i < typed; i++) {
+        // Index 3 = das zweite 'a' in 'Anna' (Ann[a])
         if (night && i === 3) {
           result += `<span class="night-a">${fullName[i]}</span>`;
         } else {
@@ -274,11 +289,9 @@
       const sleep = ms => new Promise(r => setTimeout(r, ms));
       await sleep(600);
       for (let i = 0; i <= fullName.length; i++) {
-        if (i < fullName.length) {
-          logoEl.innerHTML = buildLogoHTML(i) + '<span class="tw-cursor">\u258c</span>';
-        } else {
-          logoEl.innerHTML = buildLogoHTML(i);
-        }
+        logoEl.innerHTML = i < fullName.length
+          ? buildLogoHTML(i) + '<span class="tw-cursor">\u258c</span>'
+          : buildLogoHTML(i);
         let delay = 80 + Math.random() * 60;
         if (i === 4) delay = 340; // Pause nach "Anna "
         await sleep(delay);
@@ -287,7 +300,7 @@
 
     typewriterLogo();
 
-    /* ── Gedicht ── */
+    /* ── Gedicht befüllen ── */
     const poemWrap = document.getElementById('poem-wrap');
 
     if (night) {
@@ -298,37 +311,53 @@
           without a <span class="badtime-word">badtime<span class="alice-correction">a</span></span> story<br>
           that's scarier<br>
           than their dreams.
-        </div>
-      `;
+        </div>`;
     } else {
       poemWrap.innerHTML = `
         <div class="poem-stanza">
           To whomever,<br>
-          sees the beauty<br>
-          that decays and<br>
-          lives a life<br>
+          sees the beauty that decays<br>
+          and lives a life<br>
           that moans.
-        </div>
-      `;
+        </div>`;
     }
 
-    /* ── Scroll-Observer für Gedicht ── */
+    /* ── Gedicht erscheint beim Scrollen ODER beim ersten Tippen/Klicken ── */
+    let poemRevealed = false;
+
+    function revealPoem() {
+      if (poemRevealed) return;
+      poemRevealed = true;
+      poemWrap.classList.add('visible');
+    }
+
+    // Scroll-Observer
     const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          observer.unobserve(entry.target);
-        }
+        if (entry.isIntersecting) revealPoem();
       });
-    }, { threshold: 0.2 });
+    }, { threshold: 0.1 });
 
     observer.observe(poemWrap);
+
+    // Erstes Tippen oder Klicken
+    function onFirstInteraction() {
+      revealPoem();
+      document.removeEventListener('click', onFirstInteraction);
+      document.removeEventListener('touchstart', onFirstInteraction);
+      document.removeEventListener('keydown', onFirstInteraction);
+    }
+
+    document.addEventListener('click', onFirstInteraction);
+    document.addEventListener('touchstart', onFirstInteraction, { passive: true });
+    document.addEventListener('keydown', onFirstInteraction);
 
     /* ── Menü ── */
     const menuBtn     = document.getElementById('menu-btn');
     const menuOverlay = document.getElementById('menu-overlay');
 
-    menuBtn.addEventListener('click', function() {
+    menuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
       menuBtn.classList.toggle('open');
       menuOverlay.classList.toggle('open');
     });
