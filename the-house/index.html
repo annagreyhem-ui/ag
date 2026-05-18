@@ -66,13 +66,12 @@
       left: 50%;
       transform: translate(-50%, -50%);
       /* Bild füllt Bildschirm, Header bleibt sichtbar */
-      height: calc(100vh - 120px);
+      height: 90vh;
       width: auto;
-      max-width: 88vw;
+      max-width: 90vw;
       object-fit: contain;
-      margin-top: 60px;
       /* Warm invertiert */
-      filter: invert(1) brightness(0.95);
+      transition: filter 0.5s ease;
       user-select: none;
       -webkit-user-drag: none;
     }
@@ -265,6 +264,20 @@
     img.addEventListener('load', positionRooms);
     window.addEventListener('resize', positionRooms);
     if (img.complete) positionRooms();
+  </script>
+
+  <script>
+    // Nacht-Modus: 2-3 Uhr oder ?night=true
+    function isNight() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('night') === 'true') return true;
+      const h = new Date().getHours();
+      return h >= 2 && h < 3;
+    }
+
+    if (isNight()) {
+      document.getElementById('floorplan').style.filter = 'invert(1) sepia(0.3) brightness(0.85)';
+    }
   </script>
 
   <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
