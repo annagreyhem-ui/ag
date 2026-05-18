@@ -4,14 +4,14 @@
   <!--
     DATEI: index.html
     SEITE: Autorenwebsite — Startseite
-    
+
     STRUKTUR:
-    - Header: "Anna Greyhem" Typewriter, fixiert oben, schwarzer Fade-Hintergrund
+    - Hero: "Anna Greyhem" erscheint groß zentriert, tippt sich per Typewriter auf
+    - Beim Scrollen: Name schrumpft sanft und klebt oben als Header fest
     - Menü: drei Striche oben links, klappt auf
         → Books (/books/)
         → The House (Platzhalter)
         → Diary (Platzhalter)
-    - Hero: leer, kurz — damit Gedicht schnell erscheint
     - Gedicht: erscheint beim Scrollen ODER beim ersten Tippen/Klicken
     - Books: Platzhalter
     - Footer: annagreyhem · impressum · datenschutz
@@ -19,12 +19,19 @@
     NACHT-MODUS:
     - Aktiv zwischen 2:00 und 3:00 Uhr nachts (Ortszeit des Besuchers)
     - Easter Egg: annagreyhem.com/?night=true aktiviert Nachtmodus jederzeit
-    - Nachts: Ann(a) — das vierte Zeichen in "Anna" — erscheint in var(--alice) Rot
-    - Nachts: anderes Gedicht mit "badtime" Korrektur von Alice
+    - Nachts: Ann(a) — Index 3, das vierte Zeichen — in var(--alice) Rot, font-weight 700
+    - Nachts: anderes Gedicht — "bedtime" durchgestrichen, "badtime story" in Rot kursiv drüber
     - Tagsüber: normales Gedicht
 
+    UNTERSEITEN:
+    - /books/           — Bücher (in Arbeit)
+    - /the-house/       — Platzhalter
+    - /diary/           — Platzhalter
+    - /impressum/       — Impressum
+    - /datenschutz/     — Datenschutz
+
     FARBEN: --text, --alice, --text-muted, --text-faint (alle aus base.css)
-    STATUS: In Arbeit — Books, The House, Diary sind Platzhalter
+    STATUS: In Arbeit
   -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,36 +41,57 @@
     html { scroll-behavior: smooth; }
     body { overflow-x: hidden; }
 
-    /* ── Header mit schwarzem Fade ── */
-    #site-header {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 28px 40px 48px;
-      pointer-events: none;
-      /* Schwarzer Fade damit Text dahinter verschwindet */
-      background: linear-gradient(to bottom, #0a0a0a 60%, transparent);
+      position: relative;
     }
 
+    /* ── Name — startet groß in der Mitte ── */
     #logo {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
-      font-size: clamp(18px, 2.5vw, 24px);
+      font-style: normal;
       letter-spacing: 0.18em;
       color: var(--text);
       white-space: nowrap;
-      min-height: 1.4em;
+      position: fixed;
+      /* Startposition: zentriert auf dem Bildschirm */
+      top: 50vh;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(28px, 6vw, 56px);
+      z-index: 100;
+      pointer-events: none;
+      /* Sanfte Transition beim Scrollen */
+      transition: font-size 0.1s ease, top 0.1s ease, transform 0.1s ease, padding 0.1s ease;
+      /* Schwarzer Fade Hintergrund — nur wenn oben fixiert */
+      padding: 0;
     }
 
+    /* Wenn gescrollt: Header-Zustand */
+    #logo.is-header {
+      top: 0;
+      transform: translate(-50%, 0);
+      font-size: clamp(15px, 2vw, 20px);
+      padding: 28px 80px 48px;
+      background: linear-gradient(to bottom, #0a0a0a 60%, transparent);
+      width: 100vw;
+      text-align: center;
+    }
+
+    /* ── Rotes 'a' — fetter als der Rest ── */
     #logo .night-a {
       color: var(--alice);
-      transition: color 0.8s ease;
+      font-weight: 700;
+      font-style: normal;
+      font-family: 'Cormorant Garamond', Georgia, serif;
     }
 
-    /* ── Menü Button — in Schriftfarbe ── */
+    /* ── Menü Button ── */
     #menu-btn {
       position: fixed;
       top: 28px; left: 40px;
@@ -82,7 +110,6 @@
       display: block;
       width: 22px;
       height: 1px;
-      /* Schriftfarbe = var(--text) */
       background: var(--text);
       opacity: 0.6;
       transition: all 0.3s ease;
@@ -138,14 +165,9 @@
       margin: 24px 0;
     }
 
-    /* ── Hero — kurz ── */
-    #hero {
-      min-height: 25vh;
-    }
-
     /* ── Gedicht ── */
     #poem-section {
-      min-height: 60vh;
+      min-height: 80vh;
       display: flex;
       align-items: center;
       padding: 0 clamp(28px, 8vw, 64px) 80px;
@@ -170,32 +192,40 @@
       font-weight: 400;
     }
 
-    /* ── badtime Korrektur ── */
-    .badtime-word {
+    /* ── Nacht: "bedtime" durchgestrichen, "badtime story" drüber ── */
+    .night-correction-wrap {
       position: relative;
       display: inline-block;
-      color: var(--alice);
     }
 
-    .badtime-word::after {
+    /* "bedtime story" durchgestrichen */
+    .bedtime-struck {
+      position: relative;
+      display: inline-block;
+      color: rgba(255,255,255,0.4);
+    }
+
+    .bedtime-struck::after {
       content: '';
       position: absolute;
-      left: 8%;
-      right: -4%;
+      left: 6%;
+      right: -3%;
       top: 52%;
       height: 2px;
       background: var(--alice);
-      transform: rotate(-1deg);
+      transform: rotate(-0.8deg);
     }
 
-    .alice-correction {
+    /* "badtime story" von Alice in Rot kursiv darüber */
+    .alice-replacement {
       position: absolute;
-      top: -0.85em;
-      left: 50%;
-      transform: translateX(-50%);
+      bottom: 100%;
+      left: 0;
       color: var(--alice);
       font-style: italic;
-      font-size: 0.8em;
+      font-size: 0.9em;
+      white-space: nowrap;
+      margin-bottom: 2px;
       pointer-events: none;
     }
 
@@ -239,11 +269,9 @@
     <span class="menu-item placeholder">Diary</span>
   </nav>
 
-  <header id="site-header">
-    <div id="logo"></div>
-  </header>
-
   <section id="hero"></section>
+
+  <div id="logo"></div>
 
   <section id="poem-section">
     <div id="poem-wrap"></div>
@@ -269,13 +297,13 @@
     const night = isNight();
 
     /* ── Logo Typewriter ── */
-    const logoEl = document.getElementById('logo');
+    const logoEl  = document.getElementById('logo');
     const fullName = 'Anna Greyhem';
 
     function buildLogoHTML(typed) {
       let result = '';
       for (let i = 0; i < typed; i++) {
-        // Index 3 = das zweite 'a' in 'Anna' (Ann[a])
+        // Index 3 = Ann(a) — das vierte Zeichen
         if (night && i === 3) {
           result += `<span class="night-a">${fullName[i]}</span>`;
         } else {
@@ -300,6 +328,22 @@
 
     typewriterLogo();
 
+    /* ── Shrinking Header beim Scrollen ── */
+    const heroEl = document.getElementById('hero');
+
+    function onScroll() {
+      const heroBottom = heroEl.getBoundingClientRect().bottom;
+      const triggerPoint = window.innerHeight * 0.3;
+
+      if (heroBottom < triggerPoint) {
+        logoEl.classList.add('is-header');
+      } else {
+        logoEl.classList.remove('is-header');
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
     /* ── Gedicht befüllen ── */
     const poemWrap = document.getElementById('poem-wrap');
 
@@ -308,7 +352,11 @@
         <div class="poem-stanza">
           To whomever<br>
           cannot sleep<br>
-          without a <span class="badtime-word">badtime<span class="alice-correction">a</span></span> story<br>
+          without a 
+          <span class="night-correction-wrap">
+            <span class="alice-replacement">badtime story</span>
+            <span class="bedtime-struck">bedtime story</span>
+          </span><br>
           that's scarier<br>
           than their dreams.
         </div>`;
@@ -322,7 +370,7 @@
         </div>`;
     }
 
-    /* ── Gedicht erscheint beim Scrollen ODER beim ersten Tippen/Klicken ── */
+    /* ── Gedicht erscheint beim Scrollen ODER ersten Klick/Touch ── */
     let poemRevealed = false;
 
     function revealPoem() {
@@ -331,7 +379,6 @@
       poemWrap.classList.add('visible');
     }
 
-    // Scroll-Observer
     const observer = new IntersectionObserver(function(entries) {
       entries.forEach(function(entry) {
         if (entry.isIntersecting) revealPoem();
@@ -340,7 +387,6 @@
 
     observer.observe(poemWrap);
 
-    // Erstes Tippen oder Klicken
     function onFirstInteraction() {
       revealPoem();
       document.removeEventListener('click', onFirstInteraction);
