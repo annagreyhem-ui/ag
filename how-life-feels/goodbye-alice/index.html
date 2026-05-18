@@ -15,17 +15,25 @@
   <title>Goodbye Alice — Anna Greyhem</title>
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
-    /* ── Typewriter-spezifisch ── */
     #typewriter-text {
       white-space: pre-wrap;
     }
 
-    /* Cursor-Blinken kommt aus base.css @keyframes blink */
     .tw-cursor {
       display: inline-block;
       margin-left: 2px;
       animation: blink 1s steps(1) infinite;
-      color: rgba(255, 255, 255, 0.5);
+      color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Footer startet unsichtbar, wird am Ende eingeblendet */
+    .site-footer {
+      opacity: 0;
+      transition: opacity 1.5s ease;
+    }
+
+    .site-footer.visible {
+      opacity: 1;
     }
   </style>
 </head>
@@ -35,28 +43,32 @@
     <div id="typewriter-text" class="prose"></div>
   </div>
 
-  <footer class="site-footer">
+  <footer class="site-footer" id="footer">
     <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
 
   <script>
+    const ALICE_COLOR = 'var(--alice)';
+
     const blocks = [
-      { text: "Dear reader,",                                                                    sep: "n", prePause: true },
-      { text: "So you made it back.",                                                             sep: "n" },
-      { text: "I watched you the whole time. Every page.",                                        sep: "l" },
-      { text: "You were so close. I could almost touch you.",                                     sep: "l" },
-      { text: "But you chose her.",                                                               sep: "n" },
-      { text: "I guess",                                                                          sep: "c", pauseAfter: true },
-      { text: "you are a moth. You always fly towards the light. Even when it burns.",            sep: "l" },
-      { text: "Enjoy being alive. While it lasts.",                                              sep: "l" },
-      { text: "I am sad I didn't get to play with you.",                                         sep: "n" },
-      { text: "Alice",                                                                            sep: "n" },
-      { text: "Oh, and",                                                                          sep: "n", pauseAfter: true },
-      { text: "when you meet death, give him a kiss from me.",                                   sep: "c" },
+      { text: "Dear reader,",                                                           sep: "n",  prePause: true },
+      { text: "So you made it back.",                                                   sep: "n" },
+      { text: "I watched you the whole time. Every page.",                              sep: "l" },
+      { text: "You were so close. I could almost touch you.",                           sep: "l" },
+      { text: "But you chose her.",                                                     sep: "n" },
+      { text: "I guess",                                                                sep: "l",  pauseAfter: true, pauseDuration: 900 },
+      { text: "you are a moth. You always fly towards the light. Even when it burns.",  sep: "l" },
+      { text: "Enjoy being alive. While it lasts.",                                    sep: "l" },
+      { text: "I am sad I didn't get to play with you.",                               sep: "n" },
+      { text: "Alice",                                                                  sep: "n",  isSignature: true, longPauseAfter: true },
+      { text: "Oh, and",                                                                sep: "n",  pauseAfter: true, pauseDuration: 800 },
+      { text: "when you meet death, give him a kiss from me.",                         sep: "c" },
     ];
 
     const textEl = document.getElementById("typewriter-text");
+    const footer  = document.getElementById("footer");
     let content = "";
+    let htmlParts = []; // track which parts need special styling
 
     const settings = {
       min: 35,
@@ -66,14 +78,30 @@
       linePause: 200,
       thinkPause: 1300,
       readPause: 700,
-      shortPause: 600,
+      longPause: 2800, // pause after "Alice" — reader thinks it's over
     };
 
     const sleep = ms => new Promise(r => setTimeout(r, ms));
-    const rand = (a, b) => Math.random() * (b - a) + a;
+    const rand  = (a, b) => Math.random() * (b - a) + a;
 
-    function render() {
-      textEl.textContent = content;
+    function render(signatureStart, signatureEnd) {
+      // Build HTML with Alice signature colored
+      textEl.innerHTML = '';
+
+      if (signatureStart !== undefined) {
+        const before = document.createTextNode(content.slice(0, signatureStart));
+        const sig    = document.createElement('em');
+        sig.style.color     = ALICE_COLOR;
+        sig.style.fontStyle = 'italic';
+        sig.textContent     = content.slice(signatureStart, signatureEnd);
+        const after  = document.createTextNode(content.slice(signatureEnd));
+        textEl.appendChild(before);
+        textEl.appendChild(sig);
+        textEl.appendChild(after);
+      } else {
+        textEl.textContent = content;
+      }
+
       const cursor = document.createElement("span");
       cursor.className = "tw-cursor";
       cursor.textContent = "\u258c";
@@ -81,16 +109,18 @@
       window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });
     }
 
-    async function typeText(str) {
+    let sigStart, sigEnd;
+
+    async function typeText(str, isSignature) {
+      if (isSignature) sigStart = content.length;
       for (let i = 0; i < str.length; i++) {
-        const ch = str[i];
-        content += ch;
-        render();
+        content += str[i];
+        render(sigStart, sigStart !== undefined ? content.length : undefined);
         let delay = rand(settings.min, settings.max);
-        if (",.!?\u2026\u2013".includes(ch)) delay += settings.punctPause;
-        if (ch === "\n") delay += 100;
+        if (",.!?\u2026\u2013".includes(str[i])) delay += settings.punctPause;
         await sleep(delay);
       }
+      if (isSignature) sigEnd = content.length;
     }
 
     async function run() {
@@ -103,24 +133,33 @@
         if (i > 0) {
           if (block.sep === "n") {
             content += "\n\n";
-            render();
+            render(sigStart, sigEnd);
             await sleep(settings.readPause + settings.paraPause);
           } else if (block.sep === "l") {
             content += "\n";
-            render();
+            render(sigStart, sigEnd);
             await sleep(settings.linePause);
           } else if (block.sep === "c") {
             content += " ";
-            render();
+            render(sigStart, sigEnd);
           }
         }
 
         if (block.prePause) await sleep(settings.thinkPause);
-        await typeText(block.text);
-        if (block.pauseAfter) await sleep(settings.shortPause);
+        await typeText(block.text, block.isSignature);
+
+        if (block.longPauseAfter) await sleep(settings.longPause);
+        else if (block.pauseAfter) await sleep(block.pauseDuration || 600);
       }
 
-      render();
+      // Fertig — Cursor entfernen, Footer einblenden
+      render(sigStart, sigEnd);
+      // Remove cursor
+      const cursor = textEl.querySelector('.tw-cursor');
+      if (cursor) cursor.remove();
+
+      await sleep(800);
+      footer.classList.add('visible');
     }
 
     run();
