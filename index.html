@@ -212,7 +212,7 @@
     .bedtime-struck {
       position: relative;
       display: inline-block;
-      color: rgba(255,255,255,0.35);
+      color: var(--text);
     }
 
     .bedtime-struck::after {
@@ -221,8 +221,8 @@
       left: 6%;
       right: -3%;
       top: 52%;
-      height: 2px;
-      background: var(--alice);
+      height: 1px;
+      background: #6b1a1a;
       transform: rotate(-0.8deg);
     }
 
@@ -262,7 +262,7 @@
       display: inline-block;
       width: 1px;
       height: 0.8em;
-      background: rgba(255,255,255,0.5);
+      background: var(--alice);
       margin-left: 3px;
       vertical-align: middle;
       animation: blink 1s steps(1) infinite;
@@ -319,15 +319,7 @@
     const fullName = 'Anna Greyhem';
 
     function buildLogoHTML(typed) {
-      let result = '';
-      for (let i = 0; i < typed; i++) {
-        if (night && i === 3) {
-          result += `<span class="night-a">${fullName[i]}</span>`;
-        } else {
-          result += fullName[i];
-        }
-      }
-      return result;
+      return fullName.slice(0, typed);
     }
 
     const logoHero   = document.getElementById('logo-hero');
