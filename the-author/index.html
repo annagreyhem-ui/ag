@@ -12,6 +12,21 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Author — Anna Greyhem</title>
   <meta name="description" content="Anna Greyhem creates immersive literary worlds where stories become experience — books, digital art, and interactive storytelling.">
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:site_name" content="Anna Greyhem">
+  <meta property="og:title" content="The Author — Anna Greyhem">
+  <meta property="og:description" content="Anna Greyhem creates immersive literary worlds where stories become experience — books, digital art, and interactive storytelling.">
+  <meta property="og:url" content="https://annagreyhem.com/the-author/">
+  <meta property="og:image" content="https://annagreyhem.com/assets/images/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <!-- Twitter/X -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="The Author — Anna Greyhem">
+  <meta name="twitter:description" content="Anna Greyhem creates immersive literary worlds where stories become experience — books, digital art, and interactive storytelling.">
+  <meta name="twitter:image" content="https://annagreyhem.com/assets/images/og-image.png">
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
     .about-wrap {
@@ -126,7 +141,7 @@
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
       font-size: clamp(28px, 5vw, 48px);
-      color: var(--text-muted);
+      color: var(--text-soft);
       text-decoration: none;
       letter-spacing: 0.05em;
       line-height: 1.6;
@@ -141,6 +156,17 @@
       height: 1px;
       background: rgba(255,255,255,0.08);
       margin: 24px 0;
+    }
+
+    /* ── Seitentitel im Menü-Stil ── */
+    .page-heading {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(28px, 5vw, 48px);
+      color: var(--text-soft);
+      letter-spacing: 0.05em;
+      margin-bottom: clamp(40px, 7vh, 72px);
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -166,6 +192,8 @@
   </header>
 
   <div class="about-wrap">
+
+    <h1 class="page-heading">The Author</h1>
 
     <p>I write books you don't just read. You enter them.</p>
 
