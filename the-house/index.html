@@ -16,46 +16,33 @@
       /the-house/the-tree/
       /the-house/the-pond/
       /the-house/the-gate/
-    NACHT-MODUS: 2-3 Uhr oder ?night=true → Bild wird gelblich invertiert
+    EINSTIEG: Außenansicht mit Overlay → Türflügel öffnen → Floorplan
+    NACHT-MODUS: 2-3 Uhr oder ?night=true → Floorplan wird gelblich invertiert
     STATUS: In Arbeit — Overlays werden nach Koordinaten-Feinjustierung hinzugefügt
   -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The House — Anna Greyhem</title>
   <meta name="description" content="Enter the world of Anna and Alice. The house is alive. Explore, discover — something may have changed since your last visit.">
-  <!-- Open Graph -->
-  <meta property="og:type" content="website">
-  <meta property="og:locale" content="en_US">
-  <meta property="og:site_name" content="Anna Greyhem">
-  <meta property="og:title" content="The House — Anna Greyhem">
-  <meta property="og:description" content="Enter the world of Anna and Alice. The house is alive. Explore, discover — something may have changed since your last visit.">
-  <meta property="og:url" content="https://annagreyhem.com/the-house/">
-  <meta property="og:image" content="https://annagreyhem.com/assets/images/og-image.png">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <!-- Twitter/X -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="The House — Anna Greyhem">
-  <meta name="twitter:description" content="Enter the world of Anna and Alice. The house is alive. Explore, discover — something may have changed since your last visit.">
-  <meta name="twitter:image" content="https://annagreyhem.com/assets/images/og-image.png">
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
     html, body {
       height: 100%;
       overflow: hidden;
+      cursor: default;
     }
 
     /* ── Header ── */
     #site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 300;
       height: 80px;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 0 80px;
-      background: linear-gradient(to bottom, #0a0a0a 70%, rgba(10,10,10,0.95) 85%, transparent);
+      background: linear-gradient(to bottom, #0a0a0a 0%, #0a0a0a 55%, rgba(10,10,10,0.92) 80%, transparent 100%);
       pointer-events: none;
     }
 
@@ -73,7 +60,7 @@
     #menu-btn {
       position: fixed;
       top: 24px; left: 40px;
-      z-index: 200;
+      z-index: 400;
       background: none;
       border: none;
       cursor: pointer;
@@ -102,7 +89,7 @@
       position: fixed;
       inset: 0;
       background: var(--bg);
-      z-index: 150;
+      z-index: 350;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -140,12 +127,135 @@
     .site-footer {
       position: fixed;
       bottom: 0; left: 0; right: 0;
-      z-index: 100;
+      z-index: 200;
       background: linear-gradient(to top, #0a0a0a 60%, transparent);
       padding: 32px clamp(28px, 8vw, 64px) 20px;
     }
 
-    /* ── Bild-Container ── */
+    /* ════════════════════════════════════════
+       ENTRANCE SCREEN — Außenansicht
+    ════════════════════════════════════════ */
+    #entrance {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    /* Außenbild — volle Fläche */
+    #outside-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: opacity 0.6s ease;
+    }
+
+    /* Dunkler Overlay über dem Bild */
+    #entrance-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 40px;
+      transition: opacity 0.8s ease;
+    }
+
+    /* Atmosphärischer Text */
+    #entrance-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(18px, 3vw, 26px);
+      color: var(--text);
+      text-align: center;
+      line-height: 1.9;
+      max-width: 480px;
+      padding: 0 clamp(28px, 8vw, 64px);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 1.2s ease, transform 1.2s ease;
+    }
+
+    #entrance-text.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Landscape hint */
+    #landscape-hint {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.3);
+      text-align: center;
+      opacity: 0;
+      transition: opacity 1.2s ease 0.4s;
+    }
+
+    #landscape-hint.visible {
+      opacity: 1;
+    }
+
+    /* Tap to enter */
+    #tap-enter {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 0.4em;
+      color: var(--text);
+      background: rgba(0,0,0,0.5);
+      padding: 10px 24px;
+      opacity: 0;
+      transition: opacity 1.2s ease 0.8s;
+    }
+
+    #tap-enter.visible {
+      opacity: 1;
+    }
+
+    /* ════════════════════════════════════════
+       DOOR ANIMATION — Türflügel
+    ════════════════════════════════════════ */
+    #door-left,
+    #door-right {
+      position: absolute;
+      top: 0; bottom: 0;
+      width: 50%;
+      overflow: hidden;
+      transition: transform 1.2s cubic-bezier(0.76, 0, 0.24, 1);
+    }
+
+    #door-left  { left: 0; }
+    #door-right { right: 0; }
+
+    #door-left img,
+    #door-right img {
+      position: absolute;
+      top: 0;
+      width: 200%; /* beide zeigen das ganze Bild, aber geclippt */
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+    }
+
+    #door-left  img { left: 0; }
+    #door-right img { right: 0; }
+
+    /* Türflügel öffnen */
+    #door-left.open  { transform: translateX(-100%); }
+    #door-right.open { transform: translateX(100%); }
+
+    /* ════════════════════════════════════════
+       FLOORPLAN
+    ════════════════════════════════════════ */
     #house-wrap {
       position: fixed;
       top: 80px;
@@ -154,6 +264,13 @@
       display: flex;
       align-items: flex-end;
       justify-content: center;
+      opacity: 0;
+      transition: opacity 1s ease;
+      z-index: 10;
+    }
+
+    #house-wrap.visible {
+      opacity: 1;
     }
 
     #floorplan {
@@ -170,12 +287,11 @@
 </head>
 <body>
 
-  <!-- Menü Button -->
+  <!-- Menü -->
   <button id="menu-btn" aria-label="Menu">
     <span></span><span></span><span></span>
   </button>
 
-  <!-- Menü Overlay -->
   <nav id="menu-overlay">
     <a href="/the-book/" class="menu-item">The Book</a>
     <div class="menu-divider"></div>
@@ -188,6 +304,29 @@
   <header id="site-header">
     <a href="/">Anna Greyhem</a>
   </header>
+
+  <!-- Entrance Screen -->
+  <div id="entrance">
+    <!-- Türflügel links -->
+    <div id="door-left">
+      <img src="/assets/images/thehouseoutside.png" alt="">
+    </div>
+    <!-- Türflügel rechts -->
+    <div id="door-right">
+      <img src="/assets/images/thehouseoutside.png" alt="">
+    </div>
+
+    <!-- Overlay mit Text -->
+    <div id="entrance-overlay">
+      <div id="entrance-text">
+        This house swallowed me.<br>
+        It changes.<br>
+        I can feel it.
+      </div>
+      <div id="landscape-hint">best experienced sideways</div>
+      <div id="tap-enter">tap to enter</div>
+    </div>
+  </div>
 
   <!-- Floorplan -->
   <div id="house-wrap">
@@ -213,6 +352,50 @@
     if (isNight()) {
       document.getElementById('floorplan').style.filter = 'invert(1) sepia(0.3) brightness(0.85)';
     }
+
+    /* ── Entrance Text erscheint nach kurzer Pause ── */
+    const entranceText   = document.getElementById('entrance-text');
+    const landscapeHint  = document.getElementById('landscape-hint');
+    const tapEnter       = document.getElementById('tap-enter');
+    const entrance       = document.getElementById('entrance');
+    const doorLeft       = document.getElementById('door-left');
+    const doorRight      = document.getElementById('door-right');
+    const entranceOverlay = document.getElementById('entrance-overlay');
+    const houseWrap      = document.getElementById('house-wrap');
+
+    setTimeout(function() {
+      entranceText.classList.add('visible');
+      landscapeHint.classList.add('visible');
+      tapEnter.classList.add('visible');
+    }, 600);
+
+    /* ── Tap to enter ── */
+    function enter() {
+      entrance.removeEventListener('click', enter);
+      entrance.removeEventListener('touchstart', enter);
+
+      // 1. Overlay ausblenden
+      entranceOverlay.style.opacity = '0';
+
+      // 2. Nach kurzer Pause Türflügel öffnen
+      setTimeout(function() {
+        doorLeft.classList.add('open');
+        doorRight.classList.add('open');
+      }, 400);
+
+      // 3. Floorplan einblenden während Türen aufgehen
+      setTimeout(function() {
+        houseWrap.classList.add('visible');
+      }, 800);
+
+      // 4. Entrance komplett entfernen
+      setTimeout(function() {
+        entrance.style.display = 'none';
+      }, 1800);
+    }
+
+    entrance.addEventListener('click', enter);
+    entrance.addEventListener('touchstart', enter, { passive: true });
 
     /* ── Menü ── */
     const menuBtn     = document.getElementById('menu-btn');
