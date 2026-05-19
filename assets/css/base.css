@@ -76,6 +76,7 @@
   /* Texte */
   --text:         rgba(255, 255, 255, 0.85);   /* gebrochenes Weiß — Haupttext */
   --text-muted:   rgba(255, 255, 255, 0.35);   /* für Anweisungen, Footer */
+  --text-soft:    rgba(255, 255, 255, 0.55);   /* für Menüpunkte, große Überschriften */
   --text-faint:   rgba(255, 255, 255, 0.18);   /* kaum sichtbar — z.B. Impressum */
 
   /* Figurenfarben — nur für Akzente, nie für langen Fließtext */
