@@ -86,19 +86,20 @@
       background: none;
       border: none;
       cursor: pointer;
-      padding: 4px;
+      padding: 8px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 6px;
     }
 
     #menu-btn span {
       display: block;
       width: 22px;
-      height: 1px;
-      background: rgba(255,255,255,0.85);
-      opacity: 1;
+      height: 1.5px;
+      background: #ffffff;
+      opacity: 0.75;
       transition: all 0.3s ease;
+      flex-shrink: 0;
     }
 
     #menu-btn:hover span { opacity: 1; }
@@ -188,7 +189,7 @@
       min-height: 80vh;
       display: flex;
       align-items: center;
-      padding: 60px clamp(28px, 8vw, 64px) 80px;
+      padding: clamp(120px, 20vh, 180px) clamp(28px, 8vw, 64px) 80px;
       max-width: 600px;
       margin: 0 auto;
       position: relative;
@@ -409,7 +410,7 @@
     <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
 
-  <div id="version">v4</div>
+  <div id="version">v6</div>
 
   <script>
     /* ── Nacht-Modus ── */
@@ -428,7 +429,7 @@
 
     if (sessionStorage.getItem(SEEN_KEY) === '1') {
       /* Bereits gesehen — Hero sofort weg, Header-Name sofort sichtbar */
-      hero.style.display = 'none';
+      hero.classList.add('gone');
       headerName.classList.add('visible');
     } else {
       /* Erster Besuch — Typewriter abspielen */
@@ -448,13 +449,11 @@
         }
       })();
 
-      /* Sobald Hero-Name aus dem Viewport scrollt:
-         Header-Name einblenden + Hero dauerhaft entfernen */
       const heroObserver = new IntersectionObserver(function(entries) {
         if (!entries[0].isIntersecting) {
           headerName.classList.add('visible');
           heroObserver.disconnect();
-          hero.style.display = 'none';
+          hero.classList.add('gone');
         }
       }, {
         threshold: 0,
