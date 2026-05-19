@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!--
+    DATEI: index.html
+    SEITE: The Book — How Life Feels
+    KOMMT VON: Menü
+    FÜHRT ZU: Amazon (Platzhalter), QR experiences
+    STATUS: Platzhalter — Buchcover und Amazon Link noch einzufügen
+  -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How Life Feels — Anna Greyhem</title>
+  <meta name="description" content="How Life Feels by Anna Greyhem. Immersive literary fiction — part novel, part digital experience.">
+  <link rel="stylesheet" href="/assets/css/base.css">
+  <style>
+    .book-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: clamp(80px, 14vh, 130px) clamp(28px, 8vw, 64px) clamp(100px, 14vh, 140px);
+    }
+
+    /* ── Zwei-Spalten Layout ── */
+    .book-layout {
+      display: flex;
+      gap: clamp(32px, 6vw, 80px);
+      align-items: flex-start;
+    }
+
+    /* ── Linke Spalte: Cover ── */
+    .book-cover {
+      flex: 0 0 auto;
+      width: clamp(140px, 28vw, 240px);
+    }
+
+    .cover-placeholder {
+      width: 100%;
+      aspect-ratio: 2/3;
+      border: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-faint);
+      font-size: 11px;
+      letter-spacing: 0.25em;
+      font-style: italic;
+      /* Ersetze durch:
+         <img src="/assets/images/how-life-feels-cover.jpg"
+              alt="How Life Feels — Anna Greyhem"> */
+    }
+
+    /* ── Rechte Spalte: Text ── */
+    .book-info {
+      flex: 1;
+      padding-top: 4px;
+    }
+
+    .book-title {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 400;
+      margin-bottom: clamp(24px, 4vh, 40px);
+      letter-spacing: 0.01em;
+    }
+
+    .book-title span {
+      display: block;
+      font-size: clamp(12px, 1.4vw, 14px);
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .book-info p {
+      font-size: clamp(18px, 2.2vw, 20px);
+      line-height: 1.9;
+      margin-bottom: 1.4em;
+      color: var(--text);
+    }
+
+    .book-info p:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .book-info em {
+      font-style: italic;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .buy-link {
+      display: inline-block;
+      margin-top: clamp(28px, 4vh, 48px);
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 3px;
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .buy-link:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* ── Mobile: übereinander ── */
+    @media (max-width: 600px) {
+      .book-layout {
+        flex-direction: column;
+      }
+
+      .book-cover {
+        width: clamp(120px, 50vw, 180px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="book-wrap">
+    <div class="book-layout">
+
+      <!-- Linke Spalte: Buchcover -->
+      <div class="book-cover">
+        <!-- PLATZHALTER: Ersetze durch <img> wenn Buchcover fertig -->
+        <div class="cover-placeholder">cover</div>
+      </div>
+
+      <!-- Rechte Spalte: Beschreibung -->
+      <div class="book-info">
+
+        <div class="book-title">
+          <span>Anna Greyhem</span>
+          How Life Feels
+        </div>
+
+        <p>A novel. A world. An experience.</p>
+
+        <p>Scan the codes hidden in the margins.
+        Enter the house. Find what's waiting.</p>
+
+        <p><em>Part novel. Part game. Part digital world.</em></p>
+
+        <!-- PLATZHALTER: Ersetze href mit echtem Amazon Link -->
+        <a href="#" class="buy-link">Buy on Amazon →</a>
+
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
+  </footer>
+
+  <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
+          async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>
