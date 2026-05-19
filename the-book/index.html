@@ -17,7 +17,7 @@
     .book-wrap {
       max-width: 900px;
       margin: 0 auto;
-      padding: clamp(80px, 14vh, 130px) clamp(28px, 8vw, 64px) clamp(100px, 14vh, 140px);
+      padding: clamp(100px, 16vh, 140px) clamp(28px, 8vw, 64px) clamp(100px, 14vh, 140px);
     }
 
     /* ── Zwei-Spalten Layout ── */
@@ -114,9 +114,118 @@
         width: clamp(120px, 50vw, 180px);
       }
     }
+
+    /* ── Header ── */
+    #site-header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 80px 44px;
+      pointer-events: none;
+      background: linear-gradient(to bottom, #0a0a0a 60%, transparent);
+    }
+
+    #site-header a {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(15px, 2vw, 20px);
+      letter-spacing: 0.18em;
+      color: var(--text);
+      text-decoration: none;
+      pointer-events: all;
+    }
+
+    /* ── Menü Button ── */
+    #menu-btn {
+      position: fixed;
+      top: 24px; left: 40px;
+      z-index: 200;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    #menu-btn span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--text);
+      opacity: 0.6;
+      transition: all 0.3s ease;
+    }
+
+    #menu-btn:hover span { opacity: 1; }
+    #menu-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); opacity: 1; }
+    #menu-btn.open span:nth-child(2) { opacity: 0; }
+    #menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); opacity: 1; }
+
+    /* ── Menü Overlay ── */
+    #menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0 clamp(40px, 10vw, 120px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    #menu-overlay.open { opacity: 1; pointer-events: all; }
+
+    .menu-item {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(28px, 5vw, 48px);
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+      transition: color 0.3s ease;
+      display: block;
+    }
+
+    .menu-item:hover { color: var(--text); }
+
+    .menu-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 24px 0;
+    }
   </style>
 </head>
 <body>
+
+  <!-- ── Menü Button ── -->
+  <button id="menu-btn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- ── Menü Overlay ── -->
+  <nav id="menu-overlay">
+    <a href="/the-book/" class="menu-item">The Book</a>
+    <div class="menu-divider"></div>
+    <a href="/the-house/" class="menu-item">The House</a>
+    <div class="menu-divider"></div>
+    <a href="/the-author/" class="menu-item">The Author</a>
+  </nav>
+
+  <!-- ── Header ── -->
+  <header id="site-header">
+    <a href="/">Anna Greyhem</a>
+  </header>
 
   <div class="book-wrap">
     <div class="book-layout">
@@ -153,6 +262,25 @@
   <footer class="site-footer">
     <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
+
+  <script>
+    /* ── Menü ── */
+    const menuBtn     = document.getElementById('menu-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+
+    menuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      menuBtn.classList.toggle('open');
+      menuOverlay.classList.toggle('open');
+    });
+
+    menuOverlay.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        menuBtn.classList.remove('open');
+        menuOverlay.classList.remove('open');
+      });
+    });
+  </script>
 
   <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
