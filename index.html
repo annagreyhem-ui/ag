@@ -9,10 +9,11 @@
     FARBEN: --text, --alice, --text-muted, --text-faint
     STATUS: In Arbeit
 
-    iOS-FIX:
-    - viewport-fit=cover damit Safari den vollen Bildschirm nutzt
-    - env(safe-area-inset-top) damit der Header hinter Dynamic Island/Notch schwarz ist
-    - Header ist ein echtes <header> Element, immer sichtbar, kein opacity-toggle
+    LOGIK:
+    - Header-Name: unsichtbar bis der Hero-Name aus dem Viewport scrollt, dann sichtbar (für immer)
+    - Typewriter: nur beim allerersten Besuch (sessionStorage), danach sofort fertig
+    - iOS Safe Area: viewport-fit=cover + env(safe-area-inset-top)
+    - z-index: Header 9999, alles andere 1 — kein Durchscheinen möglich
   -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -38,19 +39,14 @@
 
     /* ════════════════════════════════════════
        HEADER
-       Immer sichtbar. Immer schwarz. Immer gleich hoch.
-       "Anna Greyhem" steht immer drin — direkt im HTML, kein JS-Toggle.
-
-       env(safe-area-inset-top):
-       - Normale Geräte: 0px → height = 60px
-       - iPhone mit Dynamic Island/Notch: ~59px → height = 119px
-       Dadurch ist der schwarze Balken immer bis ganz oben gefüllt.
+       Immer da. Immer schwarz. Immer gleich hoch.
+       Deckt alles ab was darunter scrollt.
+       env(safe-area-inset-top) füllt den Bereich
+       hinter Dynamic Island / Notch auf dem iPhone.
     ════════════════════════════════════════ */
     #site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
-      /* z-index sehr hoch — muss über allem scrollenden Content liegen,
-         auch über Elementen mit transform (die einen neuen stacking context erzeugen) */
       z-index: 9999;
       background: #0a0a0a;
       height: calc(env(safe-area-inset-top, 0px) + 60px);
@@ -58,35 +54,30 @@
       align-items: flex-end;
       justify-content: center;
       padding-bottom: 14px;
-      /* isolation:isolate verhindert dass Kinder-Elemente aus dem Header herausragen */
-      isolation: isolate;
     }
 
-    #site-header a {
+    /* Name: unsichtbar bis Hero rausscrollt */
+    #header-name {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
       font-size: clamp(15px, 2vw, 20px);
       letter-spacing: 0.18em;
       color: var(--text);
       text-decoration: none;
-      position: relative;
-      z-index: 9999;
       opacity: 0;
       transition: opacity 0.5s ease;
     }
 
-    #site-header a.visible {
+    #header-name.visible {
       opacity: 1;
     }
 
     /* ════════════════════════════════════════
        MENÜ BUTTON
-       Vertikal ausgerichtet am header — top passt
-       sich an die Safe Area an.
     ════════════════════════════════════════ */
     #menu-btn {
       position: fixed;
-      top: calc(env(safe-area-inset-top, 0px) + 20px);
+      top: calc(env(safe-area-inset-top, 0px) + 18px);
       left: 40px;
       z-index: 9999;
       background: none;
@@ -155,27 +146,17 @@
 
     /* ════════════════════════════════════════
        HERO
-       Höhe minus Header, damit der Name
-       wirklich zentriert wirkt.
-       Nur beim ersten Besuch sichtbar.
+       Volle Bildschirmhöhe. Name groß und zentriert.
+       position: relative + z-index: 1 damit er
+       niemals über den Header rutscht.
     ════════════════════════════════════════ */
     #hero {
-      padding-top: calc(env(safe-area-inset-top, 0px) + 60px);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: min-height 0.6s ease, opacity 0.6s ease;
       position: relative;
       z-index: 1;
-    }
-
-    #hero.collapsed {
-      min-height: 0;
-      height: 0;
-      opacity: 0;
-      overflow: hidden;
-      pointer-events: none;
     }
 
     #logo-hero {
@@ -368,9 +349,8 @@
     <a href="/the-author/" class="menu-item">The Author</a>
   </nav>
 
-  <!-- Header: Name steht direkt im HTML — kein JS nötig um ihn sichtbar zu machen -->
   <header id="site-header">
-    <a href="/">Anna Greyhem</a>
+    <a id="header-name" href="/">Anna Greyhem</a>
   </header>
 
   <section id="hero">
@@ -384,7 +364,6 @@
   <section id="book-section">
     <div class="book-layout">
       <div class="book-cover">
-        <!-- PLATZHALTER: Ersetze durch <img> wenn Buchcover fertig -->
         <div class="cover-placeholder">cover</div>
       </div>
       <div class="book-info">
@@ -396,7 +375,6 @@
         <p>Scan the codes hidden in the margins.
         Enter the house. Find what's waiting.</p>
         <p><em>Part novel. Part game. Part digital world.</em></p>
-        <!-- PLATZHALTER: Ersetze href mit echtem Amazon Link -->
         <a href="#" class="buy-link">Buy on Amazon →</a>
       </div>
     </div>
@@ -415,53 +393,48 @@
     }
     const night = isNight();
 
-    /* ── Session ── */
-    const heroEl      = document.getElementById('hero');
-    const logoHero    = document.getElementById('logo-hero');
-    const headerLink  = document.querySelector('#site-header a');
-    const fullName    = 'Anna Greyhem';
-    const SEEN_KEY    = 'ag_intro_seen';
-    const alreadySeen = sessionStorage.getItem(SEEN_KEY) === '1';
+    const logoHero   = document.getElementById('logo-hero');
+    const headerName = document.getElementById('header-name');
+    const fullName   = 'Anna Greyhem';
+    const SEEN_KEY   = 'ag_intro_seen';
 
-    if (alreadySeen) {
-      heroEl.classList.add('collapsed');
-      headerLink.classList.add('visible');
+    /* ── Typewriter oder sofort fertig ── */
+    if (sessionStorage.getItem(SEEN_KEY) === '1') {
+      logoHero.textContent = fullName;
     } else {
-      async function typewriterLogo() {
+      sessionStorage.setItem(SEEN_KEY, '1');
+      (async function() {
         const sleep = ms => new Promise(r => setTimeout(r, ms));
         await sleep(600);
         for (let i = 0; i <= fullName.length; i++) {
           const typed = fullName.slice(0, i);
-          const cursorClass = night ? 'tw-cursor is-night' : 'tw-cursor';
+          const cur   = night ? 'tw-cursor is-night' : 'tw-cursor';
           logoHero.innerHTML = i < fullName.length
-            ? typed + `<span class="${cursorClass}"></span>`
+            ? typed + `<span class="${cur}"></span>`
             : typed;
           let delay = 80 + Math.random() * 60;
           if (i === 4) delay = 340;
           await sleep(delay);
         }
+      })();
+    }
+
+    /* ── Header-Name: erscheint wenn Hero-Name rausscrollt ──
+       IntersectionObserver beobachtet #logo-hero.
+       Sobald er nicht mehr sichtbar ist → header-name einblenden.
+       Einmal eingeblendet: bleibt (observer wird getrennt).
+    ── */
+    const heroObserver = new IntersectionObserver(function(entries) {
+      if (!entries[0].isIntersecting) {
+        headerName.classList.add('visible');
+        heroObserver.disconnect(); /* einmal sichtbar — nie wieder ausblenden */
       }
-      typewriterLogo();
+    }, {
+      threshold: 0,
+      rootMargin: '-60px 0px 0px 0px' /* Offset = Header-Höhe */
+    });
 
-      /* Header-Name einblenden sobald Hero-Name oben rausscrollt */
-      window.addEventListener('scroll', function() {
-        const heroBottom = heroEl.getBoundingClientRect().bottom;
-        const headerHeight = document.getElementById('site-header').offsetHeight;
-        if (heroBottom <= headerHeight) {
-          headerLink.classList.add('visible');
-        } else {
-          headerLink.classList.remove('visible');
-        }
-      }, { passive: true });
-    }
-
-    /* ── Hero wegklappen wenn Gedicht erscheint ── */
-    function collapseHero() {
-      if (alreadySeen) return;
-      heroEl.classList.add('collapsed');
-      headerLink.classList.add('visible');
-      sessionStorage.setItem(SEEN_KEY, '1');
-    }
+    heroObserver.observe(logoHero);
 
     /* ── Gedicht befüllen ── */
     const poemWrap = document.getElementById('poem-wrap');
@@ -489,38 +462,19 @@
         </div>`;
     }
 
-    /* ── Gedicht einblenden + Hero klappen ── */
-    let poemRevealed = false;
-
-    function revealPoem() {
-      if (poemRevealed) return;
-      poemRevealed = true;
-      poemWrap.classList.add('visible');
-      collapseHero();
-    }
-
+    /* ── Gedicht einblenden ── */
     new IntersectionObserver(function(entries) {
-      if (entries[0].isIntersecting) revealPoem();
-    }, { threshold: 0.95 }).observe(poemWrap);
-
-    function onFirstInteraction() {
-      revealPoem();
-      document.removeEventListener('click', onFirstInteraction);
-      document.removeEventListener('touchstart', onFirstInteraction);
-      document.removeEventListener('keydown', onFirstInteraction);
-    }
-
-    document.addEventListener('click', onFirstInteraction);
-    document.addEventListener('touchstart', onFirstInteraction, { passive: true });
-    document.addEventListener('keydown', onFirstInteraction);
+      if (entries[0].isIntersecting) {
+        poemWrap.classList.add('visible');
+      }
+    }, { threshold: 0.3 }).observe(poemWrap);
 
     /* ── Buchinhalt einblenden ── */
     new IntersectionObserver(function(entries) {
       if (entries[0].isIntersecting) {
         document.getElementById('book-section').classList.add('visible');
       }
-    }, { threshold: 0.15, rootMargin: "0px 0px -100px 0px" })
-    .observe(document.getElementById('book-section'));
+    }, { threshold: 0.1 }).observe(document.getElementById('book-section'));
 
     /* ── Menü ── */
     const menuBtn     = document.getElementById('menu-btn');
