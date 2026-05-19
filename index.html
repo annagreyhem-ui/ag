@@ -6,14 +6,9 @@
     SEITE: Autorenwebsite — Startseite
     KOMMT VON: —
     FÜHRT ZU: /the-book/, /the-house/, /the-author/
-    FARBEN: --text, --alice, --text-muted, --text-faint
+    FARBEN: --text, --text-soft, --text-muted, --text-faint, --alice
     STATUS: In Arbeit
-
-    LOGIK:
-    - Header-Name: unsichtbar bis der Hero-Name aus dem Viewport scrollt, dann sichtbar (für immer)
-    - Typewriter: nur beim allerersten Besuch (sessionStorage), danach sofort fertig
-    - iOS Safe Area: viewport-fit=cover + env(safe-area-inset-top)
-    - z-index: Header 9999, alles andere 1 — kein Durchscheinen möglich
+    VERSION: v1
   -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
@@ -34,31 +29,31 @@
   <meta name="twitter:image" content="https://annagreyhem.com/assets/images/og-image.png">
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
-    html { scroll-behavior: smooth; }
-    body { overflow-x: hidden; }
 
-    /* ════════════════════════════════════════
+    body {
+      overflow-x: hidden;
+    }
+
+    /* ─────────────────────────────────────────
        HEADER
-       Immer da. Immer schwarz. Immer gleich hoch.
-       Deckt alles ab was darunter scrollt.
-       env(safe-area-inset-top) füllt den Bereich
-       hinter Dynamic Island / Notch auf dem iPhone.
-    ════════════════════════════════════════ */
+       Schwarzer Balken oben. Immer sichtbar.
+       pointer-events: none damit der Balken selbst
+       keine Klicks blockiert — nur der Name-Link
+       und der Menü-Button sind klickbar.
+    ───────────────────────────────────────── */
     #site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 9999;
-      background: #0a0a0a;
+      z-index: 100;
       height: calc(env(safe-area-inset-top, 0px) + 60px);
+      background: #0a0a0a;
       display: flex;
       align-items: flex-end;
       justify-content: center;
-      padding-bottom: 14px;
-      /* Header selbst blockt keine Klicks — nur sichtbare Kindelemente tun das */
+      padding-bottom: 16px;
       pointer-events: none;
     }
 
-    /* Name: unsichtbar bis Hero rausscrollt */
     #header-name {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
@@ -66,55 +61,56 @@
       letter-spacing: 0.18em;
       color: var(--text);
       text-decoration: none;
+      pointer-events: all;
       opacity: 0;
-      transition: opacity 0.5s ease;
-      pointer-events: all; /* Link bleibt klickbar */
+      transition: opacity 0.6s ease;
     }
 
     #header-name.visible {
       opacity: 1;
     }
 
-    /* ════════════════════════════════════════
+    /* ─────────────────────────────────────────
        MENÜ BUTTON
-    ════════════════════════════════════════ */
+       Drei Striche. Immer sichtbar. Immer klickbar.
+       Sitzt im header-Bereich aber unabhängig positioniert
+       damit pointer-events des Headers ihn nicht beeinflusst.
+    ───────────────────────────────────────── */
     #menu-btn {
       position: fixed;
-      top: calc(env(safe-area-inset-top, 0px) + 18px);
-      left: 40px;
-      z-index: 9999;
+      top: calc(env(safe-area-inset-top, 0px) + 19px);
+      left: 36px;
+      z-index: 200;
       background: none;
       border: none;
       cursor: pointer;
-      padding: 8px;
+      padding: 6px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      justify-content: center;
+      gap: 5px;
     }
 
     #menu-btn span {
       display: block;
       width: 22px;
-      height: 1.5px;
-      background: #ffffff;
-      opacity: 0.75;
-      transition: all 0.3s ease;
-      flex-shrink: 0;
+      height: 1px;
+      background: var(--text);
+      transition: transform 0.3s ease, opacity 0.3s ease;
     }
 
-    #menu-btn:hover span { opacity: 1; }
-    #menu-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); opacity: 1; }
+    #menu-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
     #menu-btn.open span:nth-child(2) { opacity: 0; }
-    #menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); opacity: 1; }
+    #menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
-    /* ════════════════════════════════════════
+    /* ─────────────────────────────────────────
        MENÜ OVERLAY
-    ════════════════════════════════════════ */
+    ───────────────────────────────────────── */
     #menu-overlay {
       position: fixed;
       inset: 0;
       background: var(--bg);
-      z-index: 5000;
+      z-index: 150;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -125,7 +121,10 @@
       transition: opacity 0.4s ease;
     }
 
-    #menu-overlay.open { opacity: 1; pointer-events: all; }
+    #menu-overlay.open {
+      opacity: 1;
+      pointer-events: all;
+    }
 
     .menu-item {
       font-family: 'Cormorant Garamond', Georgia, serif;
@@ -148,60 +147,62 @@
       margin: 24px 0;
     }
 
-    /* ════════════════════════════════════════
+    /* ─────────────────────────────────────────
        HERO
-       Volle Bildschirmhöhe. Name groß und zentriert.
-       position: relative + z-index: 1 damit er
-       niemals über den Header rutscht.
-    ════════════════════════════════════════ */
+       Volle Bildschirmhöhe. Name groß zentriert.
+       .gone: Höhe auf 0 kollabiert — wie abgeschnitten.
+       Kein overflow, kein leerer Platz, kein Zurückscrollen.
+    ───────────────────────────────────────── */
     #hero {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      position: relative;
-      z-index: 1;
     }
 
-    /* Abgeschnitten — kein Platz, kein Scrollen möglich */
     #hero.gone {
-      min-height: 0;
-      height: 0;
-      overflow: hidden;
-      padding: 0;
-      margin: 0;
+      display: none;
     }
 
     #logo-hero {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 500;
+      font-size: clamp(32px, 7vw, 64px);
       letter-spacing: 0.18em;
       color: #ffffff;
       white-space: nowrap;
-      font-size: clamp(32px, 7vw, 64px);
       text-align: center;
     }
 
-    /* ════════════════════════════════════════
+    .tw-cursor {
+      display: inline-block;
+      width: 1px;
+      height: 0.8em;
+      background: rgba(255,255,255,0.5);
+      margin-left: 3px;
+      vertical-align: middle;
+      animation: blink 1s steps(1) infinite;
+    }
+
+    .tw-cursor.night { background: var(--alice); }
+
+    /* ─────────────────────────────────────────
        GEDICHT
-    ════════════════════════════════════════ */
+       Viel Luft oben — Abstand zum Header.
+    ───────────────────────────────────────── */
     #poem-section {
       min-height: 80vh;
       display: flex;
       align-items: center;
-      padding: clamp(120px, 20vh, 180px) clamp(28px, 8vw, 64px) 80px;
+      padding: clamp(100px, 16vh, 160px) clamp(28px, 8vw, 64px) 80px;
       max-width: 600px;
       margin: 0 auto;
-      position: relative;
-      z-index: 1;
     }
 
     #poem-wrap {
       opacity: 0;
       transform: translateY(16px);
       transition: opacity 0.8s ease, transform 0.8s ease;
-      position: relative;
-      z-index: 1;
     }
 
     #poem-wrap.visible {
@@ -215,6 +216,7 @@
       font-weight: 400;
     }
 
+    /* Nacht-Korrektur */
     .bedtime-struck {
       position: relative;
       display: inline-block;
@@ -241,9 +243,9 @@
       line-height: 1;
     }
 
-    /* ════════════════════════════════════════
+    /* ─────────────────────────────────────────
        BUCHINHALT
-    ════════════════════════════════════════ */
+    ───────────────────────────────────────── */
     #book-section {
       opacity: 0;
       transform: translateY(24px);
@@ -252,8 +254,6 @@
       padding: clamp(60px, 10vh, 100px) clamp(28px, 8vw, 64px) clamp(100px, 14vh, 140px);
       max-width: 900px;
       margin: 0 auto;
-      position: relative;
-      z-index: 1;
     }
 
     #book-section.visible {
@@ -330,43 +330,36 @@
       border-color: rgba(255,255,255,0.3);
     }
 
-    .tw-cursor {
-      display: inline-block;
-      width: 1px;
-      height: 0.8em;
-      background: rgba(255,255,255,0.5);
-      margin-left: 3px;
-      vertical-align: middle;
-      animation: blink 1s steps(1) infinite;
+    @media (max-width: 600px) {
+      .book-layout { flex-direction: column; }
+      .book-cover { width: clamp(120px, 50vw, 180px); }
     }
 
-    .tw-cursor.is-night { background: var(--alice); }
-
-    /* Versionsnummer — zum Prüfen ob neue Version geladen ist */
+    /* Versionsnummer */
     #version {
       position: fixed;
       bottom: 16px;
       right: 20px;
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-size: 18px;
-      letter-spacing: 0.15em;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.4);
       z-index: 9999;
       pointer-events: none;
+      letter-spacing: 0.1em;
     }
 
-    @media (max-width: 600px) {
-      .book-layout { flex-direction: column; }
-      .book-cover { width: clamp(120px, 50vw, 180px); }
-    }
   </style>
 </head>
 <body>
 
+  <!-- Menü Button — immer sichtbar, immer klickbar -->
   <button id="menu-btn" aria-label="Menu">
-    <span></span><span></span><span></span>
+    <span></span>
+    <span></span>
+    <span></span>
   </button>
 
+  <!-- Menü Overlay -->
   <nav id="menu-overlay">
     <a href="/the-book/" class="menu-item">The Book</a>
     <div class="menu-divider"></div>
@@ -375,18 +368,22 @@
     <a href="/the-author/" class="menu-item">The Author</a>
   </nav>
 
+  <!-- Header -->
   <header id="site-header">
     <a id="header-name" href="/">Anna Greyhem</a>
   </header>
 
+  <!-- Hero -->
   <section id="hero">
     <div id="logo-hero"></div>
   </section>
 
+  <!-- Gedicht -->
   <section id="poem-section">
     <div id="poem-wrap"></div>
   </section>
 
+  <!-- Buchinhalt -->
   <section id="book-section">
     <div class="book-layout">
       <div class="book-cover">
@@ -407,100 +404,97 @@
   </section>
 
   <footer class="site-footer">
-    <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
+    <a href="/">Anna Greyhem</a> &nbsp;·&nbsp;
+    <a href="/impressum/">impressum</a> &nbsp;·&nbsp;
+    <a href="/datenschutz/">datenschutz</a>
   </footer>
 
-  <div id="version">v6</div>
+  <div id="version">v1</div>
 
   <script>
     /* ── Nacht-Modus ── */
     function isNight() {
-      const params = new URLSearchParams(window.location.search);
-      if (params.get('night') === 'true') return true;
+      if (new URLSearchParams(window.location.search).get('night') === 'true') return true;
       return new Date().getHours() >= 2 && new Date().getHours() < 3;
     }
     const night = isNight();
 
-    const logoHero   = document.getElementById('logo-hero');
     const hero       = document.getElementById('hero');
+    const logoHero   = document.getElementById('logo-hero');
     const headerName = document.getElementById('header-name');
-    const fullName   = 'Anna Greyhem';
     const SEEN_KEY   = 'ag_intro_seen';
+    const fullName   = 'Anna Greyhem';
 
+    /* ── Erster Besuch oder Wiederkehrer? ── */
     if (sessionStorage.getItem(SEEN_KEY) === '1') {
-      /* Bereits gesehen — Hero sofort weg, Header-Name sofort sichtbar */
+
+      /* Wiederkehrer: Hero weg, Header-Name sofort sichtbar */
       hero.classList.add('gone');
       headerName.classList.add('visible');
+
     } else {
-      /* Erster Besuch — Typewriter abspielen */
+
+      /* Erster Besuch: Typewriter */
       sessionStorage.setItem(SEEN_KEY, '1');
-      (async function() {
+
+      (async function typewriter() {
         const sleep = ms => new Promise(r => setTimeout(r, ms));
         await sleep(600);
         for (let i = 0; i <= fullName.length; i++) {
           const typed = fullName.slice(0, i);
-          const cur   = night ? 'tw-cursor is-night' : 'tw-cursor';
-          logoHero.innerHTML = i < fullName.length
-            ? typed + `<span class="${cur}"></span>`
-            : typed;
-          let delay = 80 + Math.random() * 60;
-          if (i === 4) delay = 340;
-          await sleep(delay);
+          const cur   = `<span class="tw-cursor${night ? ' night' : ''}"></span>`;
+          logoHero.innerHTML = i < fullName.length ? typed + cur : typed;
+          await sleep(80 + Math.random() * 60 + (i === 4 ? 260 : 0));
         }
       })();
 
-      const heroObserver = new IntersectionObserver(function(entries) {
+      /* Sobald Hero-Name den Header-Bereich verlässt:
+         Header-Name einblenden + Hero für immer entfernen */
+      const obs = new IntersectionObserver(function(entries) {
         if (!entries[0].isIntersecting) {
           headerName.classList.add('visible');
-          heroObserver.disconnect();
           hero.classList.add('gone');
+          obs.disconnect();
         }
       }, {
-        threshold: 0,
-        rootMargin: '-60px 0px 0px 0px'
+        rootMargin: '-60px 0px 0px 0px',
+        threshold: 0
       });
+      obs.observe(logoHero);
 
-      heroObserver.observe(logoHero);
     }
 
     /* ── Gedicht befüllen ── */
     const poemWrap = document.getElementById('poem-wrap');
 
-    if (night) {
-      poemWrap.innerHTML = `
-        <div class="poem-stanza">
-          To whomever<br>
-          cannot sleep<br>
-          without a
-          <span style="position:relative; display:inline-block;">
-            <span class="alice-replacement">Bad time story</span>
-            <span class="bedtime-struck">bedtime story</span>
-          </span><br>
-          that's scarier<br>
-          than their dreams.
-        </div>`;
-    } else {
-      poemWrap.innerHTML = `
-        <div class="poem-stanza">
-          To whomever,<br>
-          sees the beauty that decays<br>
-          and lives a life<br>
-          that moans.
-        </div>`;
-    }
+    poemWrap.innerHTML = night ? `
+      <div class="poem-stanza">
+        To whomever<br>
+        cannot sleep<br>
+        without a
+        <span style="position:relative; display:inline-block;">
+          <span class="alice-replacement">Bad time story</span>
+          <span class="bedtime-struck">bedtime story</span>
+        </span><br>
+        that's scarier<br>
+        than their dreams.
+      </div>` : `
+      <div class="poem-stanza">
+        To whomever,<br>
+        sees the beauty that decays<br>
+        and lives a life<br>
+        that moans.
+      </div>`;
 
     /* ── Gedicht einblenden ── */
     new IntersectionObserver(function(entries) {
-      if (entries[0].isIntersecting) {
-        poemWrap.classList.add('visible');
-      }
+      if (entries[0].isIntersecting) poemWrap.classList.add('visible');
     }, { threshold: 0.3 }).observe(poemWrap);
 
     /* ── Buchinhalt einblenden ── */
     new IntersectionObserver(function(entries) {
-      if (entries[0].isIntersecting) {
+      if (entries[0].isIntersecting)
         document.getElementById('book-section').classList.add('visible');
-      }
     }, { threshold: 0.1 }).observe(document.getElementById('book-section'));
 
     /* ── Menü ── */
@@ -519,6 +513,7 @@
         menuOverlay.classList.remove('open');
       });
     });
+
   </script>
 
   <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
