@@ -5,12 +5,18 @@
     DATEI: index.html
     SEITE: The House
     KOMMT VON: Menü
-    EINSTIEG:
-      1. Text erscheint Absatz für Absatz beim Tippen (Haus-Stimme)
-      2. Hold 2200ms vor letztem Satz (Perspektivwechsel)
-      3. Letzter Satz in Anna-Rosa kursiv
-      4. Außenbild + "tap to enter"
-      5. Türflügel öffnen → Floorplan mit Fade
+    FÜHRT ZU:
+      /the-house/library/
+      /the-house/annas-room/
+      /the-house/annas-bathroom/
+      /the-house/dining-room/
+      /the-house/living-room/
+      /the-house/sunroom/
+      /the-house/kitchen/
+      /the-house/the-tree/
+      /the-house/the-pond/
+      /the-house/the-gate/
+    EINSTIEG: Außenansicht mit Overlay-Text → Tap → Türflügel → Floorplan
     NACHT-MODUS: 2-3 Uhr oder ?night=true → Floorplan gelblich invertiert
     STATUS: In Arbeit — Raum-Overlays noch ausstehend
   -->
@@ -123,95 +129,15 @@
     }
 
     /* ════════════════════════════════
-       TEXT SCREEN
-    ════════════════════════════════ */
-    #text-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    #text-wrap {
-      max-width: 560px;
-      width: 88vw;
-      padding: clamp(80px, 12vh, 120px) 0 clamp(80px, 12vh, 120px);
-    }
-
-    .story-para {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-weight: 400;
-      font-size: clamp(18px, 2.6vw, 22px);
-      line-height: 1.9;
-      color: var(--text);
-      margin-bottom: 1.4em;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.5s ease, transform 0.5s ease;
-    }
-
-    .story-para.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* Anna's last sentence — rosa kursiv */
-    .anna-voice {
-      font-style: italic;
-      color: var(--anna);
-    }
-
-    /* Tap hint */
-    #tap-hint {
-      position: fixed;
-      bottom: clamp(32px, 6vh, 56px);
-      left: 50%;
-      transform: translateX(-50%);
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-size: 13px;
-      font-weight: 300;
-      letter-spacing: 0.3em;
-      color: var(--text-muted);
-      white-space: nowrap;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
-      z-index: 110;
-    }
-
-    #tap-hint.visible { opacity: 1; }
-
-    /* Hold circle */
-    #hold-circle {
-      position: fixed;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.4);
-      background: transparent;
-      pointer-events: none;
-      z-index: 110;
-      display: none;
-      transform: translate(-50%, -50%);
-      transition: none;
-    }
-
-    /* ════════════════════════════════
-       ENTRANCE SCREEN — Außenansicht
+       ENTRANCE SCREEN
     ════════════════════════════════ */
     #entrance {
       position: fixed;
       inset: 0;
-      z-index: 90;
+      z-index: 100;
       overflow: hidden;
-      opacity: 0;
-      transition: opacity 0.8s ease;
       cursor: pointer;
     }
-
-    #entrance.visible { opacity: 1; }
 
     /* Türflügel */
     #door-left, #door-right {
@@ -227,7 +153,7 @@
 
     #door-left img, #door-right img {
       position: absolute;
-      top: 10%; /* nach unten versetzt damit Turm sichtbar */
+      top: 8%;
       width: 200%;
       height: 100%;
       object-fit: cover;
@@ -240,21 +166,62 @@
     #door-left.open  { transform: translateX(-100%); }
     #door-right.open { transform: translateX(100%); }
 
-    /* Tap to enter — unteres Drittel */
-    #tap-enter-wrap {
+    /* Dunkler Overlay */
+    #entrance-overlay {
       position: absolute;
-      bottom: 20%;
-      left: 0; right: 0;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 16px;
-      opacity: 0;
-      transition: opacity 0.8s ease 0.3s;
+      justify-content: flex-end;
+      padding-bottom: 22%;
+      gap: 20px;
+      transition: opacity 0.6s ease;
     }
 
-    #tap-enter-wrap.visible { opacity: 1; }
+    /* Atmosphärischer Text */
+    #entrance-text {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 300;
+      font-style: italic;
+      font-size: clamp(16px, 2.4vw, 22px);
+      color: var(--text);
+      text-align: center;
+      line-height: 1.9;
+      max-width: 440px;
+      padding: 16px 24px;
+      background: rgba(0,0,0,0.55);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 1s ease, transform 1s ease;
+    }
 
+    #entrance-text.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Anna's voice */
+    #entrance-text .anna-voice {
+      display: block;
+      margin-top: 0.8em;
+      color: var(--anna);
+    }
+
+    /* Landscape hint */
+    #landscape-hint {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 11px;
+      letter-spacing: 0.3em;
+      color: rgba(255,255,255,0.25);
+      opacity: 0;
+      transition: opacity 1s ease 0.3s;
+    }
+
+    #landscape-hint.visible { opacity: 1; }
+
+    /* Tap to enter */
     #tap-enter {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 300;
@@ -263,7 +230,11 @@
       color: var(--text);
       background: rgba(0,0,0,0.6);
       padding: 10px 28px;
+      opacity: 0;
+      transition: opacity 1s ease 0.6s;
     }
+
+    #tap-enter.visible { opacity: 1; }
 
     /* ════════════════════════════════
        FLOORPLAN
@@ -313,15 +284,7 @@
     <a href="/">Anna Greyhem</a>
   </header>
 
-  <!-- Text Screen -->
-  <div id="text-screen">
-    <div id="text-wrap"></div>
-  </div>
-
-  <div id="tap-hint">tap</div>
-  <div id="hold-circle"></div>
-
-  <!-- Entrance Screen -->
+  <!-- Entrance -->
   <div id="entrance">
     <div id="door-left">
       <img src="/assets/images/thehouseoutside.png" alt="">
@@ -329,7 +292,13 @@
     <div id="door-right">
       <img src="/assets/images/thehouseoutside.png" alt="">
     </div>
-    <div id="tap-enter-wrap">
+    <div id="entrance-overlay">
+      <div id="entrance-text">
+        This house swallowed me.<br>
+        It changes.<br>
+        <span class="anna-voice">I can feel it.</span>
+      </div>
+      <div id="landscape-hint">best experienced sideways</div>
       <div id="tap-enter">tap to enter</div>
     </div>
   </div>
@@ -357,179 +326,45 @@
       document.getElementById('floorplan').style.filter = 'invert(1) sepia(0.3) brightness(0.85)';
     }
 
-    /* ── Story Absätze ── */
-    const paragraphs = [
-      { text: 'The house had always existed. Anna could not think of a time where she wasn\'t wrapped in the crumbly brick walls. It must have always been there. Anna looked at the house.', type: 'normal' },
-      { text: 'And the house looked back at Anna. All these years, it loved the little girl running around enjoying the hidden rooms and the staircases that made excellent slides. Anna got older. She touched the house. The bricks were warm.', type: 'normal' },
-      { text: 'The house touched her back — her lace underwear, her warm body, the cherry juice on her lips. It fed her cherries, while she became hungry for life.', type: 'normal' },
-      { text: 'The House also became hungry. It became hungry for Anna. Their passion grew so deep that one day it swallowed her whole.', type: 'hold' }, // HOLD before next
-      { text: 'The house changes. I can feel it.', type: 'anna' }, // Anna's voice — rosa kursiv
-    ];
+    /* ── Text einblenden ── */
+    setTimeout(function() {
+      document.getElementById('entrance-text').classList.add('visible');
+      document.getElementById('landscape-hint').classList.add('visible');
+      document.getElementById('tap-enter').classList.add('visible');
+    }, 700);
 
-    const HOLD_MS   = 2200;
-    const textWrap  = document.getElementById('text-wrap');
-    const tapHint   = document.getElementById('tap-hint');
-    const holdCircle = document.getElementById('hold-circle');
-    const textScreen = document.getElementById('text-screen');
-    const entrance  = document.getElementById('entrance');
-    const tapEnterWrap = document.getElementById('tap-enter-wrap');
-    const doorLeft  = document.getElementById('door-left');
-    const doorRight = document.getElementById('door-right');
-    const houseWrap = document.getElementById('house-wrap');
+    /* ── Tap to enter ── */
+    const entrance    = document.getElementById('entrance');
+    const doorLeft    = document.getElementById('door-left');
+    const doorRight   = document.getElementById('door-right');
+    const overlay     = document.getElementById('entrance-overlay');
+    const houseWrap   = document.getElementById('house-wrap');
+    let entered = false;
 
-    let phase       = 'text'; // 'text' | 'hold' | 'entrance' | 'open'
-    let paraIdx     = 0;
-    let holdTimer   = null;
-    let holdRaf     = null;
-    let holdStart   = 0;
+    function enter() {
+      if (entered) return;
+      entered = true;
+      entrance.removeEventListener('click', enter);
+      entrance.removeEventListener('touchstart', enter);
 
-    function addParagraph(para) {
-      const el = document.createElement('p');
-      el.className = 'story-para';
-      if (para.type === 'anna') {
-        el.innerHTML = '<span class="anna-voice">' + para.text + '</span>';
-      } else {
-        el.textContent = para.text;
-      }
-      textWrap.appendChild(el);
-      requestAnimationFrame(function() {
-        requestAnimationFrame(function() {
-          el.classList.add('visible');
-        });
-      });
-      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-
-    function showTapHint(text) {
-      tapHint.textContent = text || 'tap';
-      tapHint.classList.add('visible');
-    }
-
-    function hideTapHint() {
-      tapHint.classList.remove('visible');
-    }
-
-    function advance() {
-      if (phase !== 'text') return;
-
-      hideTapHint();
-
-      if (paraIdx < paragraphs.length) {
-        const para = paragraphs[paraIdx];
-
-        if (para.type === 'hold') {
-          // Zeige diesen Absatz, dann wechsle zu Hold-Phase
-          addParagraph(para);
-          paraIdx++;
-          phase = 'hold';
-          setTimeout(function() {
-            showTapHint('hold');
-            textScreen.removeEventListener('click', onTap);
-            textScreen.addEventListener('pointerdown', onHoldStart);
-            textScreen.addEventListener('touchstart', onHoldStart, { passive: true });
-          }, 600);
-        } else {
-          addParagraph(para);
-          paraIdx++;
-          if (paraIdx < paragraphs.length) {
-            setTimeout(function() { showTapHint('tap'); }, 400);
-          } else {
-            // Letzter Absatz — zeige Entrance
-            setTimeout(showEntrance, 1200);
-          }
-        }
-      }
-    }
-
-    /* ── Hold Mechanik ── */
-    function onHoldStart(e) {
-      const p = e.touches ? e.touches[0] : e;
-      holdCircle.style.cssText = 'display:block; left:' + p.clientX + 'px; top:' + p.clientY + 'px; width:20px; height:20px;';
-      holdStart = performance.now();
-      const maxR = Math.min(window.innerWidth, window.innerHeight) * 0.8;
-
-      holdRaf = requestAnimationFrame(function tick(now) {
-        const progress = Math.min((now - holdStart) / HOLD_MS, 1);
-        const size = 20 + (maxR - 20) * progress;
-        holdCircle.style.width  = size + 'px';
-        holdCircle.style.height = size + 'px';
-        if (progress < 1) {
-          holdRaf = requestAnimationFrame(tick);
-        } else {
-          finishHold();
-        }
-      });
-
-      holdTimer = setTimeout(finishHold, HOLD_MS);
-    }
-
-    function cancelHold() {
-      clearTimeout(holdTimer);
-      cancelAnimationFrame(holdRaf);
-      holdCircle.style.display = 'none';
-    }
-
-    function finishHold() {
-      cancelHold();
-      textScreen.removeEventListener('pointerdown', onHoldStart);
-      textScreen.removeEventListener('touchstart', onHoldStart);
-      ['pointerup','pointercancel','touchend'].forEach(function(ev) {
-        textScreen.removeEventListener(ev, cancelHold);
-      });
-      phase = 'text';
-      hideTapHint();
-      // Zeige Anna's letzten Satz
-      addParagraph(paragraphs[paraIdx]);
-      paraIdx++;
-      setTimeout(showEntrance, 1400);
-    }
-
-    ['pointerup','pointercancel','touchend'].forEach(function(ev) {
-      textScreen.addEventListener(ev, cancelHold, { passive: true });
-    });
-
-    /* ── Entrance zeigen ── */
-    function showEntrance() {
-      entrance.classList.add('visible');
-      setTimeout(function() {
-        tapEnterWrap.classList.add('visible');
-      }, 400);
-      entrance.addEventListener('click', onEnterTap);
-      entrance.addEventListener('touchstart', onEnterTap, { passive: true });
-    }
-
-    function onEnterTap() {
-      if (phase === 'open') return;
-      phase = 'open';
-      entrance.removeEventListener('click', onEnterTap);
-      entrance.removeEventListener('touchstart', onEnterTap);
-
-      tapEnterWrap.style.opacity = '0';
+      overlay.style.opacity = '0';
 
       setTimeout(function() {
         doorLeft.classList.add('open');
         doorRight.classList.add('open');
-      }, 300);
+      }, 400);
 
       setTimeout(function() {
         houseWrap.classList.add('visible');
-      }, 700);
+      }, 800);
 
       setTimeout(function() {
-        textScreen.style.display = 'none';
-        entrance.style.display   = 'none';
-        tapHint.style.display    = 'none';
+        entrance.style.display = 'none';
       }, 1800);
     }
 
-    /* ── Tap Handler ── */
-    function onTap() { advance(); }
-    textScreen.addEventListener('click', onTap);
-
-    /* ── Start ── */
-    setTimeout(function() {
-      advance();
-    }, 600);
+    entrance.addEventListener('click', enter);
+    entrance.addEventListener('touchstart', enter, { passive: true });
 
     /* ── Menü ── */
     const menuBtn     = document.getElementById('menu-btn');
