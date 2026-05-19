@@ -71,6 +71,12 @@
       text-decoration: none;
       position: relative;
       z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    #site-header a.visible {
+      opacity: 1;
     }
 
     /* ════════════════════════════════════════
@@ -412,15 +418,15 @@
     /* ── Session ── */
     const heroEl      = document.getElementById('hero');
     const logoHero    = document.getElementById('logo-hero');
+    const headerLink  = document.querySelector('#site-header a');
     const fullName    = 'Anna Greyhem';
     const SEEN_KEY    = 'ag_intro_seen';
     const alreadySeen = sessionStorage.getItem(SEEN_KEY) === '1';
 
     if (alreadySeen) {
-      /* Hero sofort wegklappen */
       heroEl.classList.add('collapsed');
+      headerLink.classList.add('visible');
     } else {
-      /* Typewriter im Hero — Header-Name kommt aus dem HTML, braucht kein JS */
       async function typewriterLogo() {
         const sleep = ms => new Promise(r => setTimeout(r, ms));
         await sleep(600);
@@ -436,12 +442,24 @@
         }
       }
       typewriterLogo();
+
+      /* Header-Name einblenden sobald Hero-Name oben rausscrollt */
+      window.addEventListener('scroll', function() {
+        const heroBottom = heroEl.getBoundingClientRect().bottom;
+        const headerHeight = document.getElementById('site-header').offsetHeight;
+        if (heroBottom <= headerHeight) {
+          headerLink.classList.add('visible');
+        } else {
+          headerLink.classList.remove('visible');
+        }
+      }, { passive: true });
     }
 
     /* ── Hero wegklappen wenn Gedicht erscheint ── */
     function collapseHero() {
       if (alreadySeen) return;
       heroEl.classList.add('collapsed');
+      headerLink.classList.add('visible');
       sessionStorage.setItem(SEEN_KEY, '1');
     }
 
