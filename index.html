@@ -4,46 +4,20 @@
   <!--
     DATEI: index.html
     SEITE: Autorenwebsite — Startseite
-
-    STRUKTUR:
-    - Hero: "Anna Greyhem" erscheint groß zentriert, tippt sich per Typewriter auf
-      Nur beim ersten Besuch (sessionStorage). Danach direkt normaler Header.
-      Beim Scrollen zum Gedicht: Hero verschwindet permanent für diese Session.
-    - Menü: drei Striche oben links, klappt auf
-        → The Book (/the-book/)
-        → The House (/the-house/)
-        → The Author (/the-author/)
-    - Gedicht: erscheint sofort beim ersten Scrollen oder Klicken
-    - Buchinhalt: unter dem Gedicht, Cover links, Text rechts
-    - Footer: Anna Greyhem · impressum · datenschutz
-
-    NACHT-MODUS:
-    - Aktiv zwischen 2:00 und 3:00 Uhr nachts (Ortszeit des Besuchers)
-    - Easter Egg: annagreyhem.com/?night=true aktiviert Nachtmodus jederzeit
-    - Nachts: Typewriter-Cursor in var(--alice) Rot
-    - Nachts: "bedtime story" durchgestrichen, "Bad time story" kursiv rot drüber
-    - Tagsüber: normales Gedicht, weißer Cursor
-
-    FIXES 2026:
-    - Header-Übergang gleichmäßig auf Desktop und Mobile (scroll-basiert statt position-jump)
-    - iOS Safe Area: schwarzer Balken reicht jetzt bis zur Statusleiste auf iPhone
-    - viewport-fit=cover im meta viewport tag
-
-    UNTERSEITEN:
-    - /the-book/        — How Life Feels
-    - /the-house/       — The House
-    - /the-author/      — The Author
-    - /impressum/       — Impressum
-    - /datenschutz/     — Datenschutz
-
-    FARBEN: --text, --alice, --text-muted, --text-faint (alle aus base.css)
+    KOMMT VON: —
+    FÜHRT ZU: /the-book/, /the-house/, /the-author/
+    FARBEN: --text, --alice, --text-muted, --text-faint
     STATUS: In Arbeit
+
+    iOS-FIX:
+    - viewport-fit=cover damit Safari den vollen Bildschirm nutzt
+    - env(safe-area-inset-top) damit der Header hinter Dynamic Island/Notch schwarz ist
+    - Header ist ein echtes <header> Element, immer sichtbar, kein opacity-toggle
   -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Anna Greyhem</title>
   <meta name="description" content="Anna Greyhem — writer, artist, world-builder. Literature you don't just read. You enter it.">
-  <!-- Open Graph -->
   <meta property="og:type" content="website">
   <meta property="og:locale" content="en_US">
   <meta property="og:site_name" content="Anna Greyhem">
@@ -53,7 +27,6 @@
   <meta property="og:image" content="https://annagreyhem.com/assets/images/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <!-- Twitter/X -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Anna Greyhem">
   <meta name="twitter:description" content="Anna Greyhem — writer, artist, world-builder. Literature you don't just read. You enter it.">
@@ -63,89 +36,53 @@
     html { scroll-behavior: smooth; }
     body { overflow-x: hidden; }
 
-    /* ── Hero — nur beim ersten Besuch ── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      overflow: hidden;
-      transition: min-height 0.6s ease, opacity 0.6s ease;
-    }
+    /* ════════════════════════════════════════
+       HEADER
+       Immer sichtbar. Immer schwarz. Immer gleich hoch.
+       "Anna Greyhem" steht immer drin — direkt im HTML, kein JS-Toggle.
 
-    #hero.collapsed {
-      min-height: 0;
-      height: 0;
-      opacity: 0;
-      pointer-events: none;
-    }
-
-    #logo-hero {
-      font-family: 'Cormorant Garamond', Georgia, serif;
-      font-weight: 500;
-      font-style: normal;
-      letter-spacing: 0.18em;
-      color: #ffffff;
-      white-space: nowrap;
-      font-size: clamp(32px, 7vw, 64px);
-      text-align: center;
-      position: relative;
-      z-index: 10;
-    }
-
-    /* ── Fixierter Header ──
-       IMMER sichtbar, IMMER komplett schwarz.
-       Deckt den Inhalt ab der darunter scrollt.
-       Nur der Name-Text blendet ein/aus — nicht der Balken selbst.
-       Safe Area (env) füllt den Bereich hinter der iOS Statusleiste.
-    ── */
-    #logo-header {
+       env(safe-area-inset-top):
+       - Normale Geräte: 0px → height = 60px
+       - iPhone mit Dynamic Island/Notch: ~59px → height = 119px
+       Dadurch ist der schwarze Balken immer bis ganz oben gefüllt.
+    ════════════════════════════════════════ */
+    #site-header {
       position: fixed;
       top: 0; left: 0; right: 0;
-      z-index: 100;
+      /* z-index sehr hoch — muss über allem scrollenden Content liegen,
+         auch über Elementen mit transform (die einen neuen stacking context erzeugen) */
+      z-index: 9999;
+      background: #0a0a0a;
+      height: calc(env(safe-area-inset-top, 0px) + 60px);
       display: flex;
       align-items: flex-end;
       justify-content: center;
+      padding-bottom: 14px;
+      /* isolation:isolate verhindert dass Kinder-Elemente aus dem Header herausragen */
+      isolation: isolate;
+    }
 
-      /* Safe Area + normales Padding */
-      padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
-      padding-bottom: 20px;
-      padding-left: 80px;
-      padding-right: 80px;
-
-      pointer-events: none;
-
-      /* Vollständig deckend — kein Gradient, kein Durchscheinen */
-      background: #0a0a0a;
-
+    #site-header a {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
-      letter-spacing: 0.18em;
       font-size: clamp(15px, 2vw, 20px);
-      white-space: nowrap;
-
-      /* Header selbst immer sichtbar */
-      opacity: 1;
-    }
-
-    /* Nur der Name-Text blendet ein */
-    #logo-header-text {
+      letter-spacing: 0.18em;
       color: var(--text);
-      opacity: 0;
-      transition: opacity 0.6s ease;
+      text-decoration: none;
+      position: relative;
+      z-index: 9999;
     }
 
-    #logo-header-text.visible { opacity: 1; }
-
-    /* ── Menü Button ──
-       FIX: top berücksichtigt jetzt ebenfalls die Safe Area
-    ── */
+    /* ════════════════════════════════════════
+       MENÜ BUTTON
+       Vertikal ausgerichtet am header — top passt
+       sich an die Safe Area an.
+    ════════════════════════════════════════ */
     #menu-btn {
       position: fixed;
       top: calc(env(safe-area-inset-top, 0px) + 20px);
       left: 40px;
-      z-index: 200;
+      z-index: 9999;
       background: none;
       border: none;
       cursor: pointer;
@@ -169,12 +106,14 @@
     #menu-btn.open span:nth-child(2) { opacity: 0; }
     #menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); opacity: 1; }
 
-    /* ── Menü Overlay ── */
+    /* ════════════════════════════════════════
+       MENÜ OVERLAY
+    ════════════════════════════════════════ */
     #menu-overlay {
       position: fixed;
       inset: 0;
       background: var(--bg);
-      z-index: 150;
+      z-index: 5000;
       display: flex;
       flex-direction: column;
       align-items: flex-start;
@@ -208,7 +147,44 @@
       margin: 24px 0;
     }
 
-    /* ── Gedicht ── */
+    /* ════════════════════════════════════════
+       HERO
+       Höhe minus Header, damit der Name
+       wirklich zentriert wirkt.
+       Nur beim ersten Besuch sichtbar.
+    ════════════════════════════════════════ */
+    #hero {
+      padding-top: calc(env(safe-area-inset-top, 0px) + 60px);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: min-height 0.6s ease, opacity 0.6s ease;
+      position: relative;
+      z-index: 1;
+    }
+
+    #hero.collapsed {
+      min-height: 0;
+      height: 0;
+      opacity: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    #logo-hero {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      color: #ffffff;
+      white-space: nowrap;
+      font-size: clamp(32px, 7vw, 64px);
+      text-align: center;
+    }
+
+    /* ════════════════════════════════════════
+       GEDICHT
+    ════════════════════════════════════════ */
     #poem-section {
       min-height: 80vh;
       display: flex;
@@ -216,12 +192,16 @@
       padding: 60px clamp(28px, 8vw, 64px) 80px;
       max-width: 600px;
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
     }
 
     #poem-wrap {
       opacity: 0;
       transform: translateY(16px);
       transition: opacity 0.8s ease, transform 0.8s ease;
+      position: relative;
+      z-index: 1;
     }
 
     #poem-wrap.visible {
@@ -233,19 +213,11 @@
       font-size: clamp(20px, 2.6vw, 26px);
       line-height: 2.1;
       font-weight: 400;
-      text-align: left;
-    }
-
-    /* ── Nacht: Korrektur ── */
-    .night-correction-wrap {
-      position: relative;
-      display: inline;
     }
 
     .bedtime-struck {
       position: relative;
       display: inline-block;
-      color: var(--text);
     }
 
     .bedtime-struck::after {
@@ -269,7 +241,9 @@
       line-height: 1;
     }
 
-    /* ── Buchinhalt ── */
+    /* ════════════════════════════════════════
+       BUCHINHALT
+    ════════════════════════════════════════ */
     #book-section {
       opacity: 0;
       transform: translateY(24px);
@@ -278,6 +252,13 @@
       padding: clamp(60px, 10vh, 100px) clamp(28px, 8vw, 64px) clamp(100px, 14vh, 140px);
       max-width: 900px;
       margin: 0 auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    #book-section.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .book-layout {
@@ -304,10 +285,7 @@
       font-style: italic;
     }
 
-    .book-info {
-      flex: 1;
-      padding-top: 4px;
-    }
+    .book-info { flex: 1; padding-top: 4px; }
 
     .book-title {
       font-size: clamp(22px, 3vw, 28px);
@@ -328,7 +306,6 @@
       font-size: clamp(18px, 2.2vw, 20px);
       line-height: 1.9;
       margin-bottom: 1.4em;
-      color: var(--text);
     }
 
     .book-info em {
@@ -353,7 +330,6 @@
       border-color: rgba(255,255,255,0.3);
     }
 
-    /* ── Typewriter Cursor ── */
     .tw-cursor {
       display: inline-block;
       width: 1px;
@@ -364,14 +340,7 @@
       animation: blink 1s steps(1) infinite;
     }
 
-    .tw-cursor.is-night {
-      background: var(--alice);
-    }
-
-    #book-section.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    .tw-cursor.is-night { background: var(--alice); }
 
     @media (max-width: 600px) {
       .book-layout { flex-direction: column; }
@@ -393,7 +362,10 @@
     <a href="/the-author/" class="menu-item">The Author</a>
   </nav>
 
-  <div id="logo-header"><span id="logo-header-text"></span></div>
+  <!-- Header: Name steht direkt im HTML — kein JS nötig um ihn sichtbar zu machen -->
+  <header id="site-header">
+    <a href="/">Anna Greyhem</a>
+  </header>
 
   <section id="hero">
     <div id="logo-hero"></div>
@@ -433,28 +405,22 @@
     function isNight() {
       const params = new URLSearchParams(window.location.search);
       if (params.get('night') === 'true') return true;
-      const h = new Date().getHours();
-      return h >= 2 && h < 3;
+      return new Date().getHours() >= 2 && new Date().getHours() < 3;
     }
-
     const night = isNight();
 
-    /* ── Session: Haben wir die Animation schon gesehen? ── */
-    const heroEl        = document.getElementById('hero');
-    const logoHero      = document.getElementById('logo-hero');
-    const logoHeaderText = document.getElementById('logo-header-text');
-    const fullName      = 'Anna Greyhem';
-    const SEEN_KEY      = 'ag_intro_seen';
-
+    /* ── Session ── */
+    const heroEl      = document.getElementById('hero');
+    const logoHero    = document.getElementById('logo-hero');
+    const fullName    = 'Anna Greyhem';
+    const SEEN_KEY    = 'ag_intro_seen';
     const alreadySeen = sessionStorage.getItem(SEEN_KEY) === '1';
 
     if (alreadySeen) {
-      /* Kein Hero — direkt Header-Text sichtbar */
+      /* Hero sofort wegklappen */
       heroEl.classList.add('collapsed');
-      logoHeaderText.textContent = fullName;
-      logoHeaderText.classList.add('visible');
     } else {
-      /* Typewriter Animation */
+      /* Typewriter im Hero — Header-Name kommt aus dem HTML, braucht kein JS */
       async function typewriterLogo() {
         const sleep = ms => new Promise(r => setTimeout(r, ms));
         await sleep(600);
@@ -464,7 +430,6 @@
           logoHero.innerHTML = i < fullName.length
             ? typed + `<span class="${cursorClass}"></span>`
             : typed;
-          logoHeaderText.textContent = typed;
           let delay = 80 + Math.random() * 60;
           if (i === 4) delay = 340;
           await sleep(delay);
@@ -473,39 +438,12 @@
       typewriterLogo();
     }
 
-    /* ── Hero kollabiert sobald Gedicht sichtbar wird ── */
+    /* ── Hero wegklappen wenn Gedicht erscheint ── */
     function collapseHero() {
       if (alreadySeen) return;
       heroEl.classList.add('collapsed');
-      /* Text einblenden und nie wieder ausblenden */
-      logoHeaderText.classList.add('visible');
       sessionStorage.setItem(SEEN_KEY, '1');
     }
-
-    /* ── Header-Text Scroll-Logik
-       Nur solange Hero noch sichtbar ist.
-       Sobald collapseHero() läuft ist der Text dauerhaft sichtbar.
-    ── */
-    let ticking = false;
-
-    function onScroll() {
-      if (alreadySeen) return;
-      if (!ticking) {
-        requestAnimationFrame(function() {
-          const scrolled = window.scrollY;
-          const threshold = window.innerHeight * 0.4;
-          if (scrolled > threshold) {
-            logoHeaderText.classList.add('visible');
-          } else {
-            logoHeaderText.classList.remove('visible');
-          }
-          ticking = false;
-        });
-        ticking = true;
-      }
-    }
-
-    window.addEventListener('scroll', onScroll, { passive: true });
 
     /* ── Gedicht befüllen ── */
     const poemWrap = document.getElementById('poem-wrap');
@@ -516,7 +454,7 @@
           To whomever<br>
           cannot sleep<br>
           without a
-          <span class="night-correction-wrap">
+          <span style="position:relative; display:inline-block;">
             <span class="alice-replacement">Bad time story</span>
             <span class="bedtime-struck">bedtime story</span>
           </span><br>
@@ -533,7 +471,7 @@
         </div>`;
     }
 
-    /* ── Gedicht erscheint + Hero kollabiert ── */
+    /* ── Gedicht einblenden + Hero klappen ── */
     let poemRevealed = false;
 
     function revealPoem() {
@@ -543,13 +481,9 @@
       collapseHero();
     }
 
-    const observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) revealPoem();
-      });
-    }, { threshold: 0.95 });
-
-    observer.observe(poemWrap);
+    new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) revealPoem();
+    }, { threshold: 0.95 }).observe(poemWrap);
 
     function onFirstInteraction() {
       revealPoem();
@@ -562,19 +496,13 @@
     document.addEventListener('touchstart', onFirstInteraction, { passive: true });
     document.addEventListener('keydown', onFirstInteraction);
 
-    /* ── Buchinhalt erscheint beim Scrollen ── */
-    const bookSection = document.getElementById('book-section');
-
-    const bookObserver = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) {
-          bookSection.classList.add('visible');
-          bookObserver.unobserve(bookSection);
-        }
-      });
-    }, { threshold: 0.15, rootMargin: "0px 0px -100px 0px" });
-
-    bookObserver.observe(bookSection);
+    /* ── Buchinhalt einblenden ── */
+    new IntersectionObserver(function(entries) {
+      if (entries[0].isIntersecting) {
+        document.getElementById('book-section').classList.add('visible');
+      }
+    }, { threshold: 0.15, rootMargin: "0px 0px -100px 0px" })
+    .observe(document.getElementById('book-section'));
 
     /* ── Menü ── */
     const menuBtn     = document.getElementById('menu-btn');
