@@ -99,7 +99,7 @@
       justify-content: center;
       padding: 24px 80px 44px;
       pointer-events: none;
-      background: linear-gradient(to bottom, #0a0a0a 70%, rgba(10,10,10,0.95) 85%, transparent);
+      background: linear-gradient(to bottom, #0a0a0a 0%, #0a0a0a 55%, rgba(10,10,10,0.92) 80%, transparent 100%);
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
       letter-spacing: 0.18em;
@@ -184,7 +184,6 @@
       min-height: 80vh;
       display: flex;
       align-items: center;
-      justify-content: center;
       padding: 60px clamp(28px, 8vw, 64px) 80px;
       max-width: 600px;
       margin: 0 auto;
@@ -205,7 +204,7 @@
       font-size: clamp(20px, 2.6vw, 26px);
       line-height: 2.1;
       font-weight: 400;
-      text-align: center;
+      text-align: left;
     }
 
     /* ── Nacht: Korrektur ── */
@@ -511,7 +510,7 @@
       entries.forEach(function(entry) {
         if (entry.isIntersecting) revealPoem();
       });
-    }, { threshold: 0.4 });
+    }, { threshold: 0.95 });
 
     observer.observe(poemWrap);
 
@@ -536,7 +535,7 @@
           bookObserver.unobserve(bookSection);
         }
       });
-    }, { threshold: 0.1 });
+    }, { threshold: 0.15, rootMargin: "0px 0px -100px 0px" });
 
     bookObserver.observe(bookSection);
 
