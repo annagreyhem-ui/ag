@@ -24,6 +24,11 @@
     - Nachts: "bedtime story" durchgestrichen, "Bad time story" kursiv rot drüber
     - Tagsüber: normales Gedicht, weißer Cursor
 
+    FIXES 2026:
+    - Header-Übergang gleichmäßig auf Desktop und Mobile (scroll-basiert statt position-jump)
+    - iOS Safe Area: schwarzer Balken reicht jetzt bis zur Statusleiste auf iPhone
+    - viewport-fit=cover im meta viewport tag
+
     UNTERSEITEN:
     - /the-book/        — How Life Feels
     - /the-house/       — The House
@@ -35,7 +40,7 @@
     STATUS: In Arbeit
   -->
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <title>Anna Greyhem</title>
   <meta name="description" content="Anna Greyhem — writer, artist, world-builder. Literature you don't just read. You enter it.">
   <!-- Open Graph -->
@@ -89,33 +94,51 @@
       z-index: 10;
     }
 
-    /* ── Fixierter Header ── */
+    /* ── Fixierter Header ──
+       FIX: padding-top berücksichtigt jetzt die iOS Safe Area (Notch/Statusleiste).
+       env(safe-area-inset-top) = 0 auf normalen Geräten, ~44-59px auf iPhone mit Notch/Dynamic Island.
+       Das background-Gradient wird dadurch auch länger und füllt den ganzen Bereich.
+    ── */
     #logo-header {
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
       display: flex;
-      align-items: center;
+      align-items: flex-end;
       justify-content: center;
-      padding: 24px 80px 44px;
+
+      /* Safe Area + normales Padding oben */
+      padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
+      padding-bottom: 44px;
+      padding-left: 80px;
+      padding-right: 80px;
+
       pointer-events: none;
+
+      /* Gradient verlängert sich dynamisch je nach Safe Area */
       background: linear-gradient(to bottom, #0a0a0a 0%, #0a0a0a 55%, rgba(10,10,10,0.92) 80%, transparent 100%);
+
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
       letter-spacing: 0.18em;
       color: var(--text);
       font-size: clamp(15px, 2vw, 20px);
       white-space: nowrap;
+
+      /* FIX: Übergang über opacity — weich auf allen Geräten */
       opacity: 0;
-      transition: opacity 0.4s ease;
+      transition: opacity 0.6s ease;
     }
 
     #logo-header.visible { opacity: 1; }
 
-    /* ── Menü Button ── */
+    /* ── Menü Button ──
+       FIX: top berücksichtigt jetzt ebenfalls die Safe Area
+    ── */
     #menu-btn {
       position: fixed;
-      top: 24px; left: 40px;
+      top: calc(env(safe-area-inset-top, 0px) + 20px);
+      left: 40px;
       z-index: 200;
       background: none;
       border: none;
@@ -419,33 +442,28 @@
 
     const alreadySeen = sessionStorage.getItem(SEEN_KEY) === '1';
 
-    function buildLogoHTML(typed) {
-      return fullName.slice(0, typed);
-    }
-
     if (alreadySeen) {
-      // Kein Hero — direkt Header sichtbar
+      /* Kein Hero — direkt Header sichtbar */
       heroEl.classList.add('collapsed');
-      logoHeader.innerHTML = fullName;
+      logoHeader.textContent = fullName;
       logoHeader.classList.add('visible');
     } else {
-      // Typewriter Animation
+      /* Typewriter Animation */
       async function typewriterLogo() {
         const sleep = ms => new Promise(r => setTimeout(r, ms));
         await sleep(600);
         for (let i = 0; i <= fullName.length; i++) {
-          const html = buildLogoHTML(i);
+          const typed = fullName.slice(0, i);
           const cursorClass = night ? 'tw-cursor is-night' : 'tw-cursor';
           logoHero.innerHTML = i < fullName.length
-            ? html + `<span class="${cursorClass}"></span>`
-            : html;
-          logoHeader.innerHTML = html;
+            ? typed + `<span class="${cursorClass}"></span>`
+            : typed;
+          logoHeader.textContent = typed;
           let delay = 80 + Math.random() * 60;
           if (i === 4) delay = 340;
           await sleep(delay);
         }
       }
-
       typewriterLogo();
     }
 
@@ -457,14 +475,28 @@
       sessionStorage.setItem(SEEN_KEY, '1');
     }
 
-    /* ── Header scroll-Logik (nur wenn Hero noch sichtbar) ── */
+    /* ── Header scroll-Logik
+       FIX: Statt position-basiertem Sprung wird jetzt ein scroll-Threshold genutzt.
+       Auf Desktop: Header erscheint sobald man 40% des Viewports gescrollt hat.
+       Auf Mobile: gleicher Threshold — fühlt sich auf beiden Geräten konsistent an.
+       requestAnimationFrame verhindert "flackern" auf schnellen Scroll-Events.
+    ── */
+    let ticking = false;
+
     function onScroll() {
       if (alreadySeen) return;
-      const heroBottom = heroEl.getBoundingClientRect().bottom;
-      if (heroBottom < 80) {
-        logoHeader.classList.add('visible');
-      } else {
-        logoHeader.classList.remove('visible');
+      if (!ticking) {
+        requestAnimationFrame(function() {
+          const scrolled = window.scrollY;
+          const threshold = window.innerHeight * 0.4;
+          if (scrolled > threshold) {
+            logoHeader.classList.add('visible');
+          } else {
+            logoHeader.classList.remove('visible');
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     }
 
