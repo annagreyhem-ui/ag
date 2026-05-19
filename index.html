@@ -7,26 +7,27 @@
 
     STRUKTUR:
     - Hero: "Anna Greyhem" erscheint groß zentriert, tippt sich per Typewriter auf
-      Beim Scrollen scrollt der Name mit hoch und wird zum fixierten Header
+      Nur beim ersten Besuch (sessionStorage). Danach direkt normaler Header.
+      Beim Scrollen zum Gedicht: Hero verschwindet permanent für diese Session.
     - Menü: drei Striche oben links, klappt auf
-        → Books (/books/)
-        → The House (Platzhalter)
-        → Diary (Platzhalter)
+        → The Book (/the-book/)
+        → The House (/the-house/)
+        → The Author (/the-author/)
     - Gedicht: erscheint sofort beim ersten Scrollen oder Klicken
-    - Books: Platzhalter
-    - Footer: annagreyhem · impressum · datenschutz
+    - Buchinhalt: unter dem Gedicht, Cover links, Text rechts
+    - Footer: Anna Greyhem · impressum · datenschutz
 
     NACHT-MODUS:
     - Aktiv zwischen 2:00 und 3:00 Uhr nachts (Ortszeit des Besuchers)
     - Easter Egg: annagreyhem.com/?night=true aktiviert Nachtmodus jederzeit
-    - Nachts: Ann(a) — Index 3 in "Anna Greyhem" — in var(--alice) Rot, font-weight 700
-    - Nachts: "bedtime story" durchgestrichen, "Bad time story" kursiv rot direkt drüber
-    - Tagsüber: normales Gedicht
+    - Nachts: Typewriter-Cursor in var(--alice) Rot
+    - Nachts: "bedtime story" durchgestrichen, "Bad time story" kursiv rot drüber
+    - Tagsüber: normales Gedicht, weißer Cursor
 
     UNTERSEITEN:
-    - /books/           — Bücher (in Arbeit)
-    - /the-house/       — Platzhalter
-    - /diary/           — Platzhalter
+    - /the-book/        — How Life Feels
+    - /the-house/       — The House
+    - /the-author/      — The Author
     - /impressum/       — Impressum
     - /datenschutz/     — Datenschutz
 
@@ -36,21 +37,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Anna Greyhem</title>
+  <meta name="description" content="Anna Greyhem — immersive literary fiction. Books you don't just read. You enter them.">
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
     html { scroll-behavior: smooth; }
     body { overflow-x: hidden; }
 
-    /* ── Hero ── */
+    /* ── Hero — nur beim ersten Besuch ── */
     #hero {
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
+      overflow: hidden;
+      transition: min-height 0.6s ease, opacity 0.6s ease;
     }
 
-    /* ── Name im Hero — groß, scrollt mit ── */
+    #hero.collapsed {
+      min-height: 0;
+      height: 0;
+      opacity: 0;
+      pointer-events: none;
+    }
+
     #logo-hero {
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 500;
@@ -64,14 +74,7 @@
       z-index: 10;
     }
 
-    #logo-hero .night-a {
-      color: var(--alice);
-      font-weight: 700;
-      font-style: normal;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-    }
-
-    /* ── Fixierter Header — erscheint wenn Hero oben raus ist ── */
+    /* ── Fixierter Header ── */
     #logo-header {
       position: fixed;
       top: 0; left: 0; right: 0;
@@ -84,7 +87,6 @@
       background: linear-gradient(to bottom, #0a0a0a 65%, transparent);
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
-      font-style: normal;
       letter-spacing: 0.18em;
       color: var(--text);
       font-size: clamp(15px, 2vw, 20px);
@@ -94,13 +96,6 @@
     }
 
     #logo-header.visible { opacity: 1; }
-
-    #logo-header .night-a {
-      color: var(--alice);
-      font-weight: 700;
-      font-style: normal;
-      font-family: 'Cormorant Garamond', Georgia, serif;
-    }
 
     /* ── Menü Button ── */
     #menu-btn {
@@ -162,12 +157,6 @@
 
     .menu-item:hover { color: var(--text); }
 
-    .menu-item.placeholder {
-      color: var(--text-faint);
-      cursor: default;
-      font-style: italic;
-    }
-
     .menu-divider {
       width: 40px;
       height: 1px;
@@ -175,7 +164,7 @@
       margin: 24px 0;
     }
 
-    /* ── Gedicht — direkt unter Hero ── */
+    /* ── Gedicht ── */
     #poem-section {
       min-height: 80vh;
       display: flex;
@@ -208,7 +197,6 @@
       display: inline;
     }
 
-    /* "bedtime story" durchgestrichen */
     .bedtime-struck {
       position: relative;
       display: inline-block;
@@ -218,19 +206,16 @@
     .bedtime-struck::after {
       content: '';
       position: absolute;
-      left: 6%;
-      right: -3%;
+      left: 6%; right: -3%;
       top: 52%;
       height: 1px;
       background: #6b1a1a;
       transform: rotate(-0.8deg);
     }
 
-    /* "Bad time story" direkt drüber — kursiv, rot, nah an der Zeile */
     .alice-replacement {
       position: absolute;
-      bottom: 85%;
-      left: 0;
+      bottom: 85%; left: 0;
       color: var(--alice);
       font-style: italic;
       font-size: 0.88em;
@@ -239,33 +224,105 @@
       line-height: 1;
     }
 
-    /* ── Books Platzhalter ── */
-    #books-section {
-      min-height: 40vh;
+    /* ── Buchinhalt ── */
+    #book-section {
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: clamp(60px, 10vh, 100px) clamp(28px, 8vw, 64px) clamp(100px, 14vh, 140px);
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .book-layout {
+      display: flex;
+      gap: clamp(32px, 6vw, 80px);
+      align-items: flex-start;
+    }
+
+    .book-cover {
+      flex: 0 0 auto;
+      width: clamp(140px, 28vw, 240px);
+    }
+
+    .cover-placeholder {
+      width: 100%;
+      aspect-ratio: 2/3;
+      border: 1px solid rgba(255,255,255,0.08);
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 80px clamp(28px, 8vw, 64px);
-      border-top: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .placeholder-block {
-      text-align: center;
       color: var(--text-faint);
-      font-size: 13px;
-      letter-spacing: 0.2em;
+      font-size: 11px;
+      letter-spacing: 0.25em;
       font-style: italic;
     }
 
-    /* ── Typewriter Cursor — klein und dezent ── */
+    .book-info {
+      flex: 1;
+      padding-top: 4px;
+    }
+
+    .book-title {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 400;
+      margin-bottom: clamp(24px, 4vh, 40px);
+    }
+
+    .book-title span {
+      display: block;
+      font-size: clamp(12px, 1.4vw, 14px);
+      font-weight: 300;
+      letter-spacing: 0.25em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+    }
+
+    .book-info p {
+      font-size: clamp(18px, 2.2vw, 20px);
+      line-height: 1.9;
+      margin-bottom: 1.4em;
+      color: var(--text);
+    }
+
+    .book-info em {
+      font-style: italic;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .buy-link {
+      display: inline-block;
+      margin-top: clamp(28px, 4vh, 48px);
+      font-size: 13px;
+      letter-spacing: 0.3em;
+      color: var(--text-muted);
+      text-decoration: none;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding-bottom: 3px;
+      transition: color 0.3s ease, border-color 0.3s ease;
+    }
+
+    .buy-link:hover {
+      color: var(--text);
+      border-color: rgba(255,255,255,0.3);
+    }
+
+    /* ── Typewriter Cursor ── */
     .tw-cursor {
       display: inline-block;
       width: 1px;
       height: 0.8em;
-      background: var(--alice);
+      background: rgba(255,255,255,0.5);
       margin-left: 3px;
       vertical-align: middle;
       animation: blink 1s steps(1) infinite;
+    }
+
+    .tw-cursor.is-night {
+      background: var(--alice);
+    }
+
+    @media (max-width: 600px) {
+      .book-layout { flex-direction: column; }
+      .book-cover { width: clamp(120px, 50vw, 180px); }
     }
   </style>
 </head>
@@ -278,28 +335,40 @@
   <nav id="menu-overlay">
     <a href="/the-book/" class="menu-item">The Book</a>
     <div class="menu-divider"></div>
-    <a href="/the-author/" class="menu-item">The Author</a>
-    <div class="menu-divider"></div>
     <a href="/the-house/" class="menu-item">The House</a>
     <div class="menu-divider"></div>
-    <span class="menu-item placeholder">Diary</span>
+    <a href="/the-author/" class="menu-item">The Author</a>
   </nav>
 
-  <!-- Fixierter Header — erscheint beim Scrollen -->
   <div id="logo-header"></div>
 
-  <!-- Hero mit großem Namen -->
   <section id="hero">
     <div id="logo-hero"></div>
   </section>
 
-  <!-- Gedicht direkt darunter -->
   <section id="poem-section">
     <div id="poem-wrap"></div>
   </section>
 
-  <section id="books-section">
-    <div class="placeholder-block">— How Life Feels — coming soon —</div>
+  <section id="book-section">
+    <div class="book-layout">
+      <div class="book-cover">
+        <!-- PLATZHALTER: Ersetze durch <img> wenn Buchcover fertig -->
+        <div class="cover-placeholder">cover</div>
+      </div>
+      <div class="book-info">
+        <div class="book-title">
+          <span>Anna Greyhem</span>
+          How Life Feels
+        </div>
+        <p>A novel. A world. An experience.</p>
+        <p>Scan the codes hidden in the margins.
+        Enter the house. Find what's waiting.</p>
+        <p><em>Part novel. Part game. Part digital world.</em></p>
+        <!-- PLATZHALTER: Ersetze href mit echtem Amazon Link -->
+        <a href="#" class="buy-link">Buy on Amazon →</a>
+      </div>
+    </div>
   </section>
 
   <footer class="site-footer">
@@ -317,38 +386,56 @@
 
     const night = isNight();
 
-    /* ── Logo HTML bauen ── */
-    const fullName = 'Anna Greyhem';
+    /* ── Session: Haben wir die Animation schon gesehen? ── */
+    const heroEl     = document.getElementById('hero');
+    const logoHero   = document.getElementById('logo-hero');
+    const logoHeader = document.getElementById('logo-header');
+    const fullName   = 'Anna Greyhem';
+    const SEEN_KEY   = 'ag_intro_seen';
+
+    const alreadySeen = sessionStorage.getItem(SEEN_KEY) === '1';
 
     function buildLogoHTML(typed) {
       return fullName.slice(0, typed);
     }
 
-    const logoHero   = document.getElementById('logo-hero');
-    const logoHeader = document.getElementById('logo-header');
-
-    /* ── Typewriter ── */
-    async function typewriterLogo() {
-      const sleep = ms => new Promise(r => setTimeout(r, ms));
-      await sleep(600);
-      for (let i = 0; i <= fullName.length; i++) {
-        const html = buildLogoHTML(i);
-        logoHero.innerHTML = i < fullName.length
-          ? html + '<span class="tw-cursor"></span>'
-          : html;
-        logoHeader.innerHTML = html;
-        let delay = 80 + Math.random() * 60;
-        if (i === 4) delay = 340;
-        await sleep(delay);
+    if (alreadySeen) {
+      // Kein Hero — direkt Header sichtbar
+      heroEl.classList.add('collapsed');
+      logoHeader.innerHTML = fullName;
+      logoHeader.classList.add('visible');
+    } else {
+      // Typewriter Animation
+      async function typewriterLogo() {
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
+        await sleep(600);
+        for (let i = 0; i <= fullName.length; i++) {
+          const html = buildLogoHTML(i);
+          const cursorClass = night ? 'tw-cursor is-night' : 'tw-cursor';
+          logoHero.innerHTML = i < fullName.length
+            ? html + `<span class="${cursorClass}"></span>`
+            : html;
+          logoHeader.innerHTML = html;
+          let delay = 80 + Math.random() * 60;
+          if (i === 4) delay = 340;
+          await sleep(delay);
+        }
       }
+
+      typewriterLogo();
     }
 
-    typewriterLogo();
+    /* ── Hero kollabiert sobald Gedicht sichtbar wird ── */
+    function collapseHero() {
+      if (alreadySeen) return;
+      heroEl.classList.add('collapsed');
+      logoHeader.classList.add('visible');
+      sessionStorage.setItem(SEEN_KEY, '1');
+    }
 
-    /* ── Header einblenden wenn Hero oben raus scrollt ── */
-    const heroEl = document.getElementById('hero');
-
+    /* ── Header scroll-Logik (nur wenn Hero noch sichtbar) ── */
     function onScroll() {
+      if (alreadySeen) return;
       const heroBottom = heroEl.getBoundingClientRect().bottom;
       if (heroBottom < 80) {
         logoHeader.classList.add('visible');
@@ -385,13 +472,14 @@
         </div>`;
     }
 
-    /* ── Gedicht erscheint sofort beim ersten Scrollen oder Klick ── */
+    /* ── Gedicht erscheint + Hero kollabiert ── */
     let poemRevealed = false;
 
     function revealPoem() {
       if (poemRevealed) return;
       poemRevealed = true;
       poemWrap.classList.add('visible');
+      collapseHero();
     }
 
     const observer = new IntersectionObserver(function(entries) {
