@@ -54,6 +54,8 @@
       align-items: flex-end;
       justify-content: center;
       padding-bottom: 14px;
+      /* Header selbst blockt keine Klicks — nur sichtbare Kindelemente tun das */
+      pointer-events: none;
     }
 
     /* Name: unsichtbar bis Hero rausscrollt */
@@ -66,6 +68,7 @@
       text-decoration: none;
       opacity: 0;
       transition: opacity 0.5s ease;
+      pointer-events: all; /* Link bleibt klickbar */
     }
 
     #header-name.visible {
@@ -157,6 +160,15 @@
       justify-content: center;
       position: relative;
       z-index: 1;
+    }
+
+    /* Abgeschnitten — kein Platz, kein Scrollen möglich */
+    #hero.gone {
+      min-height: 0;
+      height: 0;
+      overflow: hidden;
+      padding: 0;
+      margin: 0;
     }
 
     #logo-hero {
@@ -397,7 +409,7 @@
     <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
 
-  <div id="version">v3</div>
+  <div id="version">v4</div>
 
   <script>
     /* ── Nacht-Modus ── */
@@ -409,14 +421,17 @@
     const night = isNight();
 
     const logoHero   = document.getElementById('logo-hero');
+    const hero       = document.getElementById('hero');
     const headerName = document.getElementById('header-name');
     const fullName   = 'Anna Greyhem';
     const SEEN_KEY   = 'ag_intro_seen';
 
-    /* ── Typewriter oder sofort fertig ── */
     if (sessionStorage.getItem(SEEN_KEY) === '1') {
-      logoHero.textContent = fullName;
+      /* Bereits gesehen — Hero sofort weg, Header-Name sofort sichtbar */
+      hero.style.display = 'none';
+      headerName.classList.add('visible');
     } else {
+      /* Erster Besuch — Typewriter abspielen */
       sessionStorage.setItem(SEEN_KEY, '1');
       (async function() {
         const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -432,27 +447,22 @@
           await sleep(delay);
         }
       })();
+
+      /* Sobald Hero-Name aus dem Viewport scrollt:
+         Header-Name einblenden + Hero dauerhaft entfernen */
+      const heroObserver = new IntersectionObserver(function(entries) {
+        if (!entries[0].isIntersecting) {
+          headerName.classList.add('visible');
+          heroObserver.disconnect();
+          hero.style.display = 'none';
+        }
+      }, {
+        threshold: 0,
+        rootMargin: '-60px 0px 0px 0px'
+      });
+
+      heroObserver.observe(logoHero);
     }
-
-    /* ── Header-Name: erscheint wenn Hero-Name rausscrollt ──
-       IntersectionObserver beobachtet #logo-hero.
-       Sobald er nicht mehr sichtbar ist → header-name einblenden.
-       Einmal eingeblendet: bleibt (observer wird getrennt).
-    ── */
-    const heroObserver = new IntersectionObserver(function(entries) {
-      if (!entries[0].isIntersecting) {
-        headerName.classList.add('visible');
-        heroObserver.disconnect();
-        /* Inhalt unsichtbar machen — Platz bleibt, kein Seitensprung,
-           aber zurückscrollen zeigt nur noch schwarz */
-        logoHero.style.visibility = 'hidden';
-      }
-    }, {
-      threshold: 0,
-      rootMargin: '-60px 0px 0px 0px'
-    });
-
-    heroObserver.observe(logoHero);
 
     /* ── Gedicht befüllen ── */
     const poemWrap = document.getElementById('poem-wrap');
