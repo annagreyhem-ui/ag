@@ -22,6 +22,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The House — Anna Greyhem</title>
+  <meta name="description" content="Enter the world of Anna and Alice. The house is alive. Explore, discover — something may have changed since your last visit.">
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
     html, body {
@@ -39,7 +40,7 @@
       align-items: center;
       justify-content: center;
       padding: 0 80px;
-      background: linear-gradient(to bottom, #0a0a0a 60%, transparent);
+      background: linear-gradient(to bottom, #0a0a0a 70%, rgba(10,10,10,0.95) 85%, transparent);
       pointer-events: none;
     }
 
@@ -53,6 +54,73 @@
       pointer-events: all;
     }
 
+    /* ── Menü Button ── */
+    #menu-btn {
+      position: fixed;
+      top: 24px; left: 40px;
+      z-index: 200;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    #menu-btn span {
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--text);
+      opacity: 0.6;
+      transition: all 0.3s ease;
+    }
+
+    #menu-btn:hover span { opacity: 1; }
+    #menu-btn.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); opacity: 1; }
+    #menu-btn.open span:nth-child(2) { opacity: 0; }
+    #menu-btn.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); opacity: 1; }
+
+    /* ── Menü Overlay ── */
+    #menu-overlay {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 150;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 0 clamp(40px, 10vw, 120px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+
+    #menu-overlay.open { opacity: 1; pointer-events: all; }
+
+    .menu-item {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 400;
+      font-size: clamp(28px, 5vw, 48px);
+      color: var(--text-muted);
+      text-decoration: none;
+      letter-spacing: 0.05em;
+      line-height: 1.6;
+      transition: color 0.3s ease;
+      display: block;
+    }
+
+    .menu-item:hover { color: var(--text); }
+
+    .menu-divider {
+      width: 40px;
+      height: 1px;
+      background: rgba(255,255,255,0.08);
+      margin: 24px 0;
+    }
+
     /* ── Footer ── */
     .site-footer {
       position: fixed;
@@ -62,7 +130,7 @@
       padding: 32px clamp(28px, 8vw, 64px) 20px;
     }
 
-    /* ── Bild-Container — füllt den Raum zwischen Header und Footer ── */
+    /* ── Bild-Container ── */
     #house-wrap {
       position: fixed;
       top: 80px;
@@ -87,21 +155,39 @@
 </head>
 <body>
 
+  <!-- Menü Button -->
+  <button id="menu-btn" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <!-- Menü Overlay -->
+  <nav id="menu-overlay">
+    <a href="/the-book/" class="menu-item">The Book</a>
+    <div class="menu-divider"></div>
+    <a href="/the-house/" class="menu-item">The House</a>
+    <div class="menu-divider"></div>
+    <a href="/the-author/" class="menu-item">The Author</a>
+  </nav>
+
+  <!-- Header -->
   <header id="site-header">
     <a href="/">Anna Greyhem</a>
   </header>
 
+  <!-- Floorplan -->
   <div id="house-wrap">
     <img id="floorplan"
          src="/assets/images/the-house.png"
-         alt="The House — floor plan">
+         alt="The House — floor plan of Anna and Alice's villa">
   </div>
 
+  <!-- Footer -->
   <footer class="site-footer">
-    <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
+    <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
 
   <script>
+    /* ── Nacht-Modus ── */
     function isNight() {
       const params = new URLSearchParams(window.location.search);
       if (params.get('night') === 'true') return true;
@@ -112,6 +198,23 @@
     if (isNight()) {
       document.getElementById('floorplan').style.filter = 'invert(1) sepia(0.3) brightness(0.85)';
     }
+
+    /* ── Menü ── */
+    const menuBtn     = document.getElementById('menu-btn');
+    const menuOverlay = document.getElementById('menu-overlay');
+
+    menuBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      menuBtn.classList.toggle('open');
+      menuOverlay.classList.toggle('open');
+    });
+
+    menuOverlay.querySelectorAll('a').forEach(function(link) {
+      link.addEventListener('click', function() {
+        menuBtn.classList.remove('open');
+        menuOverlay.classList.remove('open');
+      });
+    });
   </script>
 
   <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
