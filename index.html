@@ -276,9 +276,11 @@
   </button>
 
   <nav id="menu-overlay">
-    <a href="/books/" class="menu-item">Books</a>
+    <a href="/the-book/" class="menu-item">The Book</a>
     <div class="menu-divider"></div>
-    <span class="menu-item placeholder">The House</span>
+    <a href="/the-author/" class="menu-item">The Author</a>
+    <div class="menu-divider"></div>
+    <a href="/the-house/" class="menu-item">The House</a>
     <div class="menu-divider"></div>
     <span class="menu-item placeholder">Diary</span>
   </nav>
@@ -301,7 +303,7 @@
   </section>
 
   <footer class="site-footer">
-    <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
+    <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
 
   <script>
@@ -334,7 +336,6 @@
         logoHero.innerHTML = i < fullName.length
           ? html + '<span class="tw-cursor"></span>'
           : html;
-        // Header immer synchron halten
         logoHeader.innerHTML = html;
         let delay = 80 + Math.random() * 60;
         if (i === 4) delay = 340;
