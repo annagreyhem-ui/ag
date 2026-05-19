@@ -329,6 +329,19 @@
 
     .tw-cursor.is-night { background: var(--alice); }
 
+    /* Versionsnummer — zum Prüfen ob neue Version geladen ist */
+    #version {
+      position: fixed;
+      bottom: 12px;
+      right: 16px;
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 11px;
+      letter-spacing: 0.15em;
+      color: rgba(255,255,255,0.15);
+      z-index: 9999;
+      pointer-events: none;
+    }
+
     @media (max-width: 600px) {
       .book-layout { flex-direction: column; }
       .book-cover { width: clamp(120px, 50vw, 180px); }
@@ -383,6 +396,8 @@
   <footer class="site-footer">
     <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
+
+  <div id="version">v1</div>
 
   <script>
     /* ── Nacht-Modus ── */
