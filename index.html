@@ -95,9 +95,10 @@
     }
 
     /* ── Fixierter Header ──
-       FIX: padding-top berücksichtigt jetzt die iOS Safe Area (Notch/Statusleiste).
-       env(safe-area-inset-top) = 0 auf normalen Geräten, ~44-59px auf iPhone mit Notch/Dynamic Island.
-       Das background-Gradient wird dadurch auch länger und füllt den ganzen Bereich.
+       IMMER sichtbar, IMMER komplett schwarz.
+       Deckt den Inhalt ab der darunter scrollt.
+       Nur der Name-Text blendet ein/aus — nicht der Balken selbst.
+       Safe Area (env) füllt den Bereich hinter der iOS Statusleiste.
     ── */
     #logo-header {
       position: fixed;
@@ -107,30 +108,35 @@
       align-items: flex-end;
       justify-content: center;
 
-      /* Safe Area + normales Padding oben */
+      /* Safe Area + normales Padding */
       padding-top: calc(env(safe-area-inset-top, 0px) + 20px);
-      padding-bottom: 44px;
+      padding-bottom: 20px;
       padding-left: 80px;
       padding-right: 80px;
 
       pointer-events: none;
 
-      /* Gradient verlängert sich dynamisch je nach Safe Area */
-      background: linear-gradient(to bottom, #0a0a0a 0%, #0a0a0a 55%, rgba(10,10,10,0.92) 80%, transparent 100%);
+      /* Vollständig deckend — kein Gradient, kein Durchscheinen */
+      background: #0a0a0a;
 
       font-family: 'Cormorant Garamond', Georgia, serif;
       font-weight: 400;
       letter-spacing: 0.18em;
-      color: var(--text);
       font-size: clamp(15px, 2vw, 20px);
       white-space: nowrap;
 
-      /* FIX: Übergang über opacity — weich auf allen Geräten */
+      /* Header selbst immer sichtbar */
+      opacity: 1;
+    }
+
+    /* Nur der Name-Text blendet ein */
+    #logo-header-text {
+      color: var(--text);
       opacity: 0;
       transition: opacity 0.6s ease;
     }
 
-    #logo-header.visible { opacity: 1; }
+    #logo-header-text.visible { opacity: 1; }
 
     /* ── Menü Button ──
        FIX: top berücksichtigt jetzt ebenfalls die Safe Area
@@ -387,7 +393,7 @@
     <a href="/the-author/" class="menu-item">The Author</a>
   </nav>
 
-  <div id="logo-header"></div>
+  <div id="logo-header"><span id="logo-header-text"></span></div>
 
   <section id="hero">
     <div id="logo-hero"></div>
@@ -434,19 +440,19 @@
     const night = isNight();
 
     /* ── Session: Haben wir die Animation schon gesehen? ── */
-    const heroEl     = document.getElementById('hero');
-    const logoHero   = document.getElementById('logo-hero');
-    const logoHeader = document.getElementById('logo-header');
-    const fullName   = 'Anna Greyhem';
-    const SEEN_KEY   = 'ag_intro_seen';
+    const heroEl        = document.getElementById('hero');
+    const logoHero      = document.getElementById('logo-hero');
+    const logoHeaderText = document.getElementById('logo-header-text');
+    const fullName      = 'Anna Greyhem';
+    const SEEN_KEY      = 'ag_intro_seen';
 
     const alreadySeen = sessionStorage.getItem(SEEN_KEY) === '1';
 
     if (alreadySeen) {
-      /* Kein Hero — direkt Header sichtbar */
+      /* Kein Hero — direkt Header-Text sichtbar */
       heroEl.classList.add('collapsed');
-      logoHeader.textContent = fullName;
-      logoHeader.classList.add('visible');
+      logoHeaderText.textContent = fullName;
+      logoHeaderText.classList.add('visible');
     } else {
       /* Typewriter Animation */
       async function typewriterLogo() {
@@ -458,7 +464,7 @@
           logoHero.innerHTML = i < fullName.length
             ? typed + `<span class="${cursorClass}"></span>`
             : typed;
-          logoHeader.textContent = typed;
+          logoHeaderText.textContent = typed;
           let delay = 80 + Math.random() * 60;
           if (i === 4) delay = 340;
           await sleep(delay);
@@ -471,15 +477,14 @@
     function collapseHero() {
       if (alreadySeen) return;
       heroEl.classList.add('collapsed');
-      logoHeader.classList.add('visible');
+      /* Text einblenden und nie wieder ausblenden */
+      logoHeaderText.classList.add('visible');
       sessionStorage.setItem(SEEN_KEY, '1');
     }
 
-    /* ── Header scroll-Logik
-       FIX: Statt position-basiertem Sprung wird jetzt ein scroll-Threshold genutzt.
-       Auf Desktop: Header erscheint sobald man 40% des Viewports gescrollt hat.
-       Auf Mobile: gleicher Threshold — fühlt sich auf beiden Geräten konsistent an.
-       requestAnimationFrame verhindert "flackern" auf schnellen Scroll-Events.
+    /* ── Header-Text Scroll-Logik
+       Nur solange Hero noch sichtbar ist.
+       Sobald collapseHero() läuft ist der Text dauerhaft sichtbar.
     ── */
     let ticking = false;
 
@@ -490,9 +495,9 @@
           const scrolled = window.scrollY;
           const threshold = window.innerHeight * 0.4;
           if (scrolled > threshold) {
-            logoHeader.classList.add('visible');
+            logoHeaderText.classList.add('visible');
           } else {
-            logoHeader.classList.remove('visible');
+            logoHeaderText.classList.remove('visible');
           }
           ticking = false;
         });
