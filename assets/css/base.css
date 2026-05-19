@@ -105,6 +105,8 @@ html, body {
   min-height: 100%;
   background: var(--bg);
   color: var(--text);
+  /* Prevents any colour bleeding above fixed headers */
+  background-attachment: fixed;
   -webkit-tap-highlight-color: transparent;  /* kein blaues Aufleuchten beim Tippen auf iOS */
   -webkit-text-size-adjust: 100%;            /* verhindert auto-zoom auf iOS */
   overflow-x: hidden;
@@ -202,6 +204,7 @@ em {
   padding-left: 1.4em;
   font-style: italic;
   font-weight: 300;
+  font-size: 0.9em;
   color: rgba(255, 255, 255, 0.5);
   min-height: 1.9em;
   transition: opacity 0.5s ease, color 0.5s ease;
@@ -235,7 +238,7 @@ em {
   font-style: normal;
   font-size: clamp(24px, 3.5vw, 30px);
   line-height: 1.5;
-  margin-bottom: clamp(48px, 8vh, 80px);
+  margin-bottom: clamp(32px, 5vh, 56px);
   color: var(--text);
   letter-spacing: 0.01em;
 }
