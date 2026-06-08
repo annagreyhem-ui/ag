@@ -96,9 +96,20 @@
       left: 0;
       right: 0;
       z-index: 51;
-      padding: 10px 16px;
+      padding: 11px 16px;
       text-align: center;
       background: #0a0a0a;
+      font-size: 13px;
+      letter-spacing: 0.08em;
+      color: rgba(255, 255, 255, 0.45);
+    }
+    .site-footer a {
+      color: rgba(255, 255, 255, 0.45);
+      text-decoration: none;
+      transition: color 0.3s ease;
+    }
+    .site-footer a:hover {
+      color: rgba(255, 255, 255, 0.85);
     }
   </style>
 </head>
@@ -163,7 +174,8 @@
 
   <script>
     /* ── Texte ── */
-    var ext_alice = [
+    /* Links (-1) = Anna-Farbe, Anna-Perspektive */
+    var ext_anna = [
       '— keep me from sleeping',
       '— he never mentions',
       '— with her',
@@ -175,7 +187,8 @@
       '— colder than before',
       "— holds him. I won't let go.",
     ];
-    var ext_anna = [
+    /* Rechts (+1) = Alice-Farbe, Alice-Perspektive */
+    var ext_alice = [
       '— keep me from sleeping',
       '— I never mention',
       '— with her',
