@@ -15,6 +15,11 @@
   <title>Everyday Erotics — Anna Greyhem</title>
   <link rel="stylesheet" href="/assets/css/base.css">
   <style>
+    /* ── Genug Abstand nach unten für Slider + Footer ── */
+    .page-wrap {
+      padding-bottom: 160px;
+    }
+
     /* ── Titel-Erweiterung ── */
     #title-ext {
       transition: opacity 0.6s ease, color 0.6s ease;
@@ -30,7 +35,7 @@
     /* ── Slider ── */
     #slider-wrap {
       position: fixed;
-      bottom: 0;
+      bottom: 44px; /* Platz für den Footer */
       left: 0;
       right: 0;
       z-index: 50;
@@ -38,7 +43,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: flex-end;
-      padding-bottom: 28px;
+      padding-bottom: 20px;
       gap: 14px;
       background: linear-gradient(to top, #0a0a0a 60%, transparent);
       padding-top: 60px;
@@ -61,7 +66,7 @@
       height: 20px;
       display: flex;
       align-items: center;
-      cursor: none;
+      cursor: default;
     }
 
     #slider-line {
@@ -84,16 +89,20 @@
       pointer-events: none;
     }
 
-    /* ── Footer über Slider ── */
+    /* ── Footer: fest am unteren Rand, unter dem Slider ── */
     .site-footer {
-      position: relative;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
       z-index: 51;
+      padding: 10px 16px;
+      text-align: center;
+      background: #0a0a0a;
     }
   </style>
 </head>
 <body>
-
-
   <div class="page-wrap">
     <div class="story-title" id="title">Everyday erotics<span id="title-ext"></span></div>
     <ul class="poem">
@@ -149,7 +158,7 @@
   </div>
 
   <footer class="site-footer">
-    <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
+    <a href="/">Anna Greyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
   </footer>
 
   <script>
@@ -166,7 +175,6 @@
       '— colder than before',
       "— holds him. I won't let go.",
     ];
-
     var ext_anna = [
       '— keep me from sleeping',
       '— I never mention',
@@ -227,6 +235,7 @@
     }
 
     var dragging = false;
+
     sliderTrack.addEventListener('mousedown', function(e) {
       dragging = true;
       render(valFromClientX(e.clientX));
@@ -236,6 +245,7 @@
       render(valFromClientX(e.clientX));
     });
     document.addEventListener('mouseup', function() { dragging = false; });
+
     sliderTrack.addEventListener('touchstart', function(e) {
       dragging = true;
       render(valFromClientX(e.touches[0].clientX));
@@ -252,24 +262,5 @@
 
   <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
           async src="//gc.zgo.at/count.js"></script>
-  <footer style="
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 16px;
-  text-align: center;
-  font-family: 'Cormorant Garamond', Georgia, serif;
-  font-size: 14px;
-  color: rgba(255,255,255,0.55);
-  background: transparent;
-  z-index: 100;
-">
-  <a href="/" style="color: rgba(255,255,255,0.55); text-decoration: none;">annagreyhem</a>
-  &nbsp;·&nbsp;
-  <a href="/impressum/" style="color: rgba(255,255,255,0.55); text-decoration: none;">impressum</a>
-  &nbsp;·&nbsp;
-  <a href="/datenschutz/" style="color: rgba(255,255,255,0.55); text-decoration: none;">datenschutz</a>
-</footer>
 </body>
 </html>
