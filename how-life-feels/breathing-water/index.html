@@ -1,191 +1,269 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Anna Greyhem</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap"/>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Anna Greyhem – Dissolving</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&display=swap">
 <style>
-* { box-sizing:border-box; margin:0; padding:0; }
-html,body { width:100%; height:100%; background:#000; color:#fff; font-family:Georgia,serif; overflow:hidden; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
-body { display:flex; align-items:center; justify-content:center; }
-.wrap { width:min(680px,88vw); text-align:center; padding:2rem 1rem; pointer-events:none; z-index:2; margin:0 auto; }
-.text { font-size:clamp(19px,2.8vw,24px); line-height:1.85; max-width:560px; opacity:0; transform:translateY(8px); transition:opacity 500ms ease,transform 500ms ease; user-select:none; font-family:'Cormorant Garamond',Georgia,serif; margin:0 auto; }
-.text.visible { opacity:1; transform:translateY(0); }
-#instr { position:fixed; bottom:10vh; left:50%; transform:translateX(-50%); font-size:0.9rem; color:#9a9a9a; letter-spacing:0.08em; white-space:nowrap; opacity:0; transition:opacity 220ms ease; z-index:20; pointer-events:none; }
-#instr.on { opacity:1; }
-/* Hold circle */
-#hold-circle {
-  position:fixed;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,0.5);
-  background:transparent;
-  pointer-events:none;
-  z-index:6;
-  display:none;
-  transform:translate(-50%,-50%);
-}
-/* Choice screen */
-#choice-screen { position:fixed; inset:0; display:none; z-index:10; }
-#choice-anna { position:absolute; top:18vh; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,3vw,28px); color:#fff; letter-spacing:0.12em; pointer-events:none; }
-#choice-alice { position:absolute; bottom:18vh; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,3vw,28px); color:#4a6a8a; letter-spacing:0.12em; pointer-events:none; }
-#waterline { position:absolute; top:50%; left:0; right:0; transform:translateY(8px); pointer-events:none; z-index:11; }
-@keyframes wave { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-#hold-anna, #hold-alice {
-  position:absolute;
-  left:0; right:0;
-  height:50%;
-  background:transparent;
-  border:0;
-  cursor:pointer;
-  z-index:13;
-}
-#hold-anna { top:0; }
-#hold-alice { bottom:0; }
-#tap { position:fixed; inset:0; background:transparent; border:0; z-index:4; cursor:pointer; }
-#soup { position:fixed; bottom:6vh; left:50%; transform:translateX(-50%); font-size:clamp(15px,1.8vw,18px); color:#aaa; opacity:0; transition:opacity 1s ease; pointer-events:none; z-index:20; font-family:'Cormorant Garamond',serif; font-style:italic; }
-#soup.on { opacity:1; }
+* { margin:0; padding:0; box-sizing:border-box; }
+body { background:#000; color:#fff; font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(20px,3vw,24px); line-height:1.85; overflow-x:hidden; }
+.story { display:none; min-height:100vh; animation:fadein 1.4s ease forwards; }
+.story.active { display:block; }
+@keyframes fadein { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+.story-inner { max-width:640px; margin:0 auto; padding:80px 40px 120px; }
+.center-page { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:80px 40px; text-align:center; }
+h1 { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(26px,4vw,40px); color:#fff; letter-spacing:0.08em; margin-bottom:48px; line-height:1.3; }
+p { margin-bottom:1.2em; font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(20px,3vw,24px); line-height:1.85; }
+p:last-of-type { margin-bottom:0; }
+em { font-style:italic; color:#bbb; }
+#fixed-nav { position:fixed; bottom:40px; left:50%; transform:translateX(-50%); z-index:500; display:none; font-size:32px; color:#555; padding:8px 48px; cursor:pointer; transition:color 0.3s; user-select:none; }
+#fixed-nav:hover { color:#fff; }
+#dissolving-title { font-family:'Cormorant Garamond',serif; font-style:italic; font-weight:300; font-size:clamp(42px,10vw,100px); letter-spacing:0.18em; color:#fff; opacity:0; animation:titlefade 2.5s ease forwards; }
+@keyframes titlefade { 0%{opacity:0} 100%{opacity:1} }
+#tap-text { font-family:'Cormorant Garamond',Georgia,serif; font-size:clamp(20px,3vw,24px); line-height:1.85; opacity:0; transform:translateY(8px); transition:opacity 0.5s ease,transform 0.5s ease; max-width:560px; margin:0 auto; }
+#tap-hint { margin-top:48px; font-size:0.8em; color:#555; letter-spacing:0.1em; opacity:0; transition:opacity 0.5s ease; }
+.sletter { display:inline-block; }
+#page-link { position:fixed; bottom:70px; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(15px,1.8vw,18px); color:#aaa; text-align:center; opacity:0; transition:opacity 1.5s ease; z-index:100; }
+@keyframes tw-blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
+@media (max-width:600px) { .story-inner { padding:60px 24px 100px; } .center-page { padding:60px 24px; } }
 </style>
 </head>
 <body>
-<div class="wrap"><div class="text" id="txt"></div></div>
-<div id="instr"></div>
-<div id="soup">→ p. 121</div>
-<div id="hold-circle"></div>
-<div id="choice-screen">
-  <div id="choice-anna">Anna</div>
-  <svg id="waterline" width="100%" height="28" viewBox="0 0 400 28" preserveAspectRatio="none">
-    <g style="animation:wave 4s linear infinite;">
-      <path d="M0,14 C25,8 50,20 75,14 C100,8 125,20 150,14 C175,8 200,20 225,14 C250,8 275,20 300,14 C325,8 350,20 375,14 C400,8 425,20 450,14" stroke="rgba(80,130,200,0.35)" stroke-width="1" fill="none"/>
-    </g>
-  </svg>
-  <div id="choice-alice">Alice</div>
-  <button id="hold-anna"></button>
-  <button id="hold-alice"></button>
+<div id="fixed-nav">&#8964;</div>
+<!-- PAGE 0: DISSOLVING -->
+<div class="story active" id="p0">
+  <div class="center-page">
+    <div id="dissolving-title">DISSOLVING</div>
+  </div>
 </div>
-<button id="tap"></button>
+<!-- PAGE 1: Tap-through -->
+<div class="story" id="p1">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 40px;">
+    <div style="text-align:center;">
+      <div id="tap-text"></div>
+      <div id="tap-hint">tap</div>
+    </div>
+  </div>
+</div>
+<!-- PAGE 2: Mirror, mirror on the floor -->
+<div class="story" id="p2">
+  <div class="story-inner" style="line-height:1.6;">
+    <h1>Mirror, mirror on the floor</h1>
+    <p style="margin-bottom:0.7em;">Anna&rsquo;s hands were trembling. Water dripped from her face onto the floor.</p>
+    <p style="margin-bottom:0.7em;">Her reflection was shattered. A thousand false versions of her lay on the cold tiles.</p>
+    <p style="margin-bottom:0.7em;">She couldn&rsquo;t see herself.</p>
+    <p style="margin-bottom:0.7em;">Anna knelt down and began piecing the shards together. Carefully at first, then frantically.</p>
+    <p style="margin-bottom:0.7em;">The pieces didn&rsquo;t fit.</p>
+    <p style="margin-bottom:0.7em;">The more desperately I tried to put myself back together, the more I cut myself. The blood mixed with the water. Still, I didn&rsquo;t stop. I had to see myself. I had to know if I was still there. If I had ever been there.</p>
+    <p style="margin-bottom:0.7em;">Then I had it &mdash; the puzzle was solved. I was ready to look at myself.</p>
+    <p style="margin-bottom:0.7em;">But one shard still lay at the edge.</p>
+    <p style="margin-top:2.5em;">Had I put myself together wrong?</p>
+  </div>
+</div>
+<!-- PAGE 3: A short insanity -->
+<div class="story" id="p3">
+  <div class="story-inner" id="insanity-inner">
+    <h1>A short insanity</h1>
+    <p>It feels as though I am pulled into this book.</p>
+    <p>I barely sleep anymore. The thoughts don&rsquo;t wait until I&rsquo;m awake. Even in the shower I whisper new ideas to myself over and over, so I won&rsquo;t forget them.</p>
+    <p>Slowly I no longer know where the book ends and where I begin. First came the book, then came I.</p>
+    <p>I&rsquo;m looking for something in this book. If only I could remember what exactly. I&rsquo;m certain it&rsquo;s there. It has to be there. I&rsquo;ve written too much for it not to be.</p>
+    <p>But how will I recognize it if I don&rsquo;t know what I&rsquo;m looking for? Maybe I&rsquo;ll recognize it when I find it. Maybe I&rsquo;ll find it when I stop looking. But I can&rsquo;t stop looking.</p>
+    <p>Or have I hidden myself? Have I shattered into a thousand glittering shards and scattered them, so I can&rsquo;t be found?</p>
+    <p id="insanity-trigger">I should ask Alice. Or Anna. The two of them know their way around here better than I do.</p>
+  </div>
+</div>
+<!-- PAGE 4: I keep shifting -->
+<div class="story" id="p4">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 40px;">
+    <div id="shift-text" style="font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(24px,4vw,40px);color:#fff;letter-spacing:0.1em;text-align:center;"></div>
+  </div>
+</div>
+<!-- PAGE 5: Dear reader -->
+<div class="story" id="p5">
+  <div class="story-inner">
+    <h1>Dear reader,</h1>
+    <p>Isn&rsquo;t it strange. You&rsquo;ve been reading me this whole time.</p>
+    <p>But which one of us did you meet? I&rsquo;m not sure I know anymore.</p>
+    <p>Anna is smoke. She surrounds me, settles on my skin, disappears with me into the dark. Lately I forget where she ends.</p>
+    <p>Sometimes she is so close that I burn myself on her embers. And then it shifts, only her ashes stay with me. She changes the temperature in rooms. I can feel it.</p>
+  </div>
+</div>
+<!-- PAGE 6: Anna's Monster -->
+<div class="story" id="p6">
+  <div class="story-inner">
+    <h1>Anna&rsquo;s Monster</h1>
+    <p><em>I chased after hope, after the feeling of feeling.</em></p>
+    <p>First came the book, then came I.</p>
+    <p>Frankenstein had loved his monster too.</p>
+    <p>Am I the price I pay for this book to exist?</p>
+    <p><em>Then the heat struck me. It ate through my wings, through my skin. My longing had burned me and I paid with a part of myself.</em></p>
+    <p>I fell. The water swallowed me.</p>
+    <p>I tried to hold my breath for as long as possible and hoped that someone would notice I was missing.</p>
+    <p><em>Far away in the cold water, I saw Alice.</em></p>
+    <p>Would I ever find my way back to the surface?</p>
+  </div>
+</div>
+<!-- PAGE 7: Am I too much? -->
+<div class="story" id="p7">
+  <div class="story-inner">
+    <h1>Am I too much?</h1>
+    <p>Perhaps there was one shard too many, because the sum of my parts was more than me. That&rsquo;s why I had shattered. I was too much.</p>
+    <p>The salt water left an empty stomach. I was hungry. I was so hungry for life.</p>
+    <p>I&rsquo;m craving soup.</p>
+  </div>
+  <div id="page-link">&rarr; p. 115</div>
+</div>
 <script>
-var HOLD_MS = 2200;
-var flow = [
-  'Anna kept floating in the water. She couldn\u2019t feel the cold anymore.',
-  'Her body went quiet.',
-  'She looked down.',
-  'Alice was below her, deep in the ocean. Smiling, ready to drag her into eternal darkness.',
-  'She looked up.',
-  'Anna was above her, at the surface. Tears ran down her face, she looked strangely distorted through the water.',
-  'Both reached for her.'
+var PAGES = ['p0','p1','p2','p3','p4','p5','p6','p7'];
+var TOTAL = PAGES.length - 1;
+var current = 0;
+function getPage(n) { return document.getElementById(PAGES[n]); }
+var fixedNav = document.getElementById('fixed-nav');
+fixedNav.addEventListener('click', function() { navigate(1); });
+function navigate(dir) {
+  var next = current + dir;
+  if (next < 0 || next > TOTAL) return;
+  getPage(current).classList.remove('active');
+  current = next;
+  getPage(current).classList.add('active');
+  window.scrollTo(0, 0);
+  showPage(current);
+}
+function showPage(n) {
+  var pageId = PAGES[n];
+  fixedNav.style.display = (n < TOTAL && pageId !== 'p7' && pageId !== 'p1') ? 'block' : 'none';
+  if (pageId === 'p1') startTapFlow();
+  if (pageId === 'p3') setTimeout(setupInsanityObserver, 600);
+  else if (insanityObserver) insanityObserver.disconnect();
+  if (pageId === 'p4') startShiftGlitch();
+  else stopShiftGlitch();
+  if (pageId === 'p7') setTimeout(function(){ document.getElementById('page-link').style.opacity = '1'; }, 2000);
+}
+// TAP-THROUGH
+var tapFlow = [
+  'She could no longer press her head against the faucet.',
+  'Anna gasped as she pulled her face out of the filled sink.',
+  'She looked up, looked into the mirror, looked into nothing. She couldn\u2019t see herself.',
+  'The book had swallowed her.'
 ];
-var txt = document.getElementById('txt');
-var instr = document.getElementById('instr');
-var tap = document.getElementById('tap');
-var soup = document.getElementById('soup');
-var choiceScreen = document.getElementById('choice-screen');
-var holdAnnaBtn = document.getElementById('hold-anna');
-var holdAliceBtn = document.getElementById('hold-alice');
-var holdCircle = document.getElementById('hold-circle');
-var flowIdx = 0;
-var phase = 'flow';
-var tapShown = false;
-var holdTimer = null;
-var holdRaf = null;
-var holdStart = 0;
-var maxR = 0;
-function setInstr(t){
-  instr.textContent=t||'';
-  instr.classList.toggle('on',!!t);
-}
-function showTxt(item){
-  txt.classList.remove('visible');
+var tapIdx = 0;
+function startTapFlow() {
+  tapIdx = 0;
+  var el = document.getElementById('tap-text');
+  var hint = document.getElementById('tap-hint');
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(8px)';
+  hint.style.opacity = '0';
   setTimeout(function(){
-    txt.textContent=(typeof item==='object'?item.t:item);
-    txt.classList.add('visible');
-    if(!tapShown){
-      tapShown=true;
-      setTimeout(function(){ setInstr('tap'); },600);
+    showTapText(tapFlow[tapIdx++]);
+    setTimeout(function(){ hint.style.opacity = '1'; }, 800);
+  }, 400);
+}
+function showTapText(str) {
+  var el = document.getElementById('tap-text');
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(8px)';
+  setTimeout(function(){
+    el.textContent = str;
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  }, 300);
+}
+document.addEventListener('click', function(e) {
+  if (PAGES[current] !== 'p1') return;
+  document.getElementById('tap-hint').style.opacity = '0';
+  if (tapIdx < tapFlow.length) {
+    showTapText(tapFlow[tapIdx++]);
+  } else {
+    navigate(1);
+  }
+});
+// I KEEP SHIFTING GLITCH
+var shiftStr = 'I keep shifting.';
+var shiftContainer = document.getElementById('shift-text');
+var shiftLetters = [];
+var glitchChars = ['a','e','i','o','s','h','f','t','g','x','z','#','&','@','!'];
+var shiftTimer = null;
+for (var si = 0; si < shiftStr.length; si++) {
+  var sp = document.createElement('span');
+  sp.className = 'sletter';
+  sp.textContent = shiftStr[si] === ' ' ? '\u00a0' : shiftStr[si];
+  shiftContainer.appendChild(sp);
+  shiftLetters.push(sp);
+}
+function doShiftGlitch() {
+  var n = 2 + Math.floor(Math.random() * 4);
+  var saved = [];
+  for (var g = 0; g < n; g++) {
+    var idx = Math.floor(Math.random() * shiftLetters.length);
+    if (shiftStr[idx] === ' ') continue;
+    var s = shiftLetters[idx];
+    s.style.transform = 'translate('+((Math.random()-0.5)*14)+'px,'+((Math.random()-0.5)*10)+'px) rotate('+((Math.random()-0.5)*18)+'deg) scale('+(0.6+Math.random()*0.7)+')';
+    s.style.opacity = String(0.3 + Math.random() * 0.7);
+    if (Math.random() < 0.6) s.textContent = glitchChars[Math.floor(Math.random() * glitchChars.length)];
+    saved.push({ el:s, orig: shiftStr[idx] === ' ' ? '\u00a0' : shiftStr[idx] });
+  }
+  shiftContainer.style.transform = 'translate('+((Math.random()-0.5)*8)+'px,'+((Math.random()-0.5)*5)+'px)';
+  setTimeout(function() {
+    for (var r = 0; r < saved.length; r++) {
+      saved[r].el.style.transform = '';
+      saved[r].el.style.opacity = '1';
+      saved[r].el.textContent = saved[r].orig;
     }
-  },300);
+    shiftContainer.style.transform = '';
+  }, 60 + Math.random() * 90);
 }
-function advance(){
-  if(flowIdx < flow.length){
-    showTxt(flow[flowIdx++]);
-  } else {
-    enterChoice();
+function shiftBurst() {
+  var b = 3 + Math.floor(Math.random() * 4);
+  for (var i = 0; i < b; i++) {
+    (function(d){ setTimeout(doShiftGlitch, d); })(i * (70 + Math.random() * 100));
   }
 }
-function enterChoice(){
-  phase='choice';
-  tap.style.display='none';
-  choiceScreen.style.display='block';
-  txt.classList.remove('visible');
-  setInstr('hold to choose');
+function startShiftGlitch() {
+  stopShiftGlitch();
+  shiftBurst();
+  function loop() { shiftBurst(); shiftTimer = setTimeout(loop, 1500 + Math.random() * 2000); }
+  shiftTimer = setTimeout(loop, 800);
 }
-function exitChoice(){
-  choiceScreen.style.display='none';
-  tap.style.display='';
-  setInstr('');
-  stopHoldCircle();
+function stopShiftGlitch() {
+  if (shiftTimer) { clearTimeout(shiftTimer); shiftTimer = null; }
 }
-function startHoldCircle(x,y,color){
-  holdStart=performance.now();
-  maxR=Math.min(window.innerWidth,window.innerHeight)*0.8;
-  holdCircle.style.display='block';
-  holdCircle.style.left=x+'px';
-  holdCircle.style.top=y+'px';
-  holdCircle.style.borderColor=color;
-  holdCircle.style.width='20px';
-  holdCircle.style.height='20px';
-  if(holdRaf) cancelAnimationFrame(holdRaf);
-  holdRaf=requestAnimationFrame(function tick(now){
-    var progress=Math.min((now-holdStart)/HOLD_MS,1);
-    var size=20+(maxR-20)*progress;
-    holdCircle.style.width=size+'px';
-    holdCircle.style.height=size+'px';
-    if(progress<1) holdRaf=requestAnimationFrame(tick);
-  });
+// A SHORT INSANITY GLITCH
+var insanityDone = false;
+var insanityObserver = null;
+function setupInsanityObserver() {
+  insanityDone = false;
+  var trigger = document.getElementById('insanity-trigger');
+  if (!trigger) return;
+  if (insanityObserver) insanityObserver.disconnect();
+  insanityObserver = new IntersectionObserver(function(entries) {
+    if (entries[0].isIntersecting && !insanityDone) {
+      insanityDone = true;
+      setTimeout(doInsanityGlitch, 400);
+    }
+  }, { threshold: 0.5 });
+  insanityObserver.observe(trigger);
 }
-function stopHoldCircle(){
-  if(holdRaf){ cancelAnimationFrame(holdRaf); holdRaf=null; }
-  holdCircle.style.display='none';
-}
-function startHold(who,x,y){
-  var color=who==='anna'?'rgba(255,255,255,0.6)':'rgba(80,130,200,0.6)';
-  startHoldCircle(x,y,color);
-  holdTimer=setTimeout(function(){ finishHold(who); },HOLD_MS);
-}
-function cancelHold(){
-  clearTimeout(holdTimer);
-  stopHoldCircle();
-}
-function finishHold(who){
-  clearTimeout(holdTimer);
-  exitChoice();
-  if(who==='alice'){
-    window.location.href='https://annagreyhem.com/how-life-feels/breathing-water/alice';
-  } else {
-    window.location.href='https://annagreyhem.com/how-life-feels/breathing-water/anna';
+function runJolts(inner, count, callback) {
+  var jolts = 0;
+  function jolt() {
+    if (jolts >= count) { inner.style.transform = ''; if (callback) callback(); return; }
+    inner.style.transform = 'translate('+((Math.random()-0.5)*52)+'px,'+((Math.random()-0.5)*32)+'px) rotate('+((Math.random()-0.5)*3)+'deg)';
+    jolts++;
+    setTimeout(jolt, 45 + Math.random() * 50);
   }
+  jolt();
 }
-tap.addEventListener('click',function(){
-  setInstr('');
-  if(phase==='flow') advance();
-});
-['pointerdown','touchstart','mousedown'].forEach(function(ev){
-  holdAnnaBtn.addEventListener(ev,function(e){
-    e.preventDefault();
-    var p=e.touches?e.touches[0]:e;
-    startHold('anna',p.clientX,p.clientY);
+function doInsanityGlitch() {
+  var inner = document.getElementById('insanity-inner');
+  runJolts(inner, 5, function() {
+    setTimeout(function() { runJolts(inner, 4, null); }, 4000);
   });
-  holdAliceBtn.addEventListener(ev,function(e){
-    e.preventDefault();
-    var p=e.touches?e.touches[0]:e;
-    startHold('alice',p.clientX,p.clientY);
-  });
-});
-['pointerup','pointercancel','touchend','mouseup','mouseleave'].forEach(function(ev){
-  holdAnnaBtn.addEventListener(ev,function(){ cancelHold(); });
-  holdAliceBtn.addEventListener(ev,function(){ cancelHold(); });
-});
-advance();
+}
+// init
+showPage(0);
 </script>
 <footer style="
   position: fixed;
