@@ -9,14 +9,11 @@
 * { box-sizing:border-box; margin:0; padding:0; }
 html,body { width:100%; height:100%; background:#000; color:#fff; font-family:Georgia,serif; overflow:hidden; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
 body { display:flex; align-items:center; justify-content:center; }
-
 .wrap { width:min(680px,88vw); text-align:center; padding:2rem 1rem; pointer-events:none; z-index:2; margin:0 auto; }
 .text { font-size:clamp(19px,2.8vw,24px); line-height:1.85; max-width:560px; opacity:0; transform:translateY(8px); transition:opacity 500ms ease,transform 500ms ease; user-select:none; font-family:'Cormorant Garamond',Georgia,serif; margin:0 auto; }
 .text.visible { opacity:1; transform:translateY(0); }
-
 #instr { position:fixed; bottom:10vh; left:50%; transform:translateX(-50%); font-size:0.9rem; color:#9a9a9a; letter-spacing:0.08em; white-space:nowrap; opacity:0; transition:opacity 220ms ease; z-index:20; pointer-events:none; }
 #instr.on { opacity:1; }
-
 /* Hold circle */
 #hold-circle {
   position:fixed;
@@ -28,15 +25,12 @@ body { display:flex; align-items:center; justify-content:center; }
   display:none;
   transform:translate(-50%,-50%);
 }
-
 /* Choice screen */
 #choice-screen { position:fixed; inset:0; display:none; z-index:10; }
 #choice-anna { position:absolute; top:18vh; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,3vw,28px); color:#fff; letter-spacing:0.12em; pointer-events:none; }
 #choice-alice { position:absolute; bottom:18vh; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,3vw,28px); color:#4a6a8a; letter-spacing:0.12em; pointer-events:none; }
 #waterline { position:absolute; top:50%; left:0; right:0; transform:translateY(8px); pointer-events:none; z-index:11; }
-
 @keyframes wave { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
-
 #hold-anna, #hold-alice {
   position:absolute;
   left:0; right:0;
@@ -48,20 +42,16 @@ body { display:flex; align-items:center; justify-content:center; }
 }
 #hold-anna { top:0; }
 #hold-alice { bottom:0; }
-
 #tap { position:fixed; inset:0; background:transparent; border:0; z-index:4; cursor:pointer; }
-
 #soup { position:fixed; bottom:6vh; left:50%; transform:translateX(-50%); font-size:clamp(15px,1.8vw,18px); color:#aaa; opacity:0; transition:opacity 1s ease; pointer-events:none; z-index:20; font-family:'Cormorant Garamond',serif; font-style:italic; }
 #soup.on { opacity:1; }
 </style>
 </head>
 <body>
-
 <div class="wrap"><div class="text" id="txt"></div></div>
 <div id="instr"></div>
 <div id="soup">→ p. 121</div>
 <div id="hold-circle"></div>
-
 <div id="choice-screen">
   <div id="choice-anna">Anna</div>
   <svg id="waterline" width="100%" height="28" viewBox="0 0 400 28" preserveAspectRatio="none">
@@ -73,12 +63,9 @@ body { display:flex; align-items:center; justify-content:center; }
   <button id="hold-anna"></button>
   <button id="hold-alice"></button>
 </div>
-
 <button id="tap"></button>
-
 <script>
 var HOLD_MS = 2200;
-
 var flow = [
   'Anna kept floating in the water. She couldn\u2019t feel the cold anymore.',
   'Her body went quiet.',
@@ -88,7 +75,6 @@ var flow = [
   'Anna was above her, at the surface. Tears ran down her face, she looked strangely distorted through the water.',
   'Both reached for her.'
 ];
-
 var txt = document.getElementById('txt');
 var instr = document.getElementById('instr');
 var tap = document.getElementById('tap');
@@ -97,7 +83,6 @@ var choiceScreen = document.getElementById('choice-screen');
 var holdAnnaBtn = document.getElementById('hold-anna');
 var holdAliceBtn = document.getElementById('hold-alice');
 var holdCircle = document.getElementById('hold-circle');
-
 var flowIdx = 0;
 var phase = 'flow';
 var tapShown = false;
@@ -105,12 +90,10 @@ var holdTimer = null;
 var holdRaf = null;
 var holdStart = 0;
 var maxR = 0;
-
 function setInstr(t){
   instr.textContent=t||'';
   instr.classList.toggle('on',!!t);
 }
-
 function showTxt(item){
   txt.classList.remove('visible');
   setTimeout(function(){
@@ -122,7 +105,6 @@ function showTxt(item){
     }
   },300);
 }
-
 function advance(){
   if(flowIdx < flow.length){
     showTxt(flow[flowIdx++]);
@@ -130,7 +112,6 @@ function advance(){
     enterChoice();
   }
 }
-
 function enterChoice(){
   phase='choice';
   tap.style.display='none';
@@ -138,14 +119,12 @@ function enterChoice(){
   txt.classList.remove('visible');
   setInstr('hold to choose');
 }
-
 function exitChoice(){
   choiceScreen.style.display='none';
   tap.style.display='';
   setInstr('');
   stopHoldCircle();
 }
-
 function startHoldCircle(x,y,color){
   holdStart=performance.now();
   maxR=Math.min(window.innerWidth,window.innerHeight)*0.8;
@@ -164,38 +143,32 @@ function startHoldCircle(x,y,color){
     if(progress<1) holdRaf=requestAnimationFrame(tick);
   });
 }
-
 function stopHoldCircle(){
   if(holdRaf){ cancelAnimationFrame(holdRaf); holdRaf=null; }
   holdCircle.style.display='none';
 }
-
 function startHold(who,x,y){
   var color=who==='anna'?'rgba(255,255,255,0.6)':'rgba(80,130,200,0.6)';
   startHoldCircle(x,y,color);
   holdTimer=setTimeout(function(){ finishHold(who); },HOLD_MS);
 }
-
 function cancelHold(){
   clearTimeout(holdTimer);
   stopHoldCircle();
 }
-
 function finishHold(who){
   clearTimeout(holdTimer);
   exitChoice();
   if(who==='alice'){
-    window.location.href='https://annagreyhem-ui.github.io/annagreyhem/Alice_Hand.html';
+    window.location.href='https://annagreyhem.com/how-life-feels/breathing-water/alice';
   } else {
-    window.location.href='https://annagreyhem-ui.github.io/annagreyhem/Anna_Hand.html';
+    window.location.href='https://annagreyhem.com/how-life-feels/breathing-water/anna';
   }
 }
-
 tap.addEventListener('click',function(){
   setInstr('');
   if(phase==='flow') advance();
 });
-
 ['pointerdown','touchstart','mousedown'].forEach(function(ev){
   holdAnnaBtn.addEventListener(ev,function(e){
     e.preventDefault();
@@ -208,12 +181,10 @@ tap.addEventListener('click',function(){
     startHold('alice',p.clientX,p.clientY);
   });
 });
-
 ['pointerup','pointercancel','touchend','mouseup','mouseleave'].forEach(function(ev){
   holdAnnaBtn.addEventListener(ev,function(){ cancelHold(); });
   holdAliceBtn.addEventListener(ev,function(){ cancelHold(); });
 });
-
 advance();
 </script>
 <footer style="
