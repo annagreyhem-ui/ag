@@ -1,27 +1,221 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!--
-    DATEI: index.html
-    ERLEBNIS: breathing-water
-    BUCH-SEITE: 
-    KOMMT VON: QR-Code
-    FÜHRT ZU: breathing-water/anna/, breathing-water/alice/
-    FARBEN: --anna, --alice
-    STATUS: In Arbeit
-  -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Breathing Water — Anna Greyhem</title>
-  <link rel="stylesheet" href="/assets/css/base.css">
-  <style></style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Anna Greyhem</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;1,400&display=swap"/>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+html,body { width:100%; height:100%; background:#000; color:#fff; font-family:Georgia,serif; overflow:hidden; -webkit-tap-highlight-color:transparent; touch-action:manipulation; }
+body { display:flex; align-items:center; justify-content:center; }
+
+.wrap { width:min(680px,88vw); text-align:center; padding:2rem 1rem; pointer-events:none; z-index:2; margin:0 auto; }
+.text { font-size:clamp(19px,2.8vw,24px); line-height:1.85; max-width:560px; opacity:0; transform:translateY(8px); transition:opacity 500ms ease,transform 500ms ease; user-select:none; font-family:'Cormorant Garamond',Georgia,serif; margin:0 auto; }
+.text.visible { opacity:1; transform:translateY(0); }
+
+#instr { position:fixed; bottom:10vh; left:50%; transform:translateX(-50%); font-size:0.9rem; color:#9a9a9a; letter-spacing:0.08em; white-space:nowrap; opacity:0; transition:opacity 220ms ease; z-index:20; pointer-events:none; }
+#instr.on { opacity:1; }
+
+/* Hold circle */
+#hold-circle {
+  position:fixed;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.5);
+  background:transparent;
+  pointer-events:none;
+  z-index:6;
+  display:none;
+  transform:translate(-50%,-50%);
+}
+
+/* Choice screen */
+#choice-screen { position:fixed; inset:0; display:none; z-index:10; }
+#choice-anna { position:absolute; top:18vh; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,3vw,28px); color:#fff; letter-spacing:0.12em; pointer-events:none; }
+#choice-alice { position:absolute; bottom:18vh; left:50%; transform:translateX(-50%); font-family:'Cormorant Garamond',serif; font-style:italic; font-size:clamp(20px,3vw,28px); color:#4a6a8a; letter-spacing:0.12em; pointer-events:none; }
+#waterline { position:absolute; top:50%; left:0; right:0; transform:translateY(8px); pointer-events:none; z-index:11; }
+
+@keyframes wave { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+#hold-anna, #hold-alice {
+  position:absolute;
+  left:0; right:0;
+  height:50%;
+  background:transparent;
+  border:0;
+  cursor:pointer;
+  z-index:13;
+}
+#hold-anna { top:0; }
+#hold-alice { bottom:0; }
+
+#tap { position:fixed; inset:0; background:transparent; border:0; z-index:4; cursor:pointer; }
+
+#soup { position:fixed; bottom:6vh; left:50%; transform:translateX(-50%); font-size:clamp(15px,1.8vw,18px); color:#aaa; opacity:0; transition:opacity 1s ease; pointer-events:none; z-index:20; font-family:'Cormorant Garamond',serif; font-style:italic; }
+#soup.on { opacity:1; }
+</style>
 </head>
 <body>
-  <footer class="site-footer">
-  <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
-</footer>
-  <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+
+<div class="wrap"><div class="text" id="txt"></div></div>
+<div id="instr"></div>
+<div id="soup">→ p. 121</div>
+<div id="hold-circle"></div>
+
+<div id="choice-screen">
+  <div id="choice-anna">Anna</div>
+  <svg id="waterline" width="100%" height="28" viewBox="0 0 400 28" preserveAspectRatio="none">
+    <g style="animation:wave 4s linear infinite;">
+      <path d="M0,14 C25,8 50,20 75,14 C100,8 125,20 150,14 C175,8 200,20 225,14 C250,8 275,20 300,14 C325,8 350,20 375,14 C400,8 425,20 450,14" stroke="rgba(80,130,200,0.35)" stroke-width="1" fill="none"/>
+    </g>
+  </svg>
+  <div id="choice-alice">Alice</div>
+  <button id="hold-anna"></button>
+  <button id="hold-alice"></button>
+</div>
+
+<button id="tap"></button>
+
+<script>
+var HOLD_MS = 2200;
+
+var flow = [
+  'Anna kept floating in the water. She couldn\u2019t feel the cold anymore.',
+  'Her body went quiet.',
+  'She looked down.',
+  'Alice was below her, deep in the ocean. Smiling, ready to drag her into eternal darkness.',
+  'She looked up.',
+  'Anna was above her, at the surface. Tears ran down her face, she looked strangely distorted through the water.',
+  'Both reached for her.'
+];
+
+var txt = document.getElementById('txt');
+var instr = document.getElementById('instr');
+var tap = document.getElementById('tap');
+var soup = document.getElementById('soup');
+var choiceScreen = document.getElementById('choice-screen');
+var holdAnnaBtn = document.getElementById('hold-anna');
+var holdAliceBtn = document.getElementById('hold-alice');
+var holdCircle = document.getElementById('hold-circle');
+
+var flowIdx = 0;
+var phase = 'flow';
+var tapShown = false;
+var holdTimer = null;
+var holdRaf = null;
+var holdStart = 0;
+var maxR = 0;
+
+function setInstr(t){
+  instr.textContent=t||'';
+  instr.classList.toggle('on',!!t);
+}
+
+function showTxt(item){
+  txt.classList.remove('visible');
+  setTimeout(function(){
+    txt.textContent=(typeof item==='object'?item.t:item);
+    txt.classList.add('visible');
+    if(!tapShown){
+      tapShown=true;
+      setTimeout(function(){ setInstr('tap'); },600);
+    }
+  },300);
+}
+
+function advance(){
+  if(flowIdx < flow.length){
+    showTxt(flow[flowIdx++]);
+  } else {
+    enterChoice();
+  }
+}
+
+function enterChoice(){
+  phase='choice';
+  tap.style.display='none';
+  choiceScreen.style.display='block';
+  txt.classList.remove('visible');
+  setInstr('hold to choose');
+}
+
+function exitChoice(){
+  choiceScreen.style.display='none';
+  tap.style.display='';
+  setInstr('');
+  stopHoldCircle();
+}
+
+function startHoldCircle(x,y,color){
+  holdStart=performance.now();
+  maxR=Math.min(window.innerWidth,window.innerHeight)*0.8;
+  holdCircle.style.display='block';
+  holdCircle.style.left=x+'px';
+  holdCircle.style.top=y+'px';
+  holdCircle.style.borderColor=color;
+  holdCircle.style.width='20px';
+  holdCircle.style.height='20px';
+  if(holdRaf) cancelAnimationFrame(holdRaf);
+  holdRaf=requestAnimationFrame(function tick(now){
+    var progress=Math.min((now-holdStart)/HOLD_MS,1);
+    var size=20+(maxR-20)*progress;
+    holdCircle.style.width=size+'px';
+    holdCircle.style.height=size+'px';
+    if(progress<1) holdRaf=requestAnimationFrame(tick);
+  });
+}
+
+function stopHoldCircle(){
+  if(holdRaf){ cancelAnimationFrame(holdRaf); holdRaf=null; }
+  holdCircle.style.display='none';
+}
+
+function startHold(who,x,y){
+  var color=who==='anna'?'rgba(255,255,255,0.6)':'rgba(80,130,200,0.6)';
+  startHoldCircle(x,y,color);
+  holdTimer=setTimeout(function(){ finishHold(who); },HOLD_MS);
+}
+
+function cancelHold(){
+  clearTimeout(holdTimer);
+  stopHoldCircle();
+}
+
+function finishHold(who){
+  clearTimeout(holdTimer);
+  exitChoice();
+  if(who==='alice'){
+    window.location.href='https://annagreyhem-ui.github.io/annagreyhem/Alice_Hand.html';
+  } else {
+    window.location.href='https://annagreyhem-ui.github.io/annagreyhem/Anna_Hand.html';
+  }
+}
+
+tap.addEventListener('click',function(){
+  setInstr('');
+  if(phase==='flow') advance();
+});
+
+['pointerdown','touchstart','mousedown'].forEach(function(ev){
+  holdAnnaBtn.addEventListener(ev,function(e){
+    e.preventDefault();
+    var p=e.touches?e.touches[0]:e;
+    startHold('anna',p.clientX,p.clientY);
+  });
+  holdAliceBtn.addEventListener(ev,function(e){
+    e.preventDefault();
+    var p=e.touches?e.touches[0]:e;
+    startHold('alice',p.clientX,p.clientY);
+  });
+});
+
+['pointerup','pointercancel','touchend','mouseup','mouseleave'].forEach(function(ev){
+  holdAnnaBtn.addEventListener(ev,function(){ cancelHold(); });
+  holdAliceBtn.addEventListener(ev,function(){ cancelHold(); });
+});
+
+advance();
+</script>
 <footer style="
   position: fixed;
   bottom: 0;
@@ -32,14 +226,14 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 14px;
   color: rgba(255,255,255,0.55);
-  background: transparent;
+  background: #000;
   z-index: 100;
 ">
-  <a href="/" style="color: rgba(255,255,255,0.55); text-decoration: none;">annagreyhem</a>
+  <a href="https://annagreyhem.com/" style="color: rgba(255,255,255,0.55); text-decoration: none;">annagreyhem</a>
   &nbsp;·&nbsp;
-  <a href="/impressum/" style="color: rgba(255,255,255,0.55); text-decoration: none;">impressum</a>
+  <a href="https://annagreyhem.com/impressum/" style="color: rgba(255,255,255,0.55); text-decoration: none;">impressum</a>
   &nbsp;·&nbsp;
-  <a href="/datenschutz/" style="color: rgba(255,255,255,0.55); text-decoration: none;">datenschutz</a>
+  <a href="https://annagreyhem.com/datenschutz/" style="color: rgba(255,255,255,0.55); text-decoration: none;">datenschutz</a>
 </footer>
 </body>
 </html>
