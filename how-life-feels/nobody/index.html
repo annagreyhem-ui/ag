@@ -1,27 +1,349 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <!--
-    DATEI: index.html
-    ERLEBNIS: nobody
-    BUCH-SEITE: 
-    KOMMT VON: QR-Code
-    FÜHRT ZU: 
-    FARBEN: 
-    STATUS: In Arbeit
-  -->
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Nobody — Anna Greyhem</title>
-  <link rel="stylesheet" href="/assets/css/base.css">
-  <style></style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nobody — QR Experience</title>
+  <style>
+    :root {
+      --bg: #000;
+      --fg: #f3f3f3;
+      --muted: #9a9a9a;
+      --hold-duration: 2200;
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: Georgia, "Times New Roman", serif;
+      overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .wrap {
+      width: min(680px, 88vw);
+      min-height: 42vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      position: relative;
+      padding: 2rem 1rem;
+      z-index: 2;
+      pointer-events: none;
+    }
+    .text {
+      font-size: clamp(1.15rem, 2.8vw, 1.55rem);
+      line-height: 1.45;
+      letter-spacing: 0.01em;
+      max-width: 26ch;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 500ms ease, transform 500ms ease, font-size 220ms ease;
+      user-select: none;
+    }
+    .text.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .highlight-em {
+      font-style: italic;
+    }
+    .instruction {
+      position: fixed;
+      bottom: 12vh;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      text-transform: lowercase;
+      white-space: nowrap;
+      opacity: 0;
+      transition: opacity 220ms ease;
+      z-index: 5;
+      user-select: none;
+    }
+    .instruction.visible {
+      opacity: 1;
+    }
+    .tap-area,
+    .hold-area {
+      position: fixed;
+      inset: 0;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      margin: 0;
+      z-index: 4;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .hidden {
+      display: none !important;
+    }
+    .hold-area {
+      display: none;
+    }
+    .hold-area.active {
+      display: block;
+    }
+    .hold-target {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      width: min(82vw, 82vh);
+      height: min(82vw, 82vh);
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 50%;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+      z-index: 0;
+    }
+    .hold-target.visible {
+      opacity: 1;
+    }
+    .hold-circle {
+      position: fixed;
+      width: 36px;
+      height: 36px;
+      transform: translate(-50%, -50%);
+      border: 1.4px solid rgba(255,255,255,0.65);
+      border-radius: 50%;
+      background: rgba(255,255,255,0.02);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 120ms ease;
+      z-index: 3;
+    }
+    .hold-circle.visible {
+      opacity: 1;
+    }
+    
+    
+    }
+    
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(0.4);
+      }
+    }
+      70% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(var(--dx), var(--dy)) scale(0.2);
+      }
+    }
+  </style>
 </head>
 <body>
-  <footer class="site-footer">
-  <a href="/">annagreyhem</a> &nbsp;·&nbsp; <a href="/impressum/">impressum</a> &nbsp;·&nbsp; <a href="/datenschutz/">datenschutz</a>
-</footer>
-  <script data-goatcounter="https://annagreyhem.goatcounter.com/count"
-        async src="//gc.zgo.at/count.js"></script>
+  <div class="wrap">
+    <div class="text" id="text"></div>
+  </div>
+  <div class="instruction" id="instruction"></div>
+  <div class="hold-target" id="holdTarget" aria-hidden="true"></div>
+  <div class="hold-circle" id="holdCircle" aria-hidden="true"></div>
+  
+  <button class="tap-area" id="tapArea" aria-label="Continue"></button>
+  <button class="hold-area" id="holdArea" aria-label="Hold down"></button>
+  <script>
+    const flow = [
+      "She was different",
+      "colder.",
+      "They said things",
+      "I didn\u2019t listen.",
+      "I followed her",
+      "into the dark.",
+      "She asked me to come.",
+      "I knew something was wrong.",
+      "I went anyway.",
+      "I think I saw it.",
+      "I could have left.",
+      "I didn\u2019t.",
+      "HOLD",
+      "It\u2019s dark.",
+      "I can\u2019t see.",
+      "I feel something on my skin.",
+      "Ants on my arms.",
+      "Butterflies in my stomach.",
+      "I don\u2019t move.",
+      "I can\u2019t move.",
+      "HOLD",
+      "I\u2019m still here.",
+      "Why am I still here?",
+      'Why are <span class="highlight-em">you</span> still here?'
+    ];
+    const textEl = document.getElementById('text');
+    const instructionEl = document.getElementById('instruction');
+    const tapArea = document.getElementById('tapArea');
+    const holdArea = document.getElementById('holdArea');
+    const holdCircle = document.getElementById('holdCircle');
+    const holdTarget = document.getElementById('holdTarget');
+    let i = 0;
+    let holdRaf = null;
+    let holdStart = 0;
+    let canGrowFinal = false;
+    let finalAtMax = false;
+    let reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function currentItem() {
+      return flow[i];
+    }
+    function showText(content, isHtml = false, delay = 0) {
+      textEl.classList.remove('visible');
+      setTimeout(() => {
+        if (isHtml) textEl.innerHTML = content;
+        else textEl.textContent = content;
+        textEl.classList.add('visible');
+      }, reducedMotion ? 0 : delay);
+    }
+    function blankThen(callback, ms) {
+      textEl.classList.remove('visible');
+      setTimeout(callback, reducedMotion ? 0 : ms);
+    }
+    function setInstruction(text = '', show = false) {
+      instructionEl.textContent = text;
+      instructionEl.classList.toggle('visible', show && !!text);
+    }
+    function showHoldVisuals(show) {
+      holdCircle.classList.toggle('visible', show);
+      holdTarget.classList.toggle('visible', show);
+      if (!show) {
+        holdCircle.style.width = '36px';
+        holdCircle.style.height = '36px';
+      }
+    }
+    function enterHold() {
+      tapArea.classList.add('hidden');
+      holdArea.classList.add('active');
+      setInstruction('hold', true);
+    }
+    function leaveHold() {
+      holdArea.classList.remove('active');
+      tapArea.classList.remove('hidden');
+      setInstruction('', false);
+      showHoldVisuals(false);
+    }
+    function advance() {
+      const item = currentItem();
+      if (!item) return;
+      if (item === 'HOLD') {
+        enterHold();
+        return;
+      }
+      const isFinalLast = i === flow.length - 1;
+      const isHtml = isFinalLast;
+      // pause before first English dark line
+      if (item === "It\u2019s dark.") {
+        i += 1;
+        blankThen(() => showText(item, false, 0), 800);
+        return;
+      }
+      // pause before first final line
+      if (item === "I\u2019m still here.") {
+        i += 1;
+        blankThen(() => showText(item, false, 0), 900);
+        return;
+      }
+      showText(item, isHtml, i === flow.length - 3 ? 180 : 0);
+      i += 1;
+      if (isFinalLast) {
+        canGrowFinal = true;
+        finalAtMax = false;
+      }
+    }
+    function beginHold(e) {
+      const point = e.touches ? e.touches[0] : e;
+      holdCircle.style.left = point.clientX + 'px';
+      holdCircle.style.top = point.clientY + 'px';
+      showHoldVisuals(true);
+      setInstruction('keep holding', true);
+      holdStart = performance.now();
+      cancelAnimationFrame(holdRaf);
+      const tick = (now) => {
+        const elapsed = now - holdStart;
+        const progress = Math.min(elapsed / Number(getComputedStyle(document.documentElement).getPropertyValue('--hold-duration')), 1);
+        const min = 36;
+        const max = Math.min(window.innerWidth, window.innerHeight) * 0.82;
+        const size = min + (max - min) * progress;
+        holdCircle.style.width = `${size}px`;
+        holdCircle.style.height = `${size}px`;
+        if (progress < 1) {
+          holdRaf = requestAnimationFrame(tick);
+        } else {
+          finishHold();
+        }
+      };
+      holdRaf = requestAnimationFrame(tick);
+    }
+    function cancelHold() {
+      cancelAnimationFrame(holdRaf);
+      showHoldVisuals(false);
+      setInstruction('hold', true);
+    }
+    function finishHold() {
+      cancelAnimationFrame(holdRaf);
+      leaveHold();
+      if (currentItem() === 'HOLD') {
+        i += 1;
+      }
+      advance();
+    }
+    tapArea.addEventListener('click', () => {
+      
+      if (canGrowFinal) {
+        const currentSize = parseFloat(getComputedStyle(textEl).fontSize);
+        const wrapWidth = Math.min(680, window.innerWidth * 0.88) * 0.94;
+        const probe = document.createElement('span');
+        probe.style.position = 'absolute';
+        probe.style.visibility = 'hidden';
+        probe.style.whiteSpace = 'nowrap';
+        probe.style.fontFamily = getComputedStyle(textEl).fontFamily;
+        probe.style.fontSize = `${currentSize + 2}px`;
+        probe.style.letterSpacing = getComputedStyle(textEl).letterSpacing;
+        probe.innerHTML = textEl.innerHTML;
+        document.body.appendChild(probe);
+        const fits = probe.getBoundingClientRect().width <= wrapWidth;
+        document.body.removeChild(probe);
+        if (fits) {
+          textEl.style.fontSize = `${currentSize + 2}px`;
+          finalAtMax = false;
+        } else if (!finalAtMax) {
+          finalAtMax = true;
+        } else {
+          // reached max size, do nothing further
+          finalAtMax = true;
+        }
+        return;
+      }
+      advance();
+    });
+    ['mousedown', 'touchstart', 'pointerdown'].forEach((eventName) => {
+      holdArea.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        beginHold(e);
+      }, { passive: false });
+    });
+    ['mouseup', 'mouseleave', 'touchend', 'touchcancel', 'pointerup', 'pointercancel'].forEach((eventName) => {
+      holdArea.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        if (currentItem() === 'HOLD') cancelHold();
+      }, { passive: false });
+    });
+    advance();
+  </script>
   <footer style="
   position: fixed;
   bottom: 0;
@@ -32,14 +354,14 @@
   font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 14px;
   color: rgba(255,255,255,0.55);
-  background: transparent;
+  background: #000;
   z-index: 100;
 ">
-  <a href="/" style="color: rgba(255,255,255,0.55); text-decoration: none;">annagreyhem</a>
+  <a href="https://annagreyhem.com/" style="color: rgba(255,255,255,0.55); text-decoration: none;">annagreyhem</a>
   &nbsp;·&nbsp;
-  <a href="/impressum/" style="color: rgba(255,255,255,0.55); text-decoration: none;">impressum</a>
+  <a href="https://annagreyhem.com/impressum/" style="color: rgba(255,255,255,0.55); text-decoration: none;">impressum</a>
   &nbsp;·&nbsp;
-  <a href="/datenschutz/" style="color: rgba(255,255,255,0.55); text-decoration: none;">datenschutz</a>
+  <a href="https://annagreyhem.com/datenschutz/" style="color: rgba(255,255,255,0.55); text-decoration: none;">datenschutz</a>
 </footer>
 </body>
 </html>
