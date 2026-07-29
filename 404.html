@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
+<script>
+  Sentry.onLoad(function () {
+    Sentry.init({
+      release: "anna-greyhem-website@1.0.0",
+    });
+  });
+</script>
+
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
+<link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
+<link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
+<title>Not Found — Anna Greyhem</title>
+<link rel="stylesheet" href="assets/fonts/fonts.css">
+<style>
+:root {
+  --ink: #0a0a0c; --bone: #eeeae0; --bone-3: #8a8478; --bone-4: #2a2823; --cherry-3: #c33149;
+  --serif: 'Cormorant Garamond', 'EB Garamond', Garamond, serif;
+  --mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+  --ease: cubic-bezier(.2, .7, .2, 1);
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: var(--ink); color: var(--bone); -webkit-font-smoothing: antialiased; }
+body {
+  min-height: 100svh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  text-align: center; padding: 8vh clamp(24px, 6vw, 60px);
+  font-family: var(--serif);
+}
+.grain {
+  position: fixed; inset: -50%; pointer-events: none; z-index: 2;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.95  0 0 0 0 0.92  0 0 0 0 0.85  0 0 0 0.5 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  opacity: 0.05; mix-blend-mode: overlay;
+  animation: grain 1.2s steps(6) infinite;
+}
+@keyframes grain {
+  0%{transform:translate(0,0)} 20%{transform:translate(-4%,2%)} 40%{transform:translate(3%,-3%)}
+  60%{transform:translate(-2%,4%)} 80%{transform:translate(4%,-2%)} 100%{transform:translate(0,0)}
+}
+.mark {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase;
+  color: var(--cherry-3); margin: 0 0 clamp(28px, 5vh, 44px);
+}
+h1 {
+  font-weight: 300; font-style: italic; letter-spacing: -0.01em;
+  font-size: clamp(40px, 8vw, 84px); line-height: 1.05; margin: 0;
+}
+.line {
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.08em;
+  color: var(--bone-3); margin: clamp(28px, 5vh, 44px) 0 0; max-width: 40ch;
+}
+a.home {
+  display: inline-block; margin-top: clamp(40px, 7vh, 64px);
+  font-family: var(--mono); font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--bone); text-decoration: none; border-bottom: 1px solid var(--bone-4);
+  padding-bottom: 6px; min-height: 44px; display: inline-flex; align-items: center;
+  transition: color .4s var(--ease), border-color .4s var(--ease);
+}
+a.home:hover { color: #fff; border-color: var(--cherry-3); }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .001ms !important; } }
+</style>
+</head>
+<body data-screen-label="404">
+
+<span class="grain" aria-hidden="true"></span>
+
+<p class="mark">404</p>
+<h1>This page came apart.</h1>
+<p class="line">The link is broken, or it drifted somewhere else.</p>
+<a class="home" href="/">Return to Anna Greyhem</a>
+
+<script>
+/* ═══════════ Sentry test hook kept minimal ═══════════ */
+</script>
+
+<!-- ═══════════ GoatCounter — page views + JS-error events ═══════════ -->
+<script data-goatcounter="https://annagreyhem.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function () {
+  function report(label) {
+    try {
+      var fire = function () {
+        window.goatcounter.count({ path: 'js-error' + location.pathname, title: String(label).slice(0, 240), event: true });
+      };
+      if (window.goatcounter && window.goatcounter.count) return fire();
+      var n = 0, t = setInterval(function () {
+        if (window.goatcounter && window.goatcounter.count) { clearInterval(t); fire(); }
+        else if (++n > 30) clearInterval(t);
+      }, 500);
+    } catch (_) {}
+  }
+  window.addEventListener('error', function (e) { report((e.message || 'error') + ' @ ' + (e.filename || '') + ':' + (e.lineno || 0)); });
+  window.addEventListener('unhandledrejection', function (e) { var r = e.reason; report('promise: ' + ((r && (r.message || r)) || 'unhandledrejection')); });
+})();
+</script>
+
+</body>
+</html>
