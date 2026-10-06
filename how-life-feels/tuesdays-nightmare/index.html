@@ -2,18 +2,15 @@
 <html lang="en" translate="no" class="notranslate">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <!--
   QR EDITION: tuesdays-nightmare
@@ -22,16 +19,20 @@
   the writing bleeds onto the wall. Turning it back on clears it.
 -->
 <meta charset="utf-8" />
-  <meta name="google" content="notranslate" />
+<meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <title>Tuesday's Nightmare — Anna Greyhem</title>
+<link rel="canonical" href="https://annagreyhem.com/how-life-feels/tuesdays-nightmare/" />
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../assets/css/qr-base.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
 <style>
   /* ---- scene-only styles; palette, grain, foot-scrim and .qr-legal
      all come from qr-base.css ---- */
@@ -47,14 +48,17 @@
   /* ---------- STAGE ----------
      Keeps the photo's exact aspect ratio so a percentage position inside it
      lands on the same spot of the photo on every screen. On phones it fills
-     the height, anchored left (so the wall switch is never cropped off); on
-     wider screens it is a centred portrait column. */
+     the height and is wider than the viewport. It is shifted left only as far
+     as needed to keep the wall switch (left 93%) ≥32px inside the right edge
+     (curved displays), never past the photo's right edge — so the minimum of
+     the left side (the writing) is cropped. On wider screens it is a centred
+     portrait column. */
   #stage {
     position: fixed;
     top: 0;
     height: 100dvh;
     width: calc(100dvh * var(--ar));
-    left: 0;
+    left: clamp(calc(100vw - 100dvh * var(--ar)), calc(100vw - 100dvh * var(--ar) * 0.93 - 32px), 0px);
     overflow: hidden;
     background: var(--ink);
   }

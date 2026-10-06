@@ -2,30 +2,29 @@
 <html lang="en" translate="no" class="notranslate">
 <head>
 <!-- Sentry error monitoring -->
+<script
+  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
+  crossorigin="anonymous"
+></script>
 <script>
-  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
-  window.sentryOnLoad = function () {
+  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
+  Sentry.onLoad(function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  };
+  });
 </script>
-<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <meta charset="UTF-8">
-<meta name="google" content="notranslate" />
+  <meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#000000">
 <title>Installing Anna 3.0 — Anna Greyhem</title>
-<link rel="canonical" href="https://annagreyhem.com/how-life-feels/installing-anna/" />
-<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
-<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
-<script src="../../assets/js/qr-viewport-fix.js"></script>
 <script>
 /* Preview-only safety net: if deep relative font link is blocked, re-link with token. */
 (function(){
@@ -185,7 +184,6 @@ html, body {
   background:#0d0d0d;
   border:1px solid #444;
   width:clamp(260px,38vw,360px);
-  max-width:calc(100vw - 24px); /* never wider than the screen */
   z-index:100;
   display:none;
   box-shadow:5px 5px 0 rgba(0,0,0,0.5);
@@ -220,7 +218,7 @@ html, body {
 #success-win .s-blink { animation:blink 1.2s step-end infinite; }
 /* ── LEGAL FOOTER (shared QR pattern, self-contained for this page) ── */
 .qr-legal {
-  position:fixed; left:50%; bottom:calc(14px + env(safe-area-inset-bottom) + var(--qr-toolbar-gap, 0px));
+  position:fixed; left:50%; bottom:calc(14px + env(safe-area-inset-bottom));
   transform:translateX(-50%);
   z-index:400;
   display:inline-flex; align-items:center; gap:12px; white-space:nowrap;
@@ -325,27 +323,27 @@ html, body {
 </div>
 
 <!-- ── ERROR STACK ── -->
-<div class="popup" id="err0" style="top:15%;left:min(18%, calc(100vw - 272px));">
+<div class="popup" id="err0" style="top:15%;left:18%;">
   <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
   <div class="win-body"><div class="popup-msg"><span class="lbl">CRITICAL:</span> identity.dll not found<br>Self could not be located.</div></div>
   <div class="win-footer"><button class="btn" onclick="closeErr(0)">✕ Close</button></div>
 </div>
-<div class="popup" id="err1" style="top:22%;left:min(24%, calc(100vw - 272px));">
+<div class="popup" id="err1" style="top:22%;left:24%;">
   <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
   <div class="win-body"><div class="popup-msg"><span class="lbl">SyntaxERROR:</span> 'sanity' unknown<br>Module does not exist.</div></div>
   <div class="win-footer"><button class="btn" onclick="closeErr(1)">✕ Close</button></div>
 </div>
-<div class="popup" id="err2" style="top:29%;left:min(30%, calc(100vw - 272px));">
+<div class="popup" id="err2" style="top:29%;left:30%;">
   <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
   <div class="win-body"><div class="popup-msg"><span class="lbl">CONFLICT:</span> freedom.exe still running<br>Cannot overwrite active process.</div></div>
   <div class="win-footer"><button class="btn" onclick="closeErr(2)">✕ Close</button></div>
 </div>
-<div class="popup" id="err3" style="top:36%;left:min(22%, calc(100vw - 272px));">
+<div class="popup" id="err3" style="top:36%;left:22%;">
   <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
   <div class="win-body"><div class="popup-msg"><span class="lbl">WARNING:</span> old_anna.bak detected<br>Backup conflicts with new version.</div></div>
   <div class="win-footer"><button class="btn" onclick="closeErr(3)">✕ Close</button></div>
 </div>
-<div class="popup" id="err4" style="top:43%;left:min(28%, calc(100vw - 272px));">
+<div class="popup" id="err4" style="top:43%;left:28%;">
   <div class="win-bar"><span class="win-bar-title">⚠ Fatal Error</span><div class="win-bar-btns"><div class="win-dot"></div></div></div>
   <div class="win-body"><div class="popup-msg"><span class="lbl">TERMINATED:</span> installation_fear.sys<br>Process terminated by user.</div></div>
   <div class="win-footer"><button class="btn" onclick="closeErr(4)">✕ Close</button></div>
