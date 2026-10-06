@@ -538,12 +538,13 @@ main {
 .page .pr-photo a.dl{align-self:flex-start;margin-top:2px;font-family:var(--mono);font-size:9.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--bone-2);min-height:32px;display:inline-flex;align-items:center}
 .page p.pr-ainote{font-family:var(--read);font-size:12.5px;line-height:1.5;color:var(--bone-3);margin:20px 0 0;max-width:60ch}
 .pr-poem{margin:clamp(24px,4vh,32px) 0 clamp(28px,4vh,36px);padding-left:clamp(18px,3vw,28px);border-left:1px solid var(--bone-4)}
-.page .pr-poem p{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(22px,2.6vw,28px);line-height:1.45;color:var(--bone);margin:0}
+.page .pr-poem p{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(19px,2vw,22px);line-height:1.5;color:var(--bone);margin:0}
 .page .pr-poem p+p{margin-top:0.9em}
 .pr-qr{display:flex;flex-wrap:wrap;align-items:center;gap:20px 28px;margin:clamp(28px,4vh,36px) 0}
 .pr-qr img{display:block;width:180px;height:180px;border:1px solid var(--bone-4)}
 .pr-qr-side{display:flex;flex-direction:column;gap:8px;min-width:0}
 .page a.pr-qr-link{align-self:flex-start;font-family:var(--mono);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--bone);min-height:40px;display:inline-flex;align-items:center}
+.pr-tip{font-family:var(--mono);font-size:11px;letter-spacing:0.08em;line-height:1.6;color:var(--bone-2)}
 .page p.pr-sample{margin:-8px 0 clamp(28px,4vh,36px)}
 .pr-qr-url{font-family:var(--mono);font-size:11px;letter-spacing:0.04em;color:var(--bone-3);overflow-wrap:anywhere}
 .page h2.pr-section.pr-section--sub{margin-bottom:10px}
@@ -614,10 +615,10 @@ html{scroll-behavior:smooth}
 <h2 class="pr-section">Leseprobe &amp; QR-Erlebnis</h2>
 <p>Bei Amazon gibt es eine kostenlose Leseprobe von „How Life Feels…“:</p>
 <p class="pr-sample"><a class="pr-qr-link" href="https://lesen.amazon.de/sample/B0HGLPQ84Z?clientId=share" target="_blank" rel="noopener">→ Zur Leseprobe</a></p>
-<p>Eines der sechs QR-Erlebnisse aus dem Buch können Sie hier selbst ausprobieren. Das Gedicht „Tuesday's Nightmare“ erzählt von einem Traum, aus dem man nicht richtig aufwacht. Es endet so:</p>
-<blockquote class="pr-poem"><p>I wake up again.<br>It's dark.</p><p>Should I try the light switch?</p></blockquote>
+<p>Eines der sechs QR-Erlebnisse aus dem Buch können Sie hier selbst ausprobieren. Der Text „Tuesday's Nightmare“ erzählt von einem Traum, aus dem man nicht richtig aufwacht. Ein Auszug:</p>
+<blockquote class="pr-poem"><p>I flipped the light switch.<br>The light didn't work.<br>So I tried again.<br>Nothing happened.</p><p>[…]</p><p>I wake up again.<br>It's dark.<br>Should I try the light switch?</p></blockquote>
 <p>Im Buch folgt darauf dieser QR-Code:</p>
-<div class="pr-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=360x360&amp;margin=12&amp;qzone=2&amp;color=238-234-224&amp;bgcolor=10-10-12&amp;data=https%3A%2F%2Fannagreyhem.com%2Fhow-life-feels%2Ftuesdays-nightmare%2F" alt="QR-Code zum Erlebnis „Tuesday's Nightmare“" width="180" height="180" loading="lazy"><div class="pr-qr-side"><a class="pr-qr-link" href="https://annagreyhem.com/how-life-feels/tuesdays-nightmare/" target="_blank" rel="noopener">→ Zum Erlebnis</a><span class="pr-qr-url">annagreyhem.com/how-life-feels/tuesdays-nightmare</span></div></div>
+<div class="pr-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=360x360&amp;margin=12&amp;qzone=2&amp;color=238-234-224&amp;bgcolor=10-10-12&amp;data=https%3A%2F%2Fannagreyhem.com%2Fhow-life-feels%2Ftuesdays-nightmare%2F" alt="QR-Code zum Erlebnis „Tuesday's Nightmare“" width="180" height="180" loading="lazy"><div class="pr-qr-side"><a class="pr-qr-link" href="https://annagreyhem.com/how-life-feels/tuesdays-nightmare/" target="_blank" rel="noopener">→ Zum Erlebnis</a><span class="pr-tip">Tipp: Schalten Sie das Licht mehr als einmal aus.</span></div></div>
 </section>
 <section class="pr-block" id="biografie">
 <h2 class="pr-section">Kurzbiografie</h2>
@@ -668,8 +669,8 @@ html{scroll-behavior:smooth}
 <h3 class="pr-sub-h">QR-Erlebnis</h3>
 <p class="pr-intro">Per QR-Code werden Texte aus dem Buch zu digitalen Erlebnissen.</p>
 <div class="pr-photos">
-<figure class="pr-photo"><div class="fr"><img src="web/HowLifeFeels_QR-Erlebnis_Licht-an_quer.jpg" alt="Das QR-Erlebnis zum Gedicht „Tuesday's Nightmare“: Licht an" width="1600" height="1200" loading="lazy" decoding="async"></div><figcaption><span class="t">Das QR-Erlebnis zum Gedicht „Tuesday's Nightmare“: Licht an</span><span class="c">Foto: Nicolas Schimanski</span><span class="m">Querformat · 4031 × 3023 px</span><a class="dl" href="original/HowLifeFeels_QR-Erlebnis_Licht-an_quer.jpg" download="HowLifeFeels_QR-Erlebnis_Licht-an_quer.jpg">Download (JPG, Originalgröße)</a></figcaption></figure>
-<figure class="pr-photo"><div class="fr"><img src="web/HowLifeFeels_QR-Erlebnis_Licht-aus_hoch.jpg" alt="Das QR-Erlebnis zum Gedicht „Tuesday's Nightmare“: Licht aus" width="1200" height="1600" loading="lazy" decoding="async"></div><figcaption><span class="t">Das QR-Erlebnis zum Gedicht „Tuesday's Nightmare“: Licht aus</span><span class="c">Foto: Nicolas Schimanski</span><span class="m">Hochformat · 3024 × 4032 px</span><a class="dl" href="original/HowLifeFeels_QR-Erlebnis_Licht-aus_hoch.jpg" download="HowLifeFeels_QR-Erlebnis_Licht-aus_hoch.jpg">Download (JPG, Originalgröße)</a></figcaption></figure>
+<figure class="pr-photo"><div class="fr"><img src="web/HowLifeFeels_QR-Erlebnis_Licht-an_quer.jpg" alt="Das QR-Erlebnis zu „Tuesday's Nightmare“: Licht an" width="1600" height="1200" loading="lazy" decoding="async"></div><figcaption><span class="t">Das QR-Erlebnis zu „Tuesday's Nightmare“: Licht an</span><span class="c">Foto: Nicolas Schimanski</span><span class="m">Querformat · 4031 × 3023 px</span><a class="dl" href="original/HowLifeFeels_QR-Erlebnis_Licht-an_quer.jpg" download="HowLifeFeels_QR-Erlebnis_Licht-an_quer.jpg">Download (JPG, Originalgröße)</a></figcaption></figure>
+<figure class="pr-photo"><div class="fr"><img src="web/HowLifeFeels_QR-Erlebnis_Licht-aus_hoch.jpg" alt="Das QR-Erlebnis zu „Tuesday's Nightmare“: Licht aus" width="1200" height="1600" loading="lazy" decoding="async"></div><figcaption><span class="t">Das QR-Erlebnis zu „Tuesday's Nightmare“: Licht aus</span><span class="c">Foto: Nicolas Schimanski</span><span class="m">Hochformat · 3024 × 4032 px</span><a class="dl" href="original/HowLifeFeels_QR-Erlebnis_Licht-aus_hoch.jpg" download="HowLifeFeels_QR-Erlebnis_Licht-aus_hoch.jpg">Download (JPG, Originalgröße)</a></figcaption></figure>
 </div>
 <p class="pr-ainote">Schlafzimmerbild dieses digitalen Erlebnisses: gestaltet von Anna Greyhem mit KI-Bildwerkzeugen.</p>
 <p class="pr-more">Weitere Motive schicke ich Ihnen gern auf Anfrage: <span class="js-mail" data-user="annagreyhem" data-domain="gmail.com">[bitte JavaScript aktivieren]</span></p>
