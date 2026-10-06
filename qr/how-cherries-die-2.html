@@ -1,13 +1,15 @@
 <!doctype html>
 <html lang="en" translate="no" class="notranslate">
 <head>
-<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous"></script>
 <script>
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({ release: "anna-greyhem-website@1.0.0" });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 <meta charset="utf-8" />
+<meta name="color-scheme" content="dark">
 <meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />

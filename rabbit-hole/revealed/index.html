@@ -2,13 +2,15 @@
 <html lang="de">
 <head>
 
-<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous"></script>
 <script>
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({ release: "anna-greyhem-website@1.0.0" });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 <meta charset="utf-8" />
+<meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -236,7 +238,7 @@ body::after{content:"";position:fixed;left:0;right:0;bottom:calc(-20px + var(--q
 <div class="manuscript-overlay" id="manuscriptOverlay">
 <div class="manuscript-frame" id="manuscriptFrame">
 <button class="manuscript-close" id="manuscriptClose" aria-label="Back">←</button>
-<img class="active" data-i="0" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-closeup.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-closeup.png'" alt="manuscript 'How Life Feels...' by Anna Greyhem, with a note reading 'ready to publish'" />
+<img class="active" data-i="0" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-closeup.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-closeup.png'" alt="manuscript 'How Life Feels…' by Anna Greyhem, with a note reading 'ready to publish'" />
 <img data-i="1" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-2.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-2.png'" alt="aufgeschlagene Manuskriptseite: 'This is not a novel...'" />
 <img data-i="2" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-3.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-3.png'" alt="manuscript page with the word 'BECOMING'" />
 <img data-i="3" src="https://cdn.annagreyhem.com/rabbit-hole/manuscript-page-4.png" onerror="this.onerror=null;this.src='../../assets/images/desk/manuscript-page-4.png'" alt="manuscript page with the poem 'Becoming'" />

@@ -2,20 +2,18 @@
 <html lang="en">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <meta charset="utf-8" />
+<meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -408,7 +406,7 @@ body.witching-hour .hero-name .last { color: var(--cherry-3); }
   padding: clamp(90px, 20vh, 200px) var(--gutter);
   border-top: 1px solid var(--bone-4);
 }
-.poem { position: relative; max-width: 640px; text-align: left; }
+.poem { position: relative; max-width: 640px; text-align: center; }
 .poem p {
   margin: 0; font-family: var(--serif); font-weight: 300; font-style: italic;
   font-size: clamp(30px, 4.4vw, 52px); line-height: 1.4; color: var(--bone);
@@ -426,11 +424,12 @@ body.witching-hour .hero-name .last { color: var(--cherry-3); }
 .poem.in-view .line:nth-child(5) { transition-delay: 1.25s; }
 .poem-credit {
   margin-top: clamp(28px, 4.5vh, 44px); padding-top: 26px;
-  border-top: 1px solid var(--bone-4);
+  position: relative;
   font-family: var(--serif); font-weight: 300; font-size: clamp(15px, 1.6vw, 17px);
   letter-spacing: 0.01em; color: var(--bone-3);
 }
 .poem-credit em { font-style: italic; }
+.poem-credit::before { content: ""; position: absolute; top: 0; left: 50%; width: 120px; height: 1px; background: var(--bone-4); transform: translateX(-50%); }
 
 /* primary button — outline, fills on hover */
 .btn {
@@ -489,6 +488,13 @@ body.witching-hour .hero-name .last { color: var(--cherry-3); }
   }
 }
 
+
+
+/* footer: 5 links — allow wrap on mobile */
+@media (max-width:699px){.foot-legal{flex-wrap:wrap;white-space:normal;row-gap:0}.foot-legal a{white-space:nowrap}}
+
+.foot-legal .pp{font-weight:inherit}
+@media (max-width:699px){.foot-legal .pp{display:none}}
 </style>
 </head>
 <body data-screen-label="Home">
@@ -536,18 +542,16 @@ body.witching-hour .hero-name .last { color: var(--cherry-3); }
   <section class="poem-section">
     <div class="poem">
       <p>
-        <span class="line">To whomever,</span>
-        <span class="line">sees the beauty</span>
-        <span class="line">in decay and</span>
-        <span class="line">lives a life</span>
-        <span class="line">that moans.</span>
+        <span class="line">For everyone who flies</span>
+        <span class="line">towards the light,</span>
+        <span class="line">even when it burns.</span>
       </p>
       <div class="poem-credit">Anna <em>Greyhem</em></div>
     </div>
   </section>
 
   <section class="about-note">
-    <p>Anna Greyhem writes poetry and prose that does not end at the page. Her first book, <a href="how-life-feels/"><em>How life feels…</em></a>, is a literary journey through four movements: Becoming, Longing, Falling, and Shifting. Six QR codes are printed inside it. Each one opens an experience that could not exist on paper. Not bonus material. Part of the story.</p>
+    <p>Anna Greyhem writes poetry and prose that does not end at the page. Her first book, <a href="how-life-feels/"><em>How Life Feels…</em></a>, is a literary journey through four movements: Becoming, Longing, Falling, and Shifting. Six QR codes are printed inside it. Each one opens an experience that could not exist on paper. Not bonus material. Part of the story.</p>
   </section>
 
   <section class="spotlight" aria-labelledby="sp-title">
@@ -557,7 +561,7 @@ body.witching-hour .hero-name .last { color: var(--cherry-3); }
       </div>
       <div class="spotlight-text">
         <div class="spotlight-eyebrow">The Book · Out now</div>
-        <h2 class="spotlight-title" id="sp-title"><a href="how-life-feels/">How life feels<span class="ell">…</span></a></h2>
+        <h2 class="spotlight-title" id="sp-title"><a href="how-life-feels/">How Life Feels<span class="ell">…</span></a></h2>
         <p class="spotlight-line">A moan of life through a dead body.</p>
         <div class="spotlight-cta">
           <a class="btn" href="https://mybook.to/how-life-feels" target="_blank" rel="noopener">ORDER ON AMAZON</a>
@@ -576,9 +580,11 @@ body.witching-hour .hero-name .last { color: var(--cherry-3); }
     <span class="sep">·</span>
     <a href="https://www.tiktok.com/@annagreyhem" target="_blank" rel="me noopener noreferrer"><span>TikTok</span></a>
     <span class="sep">·</span>
+    <a href="press/"><span>Press</span></a>
+    <span class="sep">·</span>
     <a href="impressum/"><span>Legal Notice</span></a>
     <span class="sep">·</span>
-    <a href="datenschutz/"><span>Privacy Policy</span></a>
+    <a href="datenschutz/"><span>Privacy<b class="pp"> Policy</b></span></a>
   </div>
 </footer>
 
