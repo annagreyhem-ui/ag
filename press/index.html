@@ -544,6 +544,7 @@ main {
 .pr-qr img{display:block;width:180px;height:180px;border:1px solid var(--bone-4)}
 .pr-qr-side{display:flex;flex-direction:column;gap:8px;min-width:0}
 .page a.pr-qr-link{align-self:flex-start;font-family:var(--mono);font-size:12px;letter-spacing:0.18em;text-transform:uppercase;color:var(--bone);min-height:40px;display:inline-flex;align-items:center}
+.page p.pr-sample{margin:-8px 0 clamp(28px,4vh,36px)}
 .pr-qr-url{font-family:var(--mono);font-size:11px;letter-spacing:0.04em;color:var(--bone-3);overflow-wrap:anywhere}
 .page h2.pr-section.pr-section--sub{margin-bottom:10px}
 .page p.pr-section-sub{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(19px,2vw,22px);line-height:1.4;color:var(--bone-3);margin:0 0 clamp(24px,3.5vh,32px)}
@@ -595,7 +596,7 @@ html{scroll-behavior:smooth}
   <article class="page">
 <div class="page-eyebrow">Press</div>
 <h1 class="page-title">Presse</h1>
-<nav class="pr-jump" aria-label="Auf dieser Seite"><a href="#pressetext">Pressetext</a><span aria-hidden="true">·</span><a href="#qr-erlebnis">QR-Erlebnis</a><span aria-hidden="true">·</span><a href="#biografie">Biografie</a><span aria-hidden="true">·</span><a href="#buchdaten">Buchdaten</a><span aria-hidden="true">·</span><a href="#fotos">Fotos</a><span aria-hidden="true">·</span><a href="#kontakt">Kontakt</a></nav>
+<nav class="pr-jump" aria-label="Auf dieser Seite"><a href="#pressetext">Pressetext</a><span aria-hidden="true">·</span><a href="#qr-erlebnis">Leseprobe</a><span aria-hidden="true">·</span><a href="#biografie">Biografie</a><span aria-hidden="true">·</span><a href="#buchdaten">Buchdaten</a><span aria-hidden="true">·</span><a href="#fotos">Fotos</a><span aria-hidden="true">·</span><a href="#kontakt">Kontakt</a></nav>
 <hr class="rule">
 <div class="pr-release" id="pressetext">
 <p class="pr-dateline">Pressemitteilung · München, 07.10.2026</p>
@@ -610,11 +611,12 @@ html{scroll-behavior:smooth}
 <p class="pr-pdf"><a href="AnnaGreyhem_Pressemitteilung.pdf" download="AnnaGreyhem_Pressemitteilung.pdf">Pressemitteilung als PDF herunterladen</a></p>
 </div>
 <section class="pr-block pr-try" id="qr-erlebnis">
-<h2 class="pr-section pr-section--sub">Ein QR-Erlebnis zum Ausprobieren</h2>
-<p class="pr-section-sub">Eines von sechs digitalen Erlebnissen im Buch.</p>
-<p>Das Gedicht „Tuesday's Nightmare“ erzählt von einem Traum, aus dem man nicht richtig aufwacht. Es endet so:</p>
+<h2 class="pr-section">Leseprobe &amp; QR-Erlebnis</h2>
+<p>Bei Amazon gibt es eine kostenlose Leseprobe von „How Life Feels…“:</p>
+<p class="pr-sample"><a class="pr-qr-link" href="https://lesen.amazon.de/sample/B0HGLPQ84Z?clientId=share" target="_blank" rel="noopener">→ Zur Leseprobe</a></p>
+<p>Eines der sechs QR-Erlebnisse aus dem Buch können Sie hier selbst ausprobieren. Das Gedicht „Tuesday's Nightmare“ erzählt von einem Traum, aus dem man nicht richtig aufwacht. Es endet so:</p>
 <blockquote class="pr-poem"><p>I wake up again.<br>It's dark.</p><p>Should I try the light switch?</p></blockquote>
-<p>Im Buch folgt darauf ein QR-Code. Hier können Sie ihn selbst scannen:</p>
+<p>Im Buch folgt darauf dieser QR-Code:</p>
 <div class="pr-qr"><img src="https://api.qrserver.com/v1/create-qr-code/?size=360x360&amp;margin=12&amp;qzone=2&amp;color=238-234-224&amp;bgcolor=10-10-12&amp;data=https%3A%2F%2Fannagreyhem.com%2Fhow-life-feels%2Ftuesdays-nightmare%2F" alt="QR-Code zum Erlebnis „Tuesday's Nightmare“" width="180" height="180" loading="lazy"><div class="pr-qr-side"><a class="pr-qr-link" href="https://annagreyhem.com/how-life-feels/tuesdays-nightmare/" target="_blank" rel="noopener">→ Zum Erlebnis</a><span class="pr-qr-url">annagreyhem.com/how-life-feels/tuesdays-nightmare</span></div></div>
 </section>
 <section class="pr-block" id="biografie">
@@ -636,7 +638,7 @@ html{scroll-behavior:smooth}
 <dt>ISBN</dt><dd>979-8-18599-217-3</dd>
 <dt>Preis</dt><dd>16,99 €</dd>
 <dt>Formate</dt><dd>Taschenbuch und E-Book</dd>
-<dt>Erhältlich</dt><dd>Amazon</dd>
+<dt>Erhältlich</dt><dd><a href="https://mybook.to/how-life-feels" target="_blank" rel="noopener">Amazon</a></dd>
 <dt>Besonderheit</dt><dd>6 QR-Codes zu interaktiven Erlebnissen auf dem Smartphone</dd>
 <dt>Hinweis</dt><dd>Das Buch behandelt auch dunkle Themen wie Depression und Tod; ein Inhaltshinweis steht am Anfang des Buches.</dd>
 </dl>
