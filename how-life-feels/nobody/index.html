@@ -2,18 +2,15 @@
 <html lang="en" translate="no" class="notranslate">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <!--
   QR EDITION: nobody
@@ -23,16 +20,21 @@
   until it lets you through. The last line grows the longer you stay.
 -->
 <meta charset="utf-8" />
-  <meta name="google" content="notranslate" />
+<meta name="color-scheme" content="dark">
+<meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <title>Nobody — Anna Greyhem</title>
+<link rel="canonical" href="https://annagreyhem.com/how-life-feels/nobody/" />
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../assets/css/qr-base.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
 <script>
 /* Preview-only safety net: some preview servers don't tokenise relative asset
    links, blocking the shared stylesheets. If the design tokens are missing,

@@ -2,18 +2,15 @@
 <html lang="en" translate="no" class="notranslate">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <!--
   QR EDITION · breathing-water → ANNA (Dissolving)
@@ -21,10 +18,12 @@
   .qr-legal come from qr-base.css. Scene logic below is bespoke.
 -->
 <meta charset="UTF-8">
-  <meta name="google" content="notranslate" />
+<meta name="color-scheme" content="dark">
+<meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0c">
 <title>Dissolving — Anna Greyhem</title>
+<link rel="canonical" href="https://annagreyhem.com/how-life-feels/breathing-water/anna/" />
 <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
@@ -62,12 +61,12 @@
   }
 
   /* ---- pages ---- */
-  .story { display:none; min-height:100vh; animation:fadein 1.4s var(--ease) forwards; }
+  .story { display:none; min-height:100vh;min-height:100svh; animation:fadein 1.4s var(--ease) forwards; }
   .story.active { display:block; }
   @keyframes fadein { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
 
   .story-inner { max-width:36rem; margin:0 auto; padding:clamp(64px,16vh,140px) var(--gutter) 140px; }
-  .center-page { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; padding:clamp(64px,16vh,140px) var(--gutter); text-align:center; }
+  .center-page { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh;min-height:100svh; padding:clamp(64px,16vh,140px) var(--gutter); text-align:center; }
 
   h1 {
     font-family:var(--serif); font-style:italic; font-weight:600;
@@ -89,7 +88,7 @@
   #fixed-nav {
     position:fixed; bottom:calc(52px + env(safe-area-inset-bottom) + var(--qr-toolbar-gap, 0px)); left:50%;
     z-index:76; display:none;
-    font-size:30px; color:var(--bone-3); opacity:0.5; padding:8px 48px; cursor:pointer;
+    font-size:30px; color:var(--bone-3); opacity:0.5; padding:16px 48px; cursor:pointer;
     transition:color 0.35s var(--ease),opacity 0.5s var(--ease); user-select:none;
     transform:translateX(-50%) translateY(0);
   }
@@ -156,7 +155,7 @@
 
 <span class="grain" aria-hidden="true"></span>
 
-<div id="fixed-nav">&#8964;</div>
+<div id="fixed-nav" role="button" aria-label="Weiter"><svg width="22" height="12" viewBox="0 0 22 12" fill="none" aria-hidden="true" style="display:block"><path d="M1.5 1.5 11 10l9.5-8.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg></div>
 <!-- PAGE 0: DISSOLVING -->
 <div class="story active" id="p0">
   <div class="center-page">
@@ -165,7 +164,7 @@
 </div>
 <!-- PAGE 1: Tap-through -->
 <div class="story" id="p1">
-  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 40px;">
+  <div style="min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:80px 40px;">
     <div style="text-align:center;">
       <div id="tap-text"></div>
     </div>
@@ -202,7 +201,7 @@
 </div>
 <!-- PAGE 4: I keep shifting -->
 <div class="story" id="p4">
-  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:80px 40px;">
+  <div style="min-height:100vh;min-height:100svh;display:flex;align-items:center;justify-content:center;padding:80px 40px;">
     <div id="shift-text"></div>
   </div>
 </div>
@@ -239,7 +238,7 @@
   </div>
 </div>
 
-<!-- PAGE 8: soup / p.117 -->
+<!-- PAGE 8: soup / p.116 -->
 <div class="story" id="p8">
   <div class="center-page">
     <div style="max-width:32rem;">

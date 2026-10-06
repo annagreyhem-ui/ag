@@ -2,20 +2,18 @@
 <html lang="en" translate="no" class="notranslate">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <meta charset="utf-8" />
+<meta name="color-scheme" content="dark">
 <meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
@@ -523,13 +521,20 @@ main {
   }
 }
 
+
+
+/* footer: 5 links — allow wrap on mobile */
+@media (max-width:699px){.foot-legal{flex-wrap:wrap;white-space:normal;row-gap:0}.foot-legal a{white-space:nowrap}}
+
+.foot-legal .pp{font-weight:inherit}
+@media (max-width:699px){.foot-legal .pp{display:none}}
 </style>
 
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "Book",
-  "name": "How life feels…",
+  "name": "How Life Feels…",
   "author": { "@type": "Person", "name": "Anna Greyhem", "url": "https://annagreyhem.com/the-author/" },
   "url": "https://annagreyhem.com/how-life-feels/",
   "datePublished": "2026-09",
@@ -553,7 +558,7 @@ main {
     { "@type": "Question", "name": "Does the book work without scanning?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Every poem and every story stands on its own. The six experiences add a layer, they don't fill a gap." } },
     { "@type": "Question", "name": "Is it poetry or prose?", "acceptedAnswer": { "@type": "Answer", "text": "Both. Poems, short stories, and prose, arranged across four movements: Becoming, Longing, Falling, and Shifting." } },
     { "@type": "Question", "name": "What do the experiences ask of you?", "acceptedAnswer": { "@type": "Answer", "text": "More than a book usually does. Some respond to touch. One asks you to choose, and not every choice takes you forward." } },
-    { "@type": "Question", "name": "Is the book available in other languages?", "acceptedAnswer": { "@type": "Answer", "text": "Not yet. How life feels… is written in English. Translations may follow, but nothing is planned for now." } }
+    { "@type": "Question", "name": "Is the book available in other languages?", "acceptedAnswer": { "@type": "Answer", "text": "Not yet. How Life Feels… is written in English. Translations may follow, but nothing is planned for now." } }
   ]
 }
 </script>
@@ -602,7 +607,7 @@ main {
           <a class="btn btn--head-order" href="https://mybook.to/how-life-feels" target="_blank" rel="noopener">Order on Amazon</a>
         </div>
         <div class="work-cover">
-          <img class="cover-img" src="../assets/images/book-cover.jpg" alt="How life feels… — the cover" loading="lazy" decoding="async">
+          <img class="cover-img" src="../assets/images/book-cover.jpg" alt="How Life Feels… — the cover" loading="lazy" decoding="async">
         </div>
       </div>
     </div>
@@ -610,7 +615,7 @@ main {
     <hr class="rule">
 
     <h2>The book</h2>
-    <p><em>How life feels…</em> is not a novel. It is a literary journey told through poetry, short stories, and prose. As recurring symbols, shifting identities, and hidden connections emerge, some pieces quietly reshape the meaning of those before them.</p>
+    <p><em>How Life Feels…</em> is not a novel. It is a literary journey told through poetry, short stories, and prose. As recurring symbols, shifting identities, and hidden connections emerge, some pieces quietly reshape the meaning of those before them.</p>
     <p>It is read forwards and understood backwards.</p>
 
     <h2>The experience</h2>
@@ -619,14 +624,14 @@ main {
 
     <h2>Curious?</h2>
     <p>Wondering what happens when you scan one of the QR codes?</p>
-    <p>This is <span style="font-weight:500">not</span> one of the six experiences from the book. It's a small glimpse into the way <em>How life feels…</em> continues beyond the page.</p>
+    <p>This is <span style="font-weight:500">not</span> one of the six experiences from the book. It's a small glimpse into the way <em>How Life Feels…</em> continues beyond the page.</p>
     <button class="btn demo-cta" type="button" data-demo-open>→ Experience a demo</button>
 
     <a class="btn btn--foot-order" href="https://mybook.to/how-life-feels" target="_blank" rel="noopener">Order on Amazon</a>
 
     <h2>Preview</h2>
     <div class="thumbs">
-      <button class="thumb" type="button" aria-label="Open image: The front cover"><img src="../assets/images/book-cover.jpg" alt="How life feels… — the cover" loading="lazy" decoding="async"></button>
+      <button class="thumb" type="button" aria-label="Open image: The front cover"><img src="../assets/images/book-cover.jpg" alt="How Life Feels… — the cover" loading="lazy" decoding="async"></button>
       <button class="thumb" type="button" aria-label="Open image: The back cover: Dear reader, what does life feel like?"><img src="../assets/images/Cover_Rueckseite.jpg" alt="The back cover: Dear reader, what does life feel like?" loading="lazy" decoding="async"></button>
       <button class="thumb" type="button" aria-label="Open image: Page 5: This is not a novel; it’s an adventure through the depths of my soul."><img src="../assets/images/creators/page-5.jpg" alt="Page 5: This is not a novel; it’s an adventure through the depths of my soul." loading="lazy" decoding="async"></button>
       <button class="thumb" type="button" aria-label="Open image: Page 7: the movement title, Becoming"><img src="../assets/images/creators/page-07-becoming.jpg" alt="Page 7: the movement title, Becoming" loading="lazy" decoding="async"></button>
@@ -646,18 +651,18 @@ main {
       <div><dt>Does the book work without scanning?</dt><dd>Yes. Every poem and every story stands on its own. The six experiences add a layer, they don't fill a gap.</dd></div>
       <div><dt>Is it poetry or prose?</dt><dd>Both. Poems, short stories, and prose, arranged across four movements: Becoming, Longing, Falling, and Shifting.</dd></div>
       <div><dt>What do the experiences ask of you?</dt><dd>More than a book usually does. Some respond to touch. One asks you to choose, and not every choice takes you forward. <a href="../the-experience/">More about the experiences</a>.</dd></div>
-      <div><dt>Is the book available in other languages?</dt><dd>Not yet. <em>How life feels…</em> is written in English. Translations may follow, but nothing is planned for now.</dd></div>
+      <div><dt>Is the book available in other languages?</dt><dd>Not yet. <em>How Life Feels…</em> is written in English. Translations may follow, but nothing is planned for now.</dd></div>
     </dl>
 
     <h2>Details</h2>
     <dl class="book-facts">
-      <div><dt>Title</dt><dd>How life feels<span class="ell">…</span></dd></div>
+      <div><dt>Title</dt><dd>How Life Feels<span class="ell">…</span></dd></div>
       <div><dt>Author</dt><dd>Anna Greyhem</dd></div>
       <div><dt>Published</dt><dd>September 2026</dd></div>
       <div><dt>Pages</dt><dd>165</dd></div>
       <div><dt>Formats</dt><dd>Paperback, E-Book</dd></div>
       <div><dt>Language</dt><dd>English</dd></div>
-      <div><dt>ISBN</dt><dd>979-8-185992-17-3</dd></div>
+      <div><dt>ISBN</dt><dd>979-8-18599-217-3</dd></div>
     </dl>
 
   </article>
@@ -680,9 +685,11 @@ main {
     <span class="sep">·</span>
     <a href="https://www.tiktok.com/@annagreyhem" target="_blank" rel="me noopener noreferrer"><span>TikTok</span></a>
     <span class="sep">·</span>
+    <a href="../press/"><span>Press</span></a>
+    <span class="sep">·</span>
     <a href="../impressum/"><span>Legal Notice</span></a>
     <span class="sep">·</span>
-    <a href="../datenschutz/"><span>Privacy Policy</span></a>
+    <a href="../datenschutz/"><span>Privacy<b class="pp"> Policy</b></span></a>
   </div>
 </footer>
 

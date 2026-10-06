@@ -2,18 +2,15 @@
 <html lang="en" translate="no" class="notranslate">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <!--
   QR EDITION: goodbye
@@ -23,6 +20,7 @@
   book's "…") are the pauses; nothing is typed for them.
 -->
 <meta charset="UTF-8">
+<meta name="color-scheme" content="dark">
 <meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0c">
@@ -131,13 +129,47 @@
   var twBlocks = [
     { text: 'Dear reader,' },
     { text: 'So you made it back.\nI watched you the whole time. Every page.' },
-    { text: 'You were so close. I could almost touch you.\nBut you chose her. You always choose her.' },
-    { text: 'Why?\nWhy didn\u2019t you want to play with me?', pauseAfter: 3200 },   // …
+    null, null,   // blocks 3+4: filled from the Breathing Water path below
     { text: 'But I do understand. You are a moth.\nYou always fly towards the light. Even when it burns.' },
     { text: 'Enjoy being alive. While it lasts.', pauseAfter: 2600 },
     { sig: 'Alice' },
     { text: 'Oh, and', midPause: 1500, cont: ' when you meet death, give him a kiss from me.' }   // …
   ];
+
+  /* Breathing Water path (first choice / last choice) → middle passage.
+     QA hook: ?path=anna-anna|anna-alice|alice-anna|alice-alice|none forces a
+     version, overrides storage, never writes to it. */
+  var bwPaths = {
+    'anna-anna': [
+      { text: 'You were so close. I could almost touch you.\nBut you chose her. You always choose her.' },
+      { text: 'Why?\nWhy didn\u2019t you want to play with me?', pauseAfter: 3200 }
+    ],
+    'anna-alice': [
+      { text: 'You chose her. And then you came looking for me anyway.\nBack to the water, just to see.' },
+      { text: 'Curious little thing.\nDid you think I wouldn\u2019t notice?', pauseAfter: 3200 }
+    ],
+    'alice-anna': [
+      { text: 'You came to me first. You let me hold you.\nThen she cried at the surface, and you ran back to her.' },
+      { text: 'Why?\nWhy didn\u2019t you want to stay with me?', pauseAfter: 3200 }
+    ],
+    'alice-alice': [
+      { text: 'I told you to close the book.\nBut you kept reading. Page after page, back up to the surface.' },
+      { text: 'Why?\nWhy didn\u2019t you want to stay with me?', pauseAfter: 3200 }
+    ]
+  };
+  var bwKey = null, bwForced = null;
+  try { bwForced = new URLSearchParams(location.search).get('path'); } catch (_) {}
+  if (bwForced === 'none') bwKey = 'anna-anna';
+  else if (bwForced && bwPaths[bwForced]) bwKey = bwForced;
+  else {
+    try {
+      var bwFirst = localStorage.getItem('ag-bw-first'), bwLast = localStorage.getItem('ag-bw-last');
+      if (bwPaths[bwFirst + '-' + bwLast]) bwKey = bwFirst + '-' + bwLast;
+    } catch (_) {}
+  }
+  var bwMid = bwPaths[bwKey] || bwPaths['anna-anna'];
+  twBlocks[2] = bwMid[0];
+  twBlocks[3] = bwMid[1];
 
   var textEl = document.getElementById('typewriter-text');
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

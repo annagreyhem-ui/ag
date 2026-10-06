@@ -2,21 +2,19 @@
 <html lang="en" translate="no" class="notranslate">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <meta charset="utf-8" />
-  <meta name="google" content="notranslate" />
+<meta name="color-scheme" content="dark">
+<meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
 <meta name="theme-color" content="#0a0a0c" />
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -195,8 +193,8 @@
     cursor: pointer;
   }
   .orchard svg { width: 100%; height: 100%; overflow: visible; display: block; transform-origin: center; transform-box: fill-box; }
-  .poem, .orchard { transition: opacity 0.38s var(--ease); }
-  .poem.fading, .orchard.fading { opacity: 0; }
+  .poem, .orchard, .bite-row { transition: opacity 0.38s var(--ease); will-change: opacity; transform: translateZ(0); backface-visibility: hidden; }
+  .poem.fading, .orchard.fading, .bite-row.fading { opacity: 0; }
 
   @media (prefers-reduced-motion: no-preference) {
     .orchard svg { animation: idlePulse 2.6s ease-in-out infinite; }
@@ -249,7 +247,8 @@
 
   .sr-only {
     position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-    overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    overflow: hidden; clip: rect(0,0,0,0); clip-path: inset(50%);
+    white-space: nowrap; border: 0; color: transparent;
   }
 
   /* Footer note: fixed in place, but only revealed once the reader
@@ -453,8 +452,10 @@
 
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  var resetGen = 0;
   function spawnJuiceDrop(targetWord, onArrive) {
     if (reduceMotion || !targetWord) { onArrive(); return; }
+    var gen = resetGen;
     var from = orchard.getBoundingClientRect();
     var to = targetWord.getBoundingClientRect();
     var drop = document.createElement('span');
@@ -473,6 +474,7 @@
       { transform: 'translate(' + endX + 'px,' + endY + 'px) scale(1.3)', opacity: 1, offset: 1 }
     ], { duration: 1400, easing: 'cubic-bezier(.2,.7,.2,1)' });
     anim.onfinish = function () {
+      if (gen !== resetGen) { drop.remove(); return; }
       onArrive();
       var fade = drop.animate([
         { opacity: 1, transform: 'translate(' + endX + 'px,' + endY + 'px) scale(1.3)' },
@@ -506,17 +508,20 @@
     saveCounts();
     var el = which === 'front' ? cherryFront : cherryBack;
     applyBiteMarks();
-    updatePrompt(holesFront.length + holesBack.length);
+    if (holesFront.length + holesBack.length < TOTAL) updatePrompt(holesFront.length + holesBack.length);
     el.classList.remove('flash');
     void el.getBBox();
     el.classList.add('flash');
     var w = words[idx];
-    spawnJuiceDrop(w, function () { applyWords(holesFront.length + holesBack.length, idx); });
+    spawnJuiceDrop(w, function () { var n = holesFront.length + holesBack.length; applyWords(n, idx); if (n >= TOTAL) updatePrompt(n); });
     live.textContent = w ? (w.dataset.a + ' becomes ' + w.dataset.b) : '';
     if (holesFront.length + holesBack.length >= TOTAL) live.textContent += ' — the cherries are gone.';
   }
 
   function reset() {
+    resetGen++;
+    [].forEach.call(document.querySelectorAll('.juice-drop'), function (d) { d.remove(); });
+    words.forEach(function (w) { w.classList.remove('flip'); });
     if (reduceMotion) {
       holesFront = []; holesBack = [];
       saveCounts();
@@ -524,16 +529,21 @@
       live.textContent = 'the poem begins again.';
       return;
     }
+    var row = document.querySelector('.bite-row');
     document.querySelector('.poem').classList.add('fading');
-    orchard.classList.add('fading');
+    row.classList.add('fading');
     setTimeout(function () {
       holesFront = []; holesBack = [];
       saveCounts();
       render(0, -1);
       live.textContent = 'the poem begins again.';
-      document.querySelector('.poem').classList.remove('fading');
-      orchard.classList.remove('fading');
-    }, 380);
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          document.querySelector('.poem').classList.remove('fading');
+          row.classList.remove('fading');
+        });
+      });
+    }, 420);
   }
 
   function bindCherry(el, which, cx, cy) {

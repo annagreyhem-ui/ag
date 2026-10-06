@@ -10,16 +10,17 @@
   STATUS: In Arbeit
 -->
 <!-- Sentry error monitoring -->
-<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous"></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 <meta charset="utf-8">
+<meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0c">
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -172,7 +173,7 @@ main{position:relative;z-index:5;width:100%;max-width:520px;margin:0 auto;min-he
 <a href="../how-life-feels/"><img class="book-cover" src="../assets/images/book-cover.jpg" alt="Cover: Anna Greyhem — How Life Feels… A moan of life through a dead body." width="1600" height="2560"></a>
 <div class="book-text">
 <div class="eyebrow">The Book</div>
-<h2 class="book-title" id="book-title"><a href="../how-life-feels/">How Life Feels...</a></h2>
+<h2 class="book-title" id="book-title"><a href="../how-life-feels/">How Life Feels…</a></h2>
 <p class="book-line">A moan of life through a dead body.</p>
 <a class="btn" href="https://mybook.to/how-life-feels" target="_blank" rel="noopener">Order on Amazon</a>
 </div>

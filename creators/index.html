@@ -2,18 +2,15 @@
 <html lang="en">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 <!--
   DATEI: creators/index.html
   ERLEBNIS: Creator landing page — Neufassung: schwarz, Hero klein oben,
@@ -25,6 +22,7 @@
   STATUS: Formular speichert nach Supabase (Edge Function submit-creator-request)
 -->
 <meta charset="utf-8" />
+<meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
 <meta name="robots" content="noindex, nofollow" />
@@ -374,7 +372,7 @@ em.btitle,.btitle{font-style:italic}
 .sticky-cta .btn{width:100%;justify-content:center;text-decoration:none;background:var(--ink)}
 @media (min-width:820px){.sticky-cta{display:none}}
 
-/* ── QR demo (wie auf der How life feels… Seite) ── */
+/* ── QR demo (wie auf der How Life Feels… Seite) ── */
 .demo-hold{margin-top:clamp(28px,5vh,44px)}
 .demo-cta{background:transparent}
 .demo-overlay{position:fixed;inset:0;z-index:96;background:var(--ink);display:block;opacity:0;pointer-events:none;transition:opacity .4s ease}
@@ -493,6 +491,13 @@ a.trait-link:focus-visible{outline:1px solid var(--bone-3);outline-offset:8px}
   .hero-sub{letter-spacing:.22em}
   .top .intro-txt .said + .said{margin-top:24px}
 }
+
+
+/* footer: 5 links — allow wrap on mobile */
+@media (max-width:699px){.foot-legal{flex-wrap:wrap;white-space:normal;row-gap:0}.foot-legal a{white-space:nowrap}}
+
+.foot-legal .pp{font-weight:inherit}
+@media (max-width:699px){.foot-legal .pp{display:none}}
 </style>
 </head>
 <body data-screen-label="Creators">
@@ -538,7 +543,7 @@ a.trait-link:focus-visible{outline:1px solid var(--bone-3);outline-offset:8px}
 
   <section class="opening">
     <div class="intro-txt fade s1">
-      <p class="said"><em class="btitle">How Life Feels...</em> weaves together poetry, short stories, and prose into a search for the self. Along the way, it explores losing yourself, falling in love with life, learning to let go, and finding beauty in the darkest places. Recurring symbols and shifting identities quietly reveal unexpected connections between the pieces.</p>
+      <p class="said"><em class="btitle">How Life Feels…</em> weaves together poetry, short stories, and prose into a search for the self. Along the way, it explores losing yourself, falling in love with life, learning to let go, and finding beauty in the darkest places. Recurring symbols and shifting identities quietly reveal unexpected connections between the pieces.</p>
       <p class="said">Throughout the book, six immersive QR experiences continue the story beyond the printed page. They aren't bonus content. They're part of the journey. <a class="inline-demo" href="#" data-demo-open>Try a demo experience.</a></p>
     </div>
   </section>
@@ -620,7 +625,7 @@ a.trait-link:focus-visible{outline:1px solid var(--bone-3);outline-offset:8px}
   <section class="request" id="request" data-screen-label="Request form">
     <div class="wrap">
       <h2 class="h2 request-h fade s1">Request a <em>copy</em></h2>
-      <p class="asking-line fade s1">If <em class="btitle">How Life Feels...</em> stays with you, I'd be incredibly grateful if you shared it with your community.<br><br>There's absolutely no obligation to post, review, or create content. The most important thing is that you experience the book in your own way.</p>
+      <p class="asking-line fade s1">If <em class="btitle">How Life Feels…</em> stays with you, I'd be incredibly grateful if you shared it with your community.<br><br>There's absolutely no obligation to post, review, or create content. The most important thing is that you experience the book in your own way.</p>
 
 
       <div class="form-hold" id="form-hold">
@@ -697,9 +702,11 @@ a.trait-link:focus-visible{outline:1px solid var(--bone-3);outline-offset:8px}
     <span class="sep">·</span>
     <a href="https://www.tiktok.com/@annagreyhem" target="_blank" rel="me noopener noreferrer"><span>TikTok</span></a>
     <span class="sep">·</span>
+    <a href="../press/"><span>Press</span></a>
+    <span class="sep">·</span>
     <a href="../impressum/"><span>Legal Notice</span></a>
     <span class="sep">·</span>
-    <a href="../datenschutz/"><span>Privacy Policy</span></a>
+    <a href="../datenschutz/"><span>Privacy<b class="pp"> Policy</b></span></a>
   </div>
 </footer>
 

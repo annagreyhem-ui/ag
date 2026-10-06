@@ -2,30 +2,32 @@
 <html lang="en" translate="no" class="notranslate">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <meta charset="utf-8" />
-  <meta name="google" content="notranslate" />
+<meta name="color-scheme" content="dark">
+<meta name="google" content="notranslate" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/assets/images/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/assets/images/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="/assets/images/favicon-48.png" sizes="48x48" type="image/png">
 <link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <title>Breathing Water — Anna Greyhem</title>
+<link rel="canonical" href="https://annagreyhem.com/how-life-feels/breathing-water/" />
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../assets/css/qr-base.css">
+<script src="../../assets/js/qr-viewport-fix.js"></script>
 <script>
 /* Preview-only safety net: some preview servers don't tokenise relative asset
    links, blocking the shared stylesheets. If the design tokens are missing,
@@ -275,6 +277,7 @@
 
   function down(e) {
     if (committed) return;
+    clearTimeout(timer);
     const who = e.currentTarget.dataset.who;
     const p = e.touches ? e.touches[0] : e;
     const color = who === 'anna' ? 'rgba(238,234,224,0.6)' : 'rgba(107,128,149,0.7)';
@@ -288,6 +291,10 @@
 
   function finish(who) {
     committed = true;
+    try {
+      if (!localStorage.getItem('ag-bw-first')) localStorage.setItem('ag-bw-first', who);
+      localStorage.setItem('ag-bw-last', who);
+    } catch (_) {}
     clearTimeout(timer); stopRing();
     cue.off();
     fade.classList.add('in');
@@ -295,9 +302,14 @@
   }
 
   document.querySelectorAll('.zone').forEach((z) => {
-    ['pointerdown','touchstart'].forEach(ev => z.addEventListener(ev, (e) => { e.preventDefault(); down(e); }, { passive: false }));
+    /* one start timer only: pointerdown drives the hold; touchstart just suppresses scroll/callout */
+    z.addEventListener('pointerdown', (e) => { e.preventDefault(); down(e); }, { passive: false });
+    z.addEventListener('touchstart', (e) => { e.preventDefault(); }, { passive: false });
     ['pointerup','pointercancel','pointerleave','touchend'].forEach(ev => z.addEventListener(ev, up));
   });
+
+  /* QA hook: ?reset=1 clears the remembered choice */
+  try { if (new URLSearchParams(location.search).get('reset') === '1') { localStorage.removeItem('ag-bw-first'); localStorage.removeItem('ag-bw-last'); } } catch (_) {}
 
   setTimeout(advance, 500);
 })();
