@@ -2,20 +2,18 @@
 <html lang="en">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <meta charset="utf-8" />
+<meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -530,6 +528,13 @@ main {
   }
 }
 
+
+
+/* footer: 5 links — allow wrap on mobile */
+@media (max-width:699px){.foot-legal{flex-wrap:wrap;white-space:normal;row-gap:0}.foot-legal a{white-space:nowrap}}
+
+.foot-legal .pp{font-weight:inherit}
+@media (max-width:699px){.foot-legal .pp{display:none}}
 </style>
 </head>
 <body data-screen-label="The Author">
@@ -612,7 +617,7 @@ main {
     <p>I became a psychologist because I wanted to understand people. Then I became a consultant because I thought I was supposed to. Somewhere along the way I became exhausted enough to realize that I had spent years becoming everything except myself.</p>
     <p>So I quit.</p>
     <p>I went back to the stories I had been writing since I was a child and discovered they had been waiting for me all along.</p>
-    <p><a href="../how-life-feels/">How life feels…</a> is the first piece of that world. It is a book about identity, becoming, longing, love, and death. But it is also the place where everything else begins.</p>
+    <p><a href="../how-life-feels/">How Life Feels…</a> is the first piece of that world. It is a book about identity, becoming, longing, love, and death. But it is also the place where everything else begins.</p>
     <p>There are more stories waiting for you.</p>
 
     <p class="closing">Just...<br>Don't get lost.<button id="corner-hole" aria-label="Fall down the rabbit hole"></button></p>
@@ -628,9 +633,11 @@ main {
     <span class="sep">·</span>
     <a href="https://www.tiktok.com/@annagreyhem" target="_blank" rel="me noopener noreferrer"><span>TikTok</span></a>
     <span class="sep">·</span>
+    <a href="../press/"><span>Press</span></a>
+    <span class="sep">·</span>
     <a href="../impressum/"><span>Legal Notice</span></a>
     <span class="sep">·</span>
-    <a href="../datenschutz/"><span>Privacy Policy</span></a>
+    <a href="../datenschutz/"><span>Privacy<b class="pp"> Policy</b></span></a>
   </div>
 </footer>
 
@@ -736,9 +743,9 @@ main {
   };
 
   hole.addEventListener('click', function () {
-    gate.classList.add('active');
-    pw.value = '';
-    pw.focus();
+    /* No password any more: the hole always leads straight to the full room. */
+    try { sessionStorage.setItem('ag-fell-revealed', '1'); } catch (err) {}
+    startFall('revealed');
   });
 
   function closeGate() { gate.classList.remove('active'); pw.classList.remove('err'); msg.classList.remove('show'); }

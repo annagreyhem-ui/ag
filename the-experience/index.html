@@ -2,20 +2,18 @@
 <html lang="en">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  // Sentry: eigene Konfiguration. release = Versionsnummer der Website.
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <meta charset="utf-8" />
+<meta name="color-scheme" content="dark">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <meta name="theme-color" content="#0a0a0c" />
 <link rel="icon" href="/favicon.ico" sizes="any">
@@ -26,18 +24,18 @@
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <title>The Experience — QR codes inside a printed book | Anna Greyhem</title>
 <link rel="canonical" href="https://annagreyhem.com/the-experience/" />
-<meta name="description" content="Six QR codes are printed inside How life feels… by Anna Greyhem. What happens when you scan one, why they exist, and what interactive literature means in practice." />
+<meta name="description" content="Six QR codes are printed inside How Life Feels… by Anna Greyhem. What happens when you scan one, why they exist, and what interactive literature means in practice." />
 <meta property="og:type" content="article" />
 <meta property="og:site_name" content="Anna Greyhem" />
 <meta property="og:title" content="The Experience — QR codes inside a printed book" />
-<meta property="og:description" content="Six QR codes are printed inside How life feels… by Anna Greyhem. What happens when you scan one, and why they exist." />
+<meta property="og:description" content="Six QR codes are printed inside How Life Feels… by Anna Greyhem. What happens when you scan one, and why they exist." />
 <meta property="og:url" content="https://annagreyhem.com/the-experience/" />
 <meta property="og:image" content="https://annagreyhem.com/assets/images/og-image.png" />
 <meta property="og:image:width" content="1200" />
 <meta property="og:image:height" content="630" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="The Experience — QR codes inside a printed book" />
-<meta name="twitter:description" content="Six QR codes are printed inside How life feels… by Anna Greyhem. What happens when you scan one, and why they exist." />
+<meta name="twitter:description" content="Six QR codes are printed inside How Life Feels… by Anna Greyhem. What happens when you scan one, and why they exist." />
 <meta name="twitter:image" content="https://annagreyhem.com/assets/images/og-image.png" />
 <link rel="stylesheet" href="../assets/fonts/fonts.css">
 <style>
@@ -479,6 +477,13 @@ main {
   }
 }
 
+
+
+/* footer: 5 links — allow wrap on mobile */
+@media (max-width:699px){.foot-legal{flex-wrap:wrap;white-space:normal;row-gap:0}.foot-legal a{white-space:nowrap}}
+
+.foot-legal .pp{font-weight:inherit}
+@media (max-width:699px){.foot-legal .pp{display:none}}
 </style>
 <style>
 .page p.lead { font-family: var(--serif); font-weight: 300; font-style: italic; font-size: clamp(23px, 2.9vw, 32px); line-height: 1.42; color: var(--bone-2); margin: clamp(14px, 2vh, 20px) 0 0; max-width: 32ch; letter-spacing: -0.01em; }
@@ -533,7 +538,7 @@ main {
     <p class="pull">Not a book with extras. A book that responds.</p>
 
     <h2>What happens when you scan</h2>
-    <p>Six QR codes are printed inside <a href="../how-life-feels/"><em>How life feels…</em></a>. You open your phone's camera, point it at the code, and a link appears. No app. No account. Nothing to download, nothing to sign up for.</p>
+    <p>Six QR codes are printed inside <a href="../how-life-feels/"><em>How Life Feels…</em></a>. You open your phone's camera, point it at the code, and a link appears. No app. No account. Nothing to download, nothing to sign up for.</p>
     <p>What opens is a web page, but it does not behave like one. There is no menu, no scrollbar full of other things to look at. There is the piece, and there is you, and there is whatever the piece asks of you.</p>
     <p>Some ask you to press. Some ask you to hold, and keep holding. One asks you to make a decision, and once you have made it, it stays made. All of them sit beside the poem or the story they belong to, and they end where that piece ends.</p>
 
@@ -542,7 +547,7 @@ main {
     <p>That is also why there are six and not sixty. Each one earned its place by being impossible to print.</p>
 
     <h2>The book still works on paper</h2>
-    <p>You can read <em>How life feels…</em> from the first page to the last without ever picking up your phone, and nothing will feel missing. Every poem and every story stands on its own.</p>
+    <p>You can read <em>How Life Feels…</em> from the first page to the last without ever picking up your phone, and nothing will feel missing. Every poem and every story stands on its own.</p>
     <p>The codes are an invitation, not a toll gate. Scan them when you want to. Ignore them and the book is still a book.</p>
 
     <a class="btn" href="../how-life-feels/">Read the book</a>
@@ -553,13 +558,15 @@ main {
 <footer class="foot">
   <a class="foot-mark" href="../">Anna <em>Greyhem</em></a>
   <div class="foot-legal">
-    <a href="https://www.instagram.com/annagreyhem/" rel="me noreferrer"><span>Instagram</span></a>
+    <a href="https://www.instagram.com/annagreyhem/" target="_blank" rel="me noopener noreferrer"><span>Instagram</span></a>
     <span class="sep">·</span>
-    <a href="https://www.tiktok.com/@annagreyhem" target="_blank" rel="me noopener"><span>TikTok</span></a>
+    <a href="https://www.tiktok.com/@annagreyhem" target="_blank" rel="me noopener noreferrer"><span>TikTok</span></a>
+    <span class="sep">·</span>
+    <a href="../press/"><span>Press</span></a>
     <span class="sep">·</span>
     <a href="../impressum/"><span>Legal Notice</span></a>
     <span class="sep">·</span>
-    <a href="../datenschutz/"><span>Privacy Policy</span></a>
+    <a href="../datenschutz/"><span>Privacy<b class="pp"> Policy</b></span></a>
   </div>
 </footer>
 
