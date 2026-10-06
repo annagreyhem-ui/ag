@@ -810,8 +810,7 @@ a.trait-link:focus-visible{outline:1px solid var(--bone-3);outline-offset:8px}
     let target = el;
     if (fr && typeof window.agFrameIndex === 'function') {
       const all = fr.querySelectorAll('.slide .shot');
-      /* Auf Wunsch: das Antippen \u00f6ffnet das Bild eins vor dem Galerie-Index */
-      const shown = all[(window.agFrameIndex() - 1 + all.length) % all.length];
+      const shown = all[window.agFrameIndex()];
       if (shown) target = shown;
     }
     window.agOpenLightbox(target);
