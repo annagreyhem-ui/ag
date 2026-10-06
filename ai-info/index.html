@@ -2,17 +2,15 @@
 <html lang="en">
 <head>
 <!-- Sentry error monitoring -->
-<script
-  src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js"
-  crossorigin="anonymous"
-></script>
 <script>
-  Sentry.onLoad(function () {
+  // Sentry: Konfiguration vor dem Loader definieren, damit er async laden kann.
+  window.sentryOnLoad = function () {
     Sentry.init({
       release: "anna-greyhem-website@1.0.0",
     });
-  });
+  };
 </script>
+<script src="https://js-de.sentry-cdn.com/d1efa12f446c9731326431bcea7d044e.min.js" crossorigin="anonymous" async></script>
 
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -24,6 +22,7 @@
 <link rel="icon" href="/assets/images/favicon-16.png" sizes="16x16" type="image/png">
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <title>AI Info — Anna Greyhem</title>
+<link rel="canonical" href="https://annagreyhem.com/ai-info/" />
 <meta name="description" content="A note on transparency about creative process and the use of AI." />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Anna Greyhem" />
@@ -109,6 +108,7 @@ main { position: relative; z-index: 5; flex: 1; }
 .page-title { font-family: var(--serif); font-weight: 300; font-style: normal; font-size: clamp(48px, 9vw, 104px); line-height: 0.98; letter-spacing: -0.02em; margin: 0; color: var(--bone); }
 .rule { display: block; width: 100%; height: 1px; border: 0; background: var(--bone-4); margin: clamp(28px, 5vh, 44px) 0 clamp(28px, 5vh, 40px); }
 .page p { margin: 0 0 1.2em; color: var(--bone); font-family: var(--read); font-weight: 400; font-size: clamp(17px, 1.6vw, 19px); line-height: 1.8; max-width: 60ch; }
+.page .work-title { font-family: var(--serif); font-weight: 400; font-style: normal; font-size: clamp(24px, 2.6vw, 30px); line-height: 1.25; color: var(--bone); margin: clamp(36px, 6vh, 52px) 0 0.5em; }
 .page p.lead { font-family: var(--serif); font-weight: 300; font-style: italic; font-size: clamp(24px, 3vw, 34px); color: var(--bone-2); line-height: 1.4; margin-bottom: clamp(32px, 5vh, 48px); letter-spacing: -0.005em; max-width: 30ch; }
 .foot { position: relative; z-index: 5; border-top: 1px solid var(--bone-4); padding: 24px var(--gutter) calc(24px + env(safe-area-inset-bottom)); display: flex; flex-flow: row wrap; align-items: center; justify-content: center; gap: 2px 14px; text-align: center; margin-top: auto; }
 .foot-mark { font-family: var(--serif); font-weight: 300; font-size: 16px; color: var(--bone); text-decoration: none; width: max-content; transition: color .4s ease; }
@@ -121,6 +121,13 @@ main { position: relative; z-index: 5; flex: 1; }
 .foot-legal a:hover { color: var(--bone-2); }
 .foot-legal a:hover span { border-color: var(--bone-3); }
 .foot-legal .sep { color: var(--bone-4); }
+@media (max-width: 699px) {
+  .foot { flex-direction: column; flex-wrap: nowrap; align-items: flex-start; justify-content: flex-start; text-align: left; gap: 8px; }
+  .foot-mark { font-size: 22px; letter-spacing: -0.01em; }
+  .foot-legal { flex-wrap: nowrap; gap: 0 1.6vw; white-space: nowrap; }
+  .foot-legal::before { content: none; }
+  .foot-legal a { font-size: clamp(7.5px, 2.45vw, 10px); letter-spacing: 0.06em; }
+}
 @media (min-width: 700px) {
   .foot { flex-wrap: nowrap; justify-content: space-between; align-items: flex-end; text-align: left; gap: 22px; padding: 44px var(--gutter) calc(40px + env(safe-area-inset-bottom)); }
   .foot-mark { font-size: 28px; }
@@ -131,6 +138,13 @@ main { position: relative; z-index: 5; flex: 1; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; }
 }
+
+
+/* footer: 5 links — allow wrap on mobile */
+@media (max-width:699px){.foot-legal{flex-wrap:wrap;white-space:normal;row-gap:0}.foot-legal a{white-space:nowrap}}
+
+.foot-legal .pp{font-weight:inherit}
+@media (max-width:699px){.foot-legal .pp{display:none}}
 </style>
 </head>
 <body data-screen-label="AI Info">
@@ -156,6 +170,7 @@ main { position: relative; z-index: 5; flex: 1; }
   <nav class="menu-nav">
     <a href="../how-life-feels/"><span class="idx">01</span>The Book</a>
     <a href="../the-author/"><span class="idx">02</span>The Author</a>
+    <a href="../the-experience/"><span class="idx">03</span>The Experience</a>
   </nav>
   <div class="menu-foot">
     <a href="../impressum/">Legal Notice</a>
@@ -175,9 +190,17 @@ main { position: relative; z-index: 5; flex: 1; }
 
     <p class="lead">I value transparency about my creative process and the use of AI.</p>
 
-    <p>For this artwork, I used AI to generate the images of the working space. The images incorporated within it — including the cherry collection and the Polaroids — are original photographs taken by me.</p>
+    <p>When I use AI, each piece is shaped by my own artistic vision and creative decisions. AI allows me to explore and visualize ideas that begin in my imagination and to give them a tangible visual form.</p>
 
-    <p>When I use AI, each piece is shaped by my own artistic vision and creative decisions. AI allows me to explore and visualize ideas that begin in my imagination, helping me bring concepts into a tangible visual form.</p>
+    <h2 class="work-title">Tuesday's Nightmare</h2>
+    <p>The images of the room in Tuesday's Nightmare were generated with ChatGPT (OpenAI). The room is fictional and does not show a real place.</p>
+
+    <h2 class="work-title">The Rabbit Hole</h2>
+    <p>The images of the working space were generated with AI (ChatGPT). The images within it, including the cherry collection and the Polaroids, are original photographs taken by me.</p>
+
+    <hr class="rule">
+
+    <p>Everything else, the texts, the poems, the concept and the design of the experiences, is my own work.</p>
 
   </article>
 </main>
@@ -185,9 +208,15 @@ main { position: relative; z-index: 5; flex: 1; }
 <footer class="foot">
   <a class="foot-mark" href="../">Anna <em>Greyhem</em></a>
   <div class="foot-legal">
+    <a href="https://www.instagram.com/annagreyhem/" target="_blank" rel="me noopener noreferrer"><span>Instagram</span></a>
+    <span class="sep">·</span>
+    <a href="https://www.tiktok.com/@annagreyhem" target="_blank" rel="me noopener noreferrer"><span>TikTok</span></a>
+    <span class="sep">·</span>
+    <a href="../press/"><span>Press</span></a>
+    <span class="sep">·</span>
     <a href="../impressum/"><span>Legal Notice</span></a>
     <span class="sep">·</span>
-    <a href="../datenschutz/"><span>Privacy Policy</span></a>
+    <a href="../datenschutz/"><span>Privacy<b class="pp"> Policy</b></span></a>
     <span class="sep">·</span>
     <a href="../ai-info/"><span>AI Info</span></a>
   </div>
