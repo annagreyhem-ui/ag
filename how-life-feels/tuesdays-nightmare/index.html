@@ -77,35 +77,7 @@
   }
   /* bottom → top : dark room, the blood message, the warm light */
   #layerDark { background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-dark.jpg"); opacity: 0; transition: opacity 0.4s ease; }
-  #layerMsg  { background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-message.jpg"); opacity: 0; transition: opacity 2.6s linear; filter: brightness(1.22) contrast(1.06); }
-  /* location-independent glow: a blurred copy of the same photo blended with
-     'screen' lifts only the bright parts — i.e. the writing — into a soft
-     bloom, so it reads on dim screens without touching the dark wall. */
-  #layerMsg::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-message.jpg");
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    filter: blur(7px) brightness(1.75) contrast(1.15);
-    mix-blend-mode: screen;
-    opacity: 0.82;
-    pointer-events: none;
-  }
-  /* High-contrast users (see note) get a noticeably stronger bloom so the
-     writing stays clearly legible even on dim screens. The dark wall itself
-     is untouched — 'screen' blend only lifts the bright pixels. */
-  @media (prefers-contrast: more) {
-    #layerMsg { filter: brightness(1.35) contrast(1.1); }
-    #layerMsg::after { filter: blur(6px) brightness(2.0) contrast(1.2); opacity: 0.95; }
-  }
-  /* QA-only override: ?contrast=more in the URL forces the high-contrast
-     bloom on any device (mirrors the media query above). For testing. */
-  body.force-contrast #layerMsg { filter: brightness(1.35) contrast(1.1); }
-  body.force-contrast #layerMsg::after { filter: blur(6px) brightness(2.0) contrast(1.2); opacity: 0.95;
-  }
+  #layerMsg  { background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-message.jpg"); opacity: 0; transition: opacity 2.6s linear; }
   #layerLit  { background-image: url("https://cdn.annagreyhem.com/how-life-feels/room-lit.jpg"); opacity: 0; transition: opacity 1.6s cubic-bezier(.4,0,.2,1); }
 
   #vignette {
@@ -278,11 +250,6 @@
      switch the light off, the writing bleeds onto the wall (silently).
      Switching the light back on clears it; the room is normal again.
      ========================================================= */
-  /* QA test hook: ?contrast=more forces the high-contrast bloom on any device */
-  if (/[?&]contrast=more\b/.test(location.search)) {
-    document.body.classList.add('force-contrast');
-  }
-
   /* QA measure hook: ?measure=1 — click/tap anywhere on the stage to read the
      exact left%/top% for #switch (relative to the room photo). Copy the two
      numbers straight into the #switch rule. */
