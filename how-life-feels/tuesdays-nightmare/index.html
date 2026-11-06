@@ -31,6 +31,9 @@
 <link rel="apple-touch-icon" href="/assets/images/apple-touch-icon.png">
 <title>Tuesday's Nightmare — Anna Greyhem</title>
 <link rel="canonical" href="https://annagreyhem.com/how-life-feels/tuesdays-nightmare/" />
+<link rel="preload" as="image" href="https://cdn.annagreyhem.com/how-life-feels/room-lit.jpg" fetchpriority="high">
+<link rel="preload" as="image" href="https://cdn.annagreyhem.com/how-life-feels/room-dark.jpg">
+<link rel="preload" as="image" href="https://cdn.annagreyhem.com/how-life-feels/room-message.jpg">
 <link rel="stylesheet" href="../../assets/fonts/fonts.css">
 <link rel="stylesheet" href="../../assets/css/qr-base.css">
 <script src="../../assets/js/qr-viewport-fix.js"></script>
@@ -162,11 +165,14 @@
 </head>
 <body data-screen-label="QR · Tuesday's Nightmare">
 
+<span class="grain" aria-hidden="true"></span>
+
 
 <div id="stage">
   <div class="layer" id="layerDark"></div>
   <div class="layer" id="layerMsg"></div>
   <div class="layer" id="layerLit"></div>
+  <div id="vignette"></div>
 
   <!-- the wall light switch -->
   <div id="switch" aria-label="Light switch" role="button" tabindex="0">
@@ -183,8 +189,6 @@
   <a href="https://annagreyhem.com/impressum/">Legal Notice</a>
   <span class="sep" aria-hidden="true">·</span>
   <a href="https://annagreyhem.com/datenschutz/">Privacy</a>
-  <span class="sep" aria-hidden="true">·</span>
-  <a href="https://annagreyhem.com/ai-info/">AI Info</a>
 </nav>
 
 <script>
@@ -283,18 +287,19 @@
   var offCount = 0;       // how many times the light has been switched OFF
   var lock     = false;   // brief debounce so one tap = one toggle
 
-  // pre-decode the backgrounds so switching never flashes black
-  window.addEventListener('load', function(){
+  // pre-decode the backgrounds right away (not on window 'load', which waits
+  // for analytics/monitoring scripts) so the first tap never waits
+  (function(){
     ['layerDark','layerMsg','layerLit'].forEach(function(id){
       var bg = getComputedStyle(document.getElementById(id)).backgroundImage;
       var m = bg.match(/url\("(.+)"\)/);
       if(m){ var im=new Image(); im.src=m[1]; if(im.decode){ im.decode().catch(function(){}); } }
     });
-  });
+  })();
 
   function toggle(){
     if(lock) return;
-    lock = true; setTimeout(function(){ lock=false; }, 360);
+    lock = true; setTimeout(function(){ lock=false; }, 200);
 
     Audio.init();
     Audio.resume();
